@@ -1,0 +1,14 @@
+{
+  "name": "assistente-farmaceutico",
+  "version": "1.0.0",
+  "main": "bulario.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bulario": "^1.0.5"
+  }
+}
