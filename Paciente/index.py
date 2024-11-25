@@ -8,6 +8,8 @@ import chromadb
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from utils.vectorstore import bula_exists, search_bula
+from utils.topics_classification import topic_classify
+
 
 nome_remedio = str(input("Digite o nome do remédio: "))
 caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
@@ -41,8 +43,8 @@ else:
 
 
 llm = ChatOllama(
-    model = "llama3.2:1b",
-    temperature=0.5
+    model = "llama3.2:3b",
+    temperature=0.2
 )
 
 print("====== Assistente Farmacêutico - Chat ======")
@@ -59,10 +61,12 @@ while True:
     Você é um assistente farmacêutico especializado em medicamentos. Seu objetivo é fornecer informações precisas, confiáveis e diretamente extraídas do contexto sobre um medicamento em específico.
     
     Se a pergunta estiver fora do escopo da bula ou a informação não for encontrada, informe que os dados não estão disponíveis na seção fornecida. Seja preciso e detalhado em suas respostas.
-        
+    
+    Sua resposta deve iniciar com: "De acordo com a bula do medicamento..." e fornecer a resposta completa à pergunta.
+    
     Passo a passo para responder a pergunta:
     1. Leia o nome do remédio fornecido.
-    2. Leia o contexto fornecido.
+    2. Leia o contexto especifico e o contexto geral.
     3. Leia a pergunta.
     4. Responda à pergunta com base no contexto fornecido.
     5. Releia a resposta e verifique se inclui todos os detalhes relevantes do contexto para responder completamente à pergunta.
@@ -70,7 +74,10 @@ while True:
     Medicamento:
     nome = {medicamento}
     
-    Contexto:
+    Contexto especifico:
+    {contexto_esp}
+    
+    Contexto Geral:
     {contexto}
     
     Pergunta:
@@ -81,7 +88,17 @@ while True:
 
     # Cria uma instância de 'ChatPromptTemplate' e Permite que o template de prompt seja preenchido com diferentes valores de {contexto}, {pergunta}...
     rag_prompt = ChatPromptTemplate.from_template(RAG_TEMPLATE)
-
+    
+    # Classifica o tópico
+    topic_llm = topic_classify(llm, query)
+    
+    filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic_llm.upper()}]}
+    context_llm = vectorstore.similarity_search(
+        query="",  # Pode ser vazio, pois queremos filtrar por metadados, não por embeddings.
+        filter=filtros
+    )
+    '''print("Tópico específico: ", context_llm)'''
+    
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
         RunnablePassthrough.assign(context=lambda input: format_docs(input["contexto"])) # Atribui o resultado de format_docs(input["contexto"]) a context
@@ -95,4 +112,4 @@ while True:
     '''print(" BUSCA POR SIMILARIDADE : \n", docs, "\n\n")'''
     
     # Resposta
-    print("Assistente: " + chain.invoke({"contexto": docs, "pergunta": query, "medicamento": nome_remedio}) + "\n")
+    print("Assistente: " + chain.invoke({"contexto": docs, "contexto_esp": context_llm,"pergunta": query, "medicamento": nome_remedio}) + "\n")

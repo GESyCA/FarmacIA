@@ -1,5 +1,6 @@
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+import re
 
 def topic_classify(llm, query):
     
@@ -73,4 +74,9 @@ def topic_classify(llm, query):
         return response.strip()
 
     matched_topic = identify_topic_with_model(query)
-    return matched_topic
+    
+    # Regex para capturar o tópico entre aspas duplas
+    pattern = r'Tópico mais relevante:\s*"([^"]+)"'
+    result = re.search(pattern, matched_topic)
+    
+    return result.group(1) if result else None
