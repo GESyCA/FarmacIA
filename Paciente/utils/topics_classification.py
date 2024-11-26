@@ -26,6 +26,8 @@ def topic_classify(llm, query):
 
     Sua tarefa é identificar o tópico (da lista acima) mais relevante para a frase fornecida. Escolha apenas um dos tópicos listados.
     
+    Caso não encontre um tópico adequado, escolha o tópico que mais se aproxima do contexto da frase. Se a pergunta estiver fora do contexto de um Assistente farmacêutico, informe que sua resposta não está disponível. 
+    
     Passo a passo:
     1. Leia a frase fornecida.
     2. Identifique e escolha o tópico listado que mais se encaixa no contexto da frase.
