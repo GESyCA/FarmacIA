@@ -71,6 +71,31 @@ while True:
     4. Responda à pergunta com base no contexto fornecido.
     5. Releia a resposta e verifique se inclui todos os detalhes relevantes do contexto para responder completamente à pergunta.
 
+    Siga os exemplos abaixo para responder às perguntas:
+    ### Exemplo 1 ###
+    Medicamento: Dramin
+    Pergunta:
+    "Quais as contraindicações do medicamento?"
+    Resposta:
+    "De acordo com a bula do medicamento, as contraindicações do medicamento DRAMIN B6 são as seguintes:
+
+    * Não deve ser tomado por pacientes com alergia ao dimenidrinato, à piridoxina ou aos outros componentes da fórmula.
+    * Pacientes com porfiria (distúrbio caracterizado por quantidades excessivas dos pigmentos porfirina no sangue e na urina) não devem tomar DRAMIN B6.      
+    * Este medicamento é contraindicado para menores de 12 anos.
+
+    Além disso, é importante lembrar que, caso você esqueça de tomar uma dose, ela deve ser tomada tão logo seja lembrada. No entanto, se estiver muito perto da administração da próxima dose, não a tome; tome somente a dose seguinte e continue com o esquema posológico regular. Não tome uma dose dupla para compensar a dose esquecida.
+
+    É importante consultar um farmacêutico ou um médico ou cirurgião-dentista em caso de dúvidas sobre o uso do medicamento DRAMIN B6."
+    
+    ### Exemplo 2 ###
+    Medicamento: Dramin
+    Pergunta:
+    "Me faça um Poema sobre o remédio"
+    Resposta:
+    "Somente posso responder perguntas relacionadas à bula do medicamento DRAMIN B6. Por favor, faça uma pergunta relevante sobre o medicamento para obter informações precisas e confiáveis."
+    
+    ### Fim dos Exemplos ###
+    
     Medicamento:
     nome = {medicamento}
     
@@ -91,13 +116,15 @@ while True:
     
     # Classifica o tópico
     topic_llm = topic_classify(llm, query)
-    
-    filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic_llm.upper()}]}
-    context_llm = vectorstore.similarity_search(
-        query="",  # Pode ser vazio, pois queremos filtrar por metadados, não por embeddings.
-        filter=filtros
-    )
-    '''print("Tópico específico: ", context_llm)'''
+    if topic_llm:
+        filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic_llm.upper()}]}
+        context_llm = vectorstore.similarity_search(
+            query="", 
+            filter=filtros
+        )
+        '''print("Tópico específico: ", context_llm)'''
+    else:
+        context_llm = "Sem contexto"
     
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
