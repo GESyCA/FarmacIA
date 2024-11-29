@@ -76,9 +76,9 @@ def topic_classify(llm, query):
         return response.strip()
 
     matched_topic = identify_topic_with_model(query)
-    
+    '''print("Tópico mais relevante:", matched_topic)'''
     # Regex para capturar o tópico entre aspas duplas
-    pattern = r'Tópico mais relevante:\s*"([^"]+)"'
+    pattern = r'Tópico mais relevante:\s*"?(.*?)"?$'
     result = re.search(pattern, matched_topic)
     
     return result.group(1) if result else None
