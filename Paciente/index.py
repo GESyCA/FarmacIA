@@ -9,7 +9,12 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from utils.vectorstore import bula_exists, search_bula
 from utils.topics_classification import topic_classify
+from langsmith import Client
+from langsmith import traceable
+from dotenv import load_dotenv
 
+# Carregar variáveis de ambiente
+load_dotenv()
 
 nome_remedio = str(input("Digite o nome do remédio: "))
 caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
@@ -44,8 +49,14 @@ else:
 
 llm = ChatOllama(
     model = "llama3.2:3b",
-    temperature=0.2
+    temperature=0
 )
+
+client = Client()
+
+@traceable
+def buscar_resposta(contexto, contexto_esp, pergunta, medicamento):
+    return chain.invoke({"contexto": contexto, "contexto_esp": contexto_esp, "pergunta": pergunta, "medicamento": medicamento})
 
 print("====== Assistente Farmacêutico - Chat ======")
 while True:
@@ -117,15 +128,16 @@ while True:
     # Classifica o tópico
     topic_llm = topic_classify(llm, query)
     if topic_llm:
+        # Puxa o tópico específico no banco de dados vetorial
         filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic_llm.upper()}]}
         context_llm = vectorstore.similarity_search(
             query="", 
             filter=filtros
         )
-        '''print("Tópico específico: ", context_llm)'''
     else:
         context_llm = "Sem contexto"
-    
+    '''print("Tópico específico: ", context_llm)'''
+        
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
         RunnablePassthrough.assign(context=lambda input: format_docs(input["contexto"])) # Atribui o resultado de format_docs(input["contexto"]) a context
@@ -137,6 +149,6 @@ while True:
     # Busca a similaridade
     docs = search_bula(nome_remedio, query)
     '''print(" BUSCA POR SIMILARIDADE : \n", docs, "\n\n")'''
-    
-    # Resposta
-    print("Assistente: " + chain.invoke({"contexto": docs, "contexto_esp": context_llm,"pergunta": query, "medicamento": nome_remedio}) + "\n")
+        
+    resposta = buscar_resposta(docs, context_llm, query, nome_remedio)
+    print("Assistente: " + resposta + "\n")
