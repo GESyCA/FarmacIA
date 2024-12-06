@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@react-native-vector-icons/fontawesome5": "^5.15.4",
     "expo": "~52.0.11",
     "expo-status-bar": "~2.0.0",
