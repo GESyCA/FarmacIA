@@ -14,8 +14,15 @@ load_dotenv()
 client = Client()
 
 # Configuração do modelo e prompt
-llm = ChatOllama(
+llm_llama = ChatOllama(
     model="Llama3.2:3b",
+    temperature=0
+)
+
+# Configuração do modelo Mistral
+llm_mistral = ChatOllama(
+    model="Mistral",
+    format="json",
     temperature=0
 )
 
@@ -80,17 +87,11 @@ def predict_rag_answer(example: dict):
     chain = (
         RunnablePassthrough.assign(context=lambda _: example["context"])
         | rag_prompt
-        | llm
+        | llm_mistral
         | StrOutputParser()
     )
     response = chain.invoke({"query": example["query"], "context": example["context"]})
     return {"answer": response}
-
-# Configuração do modelo Mistral
-llm_judge = ChatOllama(
-    model="Mistral",
-    temperature=0
-)
 
 # Configuração dos avaliadores
 
@@ -98,7 +99,7 @@ llm_judge = ChatOllama(
 qa_evaluator = [
     LangChainStringEvaluator(
         "cot_qa",
-        config={"llm": llm_judge},
+        config={"llm": llm_llama},
         prepare_data=lambda run, example: {
             "prediction": run.outputs["answer"],
             "reference": example.outputs["expected"],
@@ -111,7 +112,7 @@ qa_evaluator = [
 answer_hallucination_evaluator = LangChainStringEvaluator(
     "labeled_score_string",
     config={
-        "llm": llm_judge,
+        "llm": llm_mistral,
         "criteria": {
             "accuracy": """Is the Assistant's Answer grounded in the Ground Truth documentation? A score of [[1]] means that the
             Assistant answer contains is not at all based upon / grounded in the Groun Truth documentation. A score of [[5]] means
@@ -128,7 +129,7 @@ answer_hallucination_evaluator = LangChainStringEvaluator(
 )
 
 # Dataset de teste
-dataset_name = "RAG_FarmacIA_Test"
+dataset_name = "RAG_QA_and_Hallucination_farmacIA"
 test_cases = [
     {
         "query": "Qual a posologia do medicamento?",
@@ -150,17 +151,17 @@ test_cases = [
 inputs = [{"query": case["query"], "context": case["context"]} for case in test_cases]
 outputs = [{"expected": case["expected"]} for case in test_cases]
 
-# Cria o dataset
-dataset = client.create_dataset(dataset_name, description="RAG QA FarmacIA Dataset")
-client.create_examples(inputs=inputs, outputs=outputs, dataset_id=dataset.id)
-
+"""# Cria o dataset
+dataset = client.create_dataset(dataset_name, description="RAG QA & Hallucination FarmacIA Dataset")
+client.create_examples(inputs=inputs, outputs=outputs, dataset_id=dataset.id)"""
+    
 # Avaliação
 experiment_results = evaluate(
     predict_rag_answer,
     data=dataset_name, 
-    evaluators=qa_evaluator, 
-    experiment_prefix="rag-Teste-Completo-FarmacIA",  # Nome do experimento
-    metadata={"variant": "Testes, Llama"},  # Metadados do experimento
+    evaluators=[answer_hallucination_evaluator] + qa_evaluator, 
+    experiment_prefix="Mistral-FarmacIA",  # Nome do experimento
+    metadata={"variant": "Mistral"},  # Metadados do experimento
 )
 
 # Resultado da avaliação

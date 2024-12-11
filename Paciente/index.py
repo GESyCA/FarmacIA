@@ -127,16 +127,27 @@ while True:
     
     # Classifica o tópico
     topic_llm = topic_classify(llm, query)
+    
+    '''print("Tópicos classificados pelo LLM: ", topic_llm)'''
+    
+    context_list = []
     if topic_llm:
-        # Puxa o tópico específico no banco de dados vetorial
-        filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic_llm.upper()}]}
-        context_llm = vectorstore.similarity_search(
-            query="", 
-            filter=filtros
-        )
+        # Puxa o contexto específico no banco de dados vetorial para cada um dos tópicos
+        for topic in topic_llm:
+            # Puxa o tópico específico no banco de dados vetorial
+            filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic.upper()}]}
+            contexto = vectorstore.similarity_search(
+                query="", 
+                filter=filtros
+            )
+            
+            # Adiciona o contexto retornado à lista de contextos
+            if contexto:
+                context_list.extend([doc.page_content for doc in contexto])
+        # Junta os contextos em uma única string
+        context_llm = "".join(context_list)
     else:
         context_llm = "Sem contexto"
-    '''print("Tópico específico: ", context_llm)'''
         
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
