@@ -24,29 +24,29 @@ def topic_classify(llm, query):
 
     {topics}
 
-    Sua tarefa é identificar o tópico (da lista acima) mais relevante para a frase fornecida. Escolha apenas um dos tópicos listados.
+    Sua tarefa é identificar dois dos tópicos (da lista acima) mais relevantes para a frase fornecida.
     
     Caso não encontre um tópico adequado, escolha o tópico que mais se aproxima do contexto da frase. Se a pergunta estiver fora do contexto de um Assistente farmacêutico, informe que sua resposta não está disponível. 
     
-    Passo a passo:
+    Passo a passo (não precisa escrever os passos):
     1. Leia a frase fornecida.
-    2. Identifique e escolha o tópico listado que mais se encaixa no contexto da frase.
-    3. Informe o tópico encontrado no passo 2.
+    2. Identifique e escolha os tópicos listados que mais se encaixam no contexto da frase.
+    3. Informe somente os tópicos encontrados no passo 2, entre aspas duplas ("").
 
     ### Exemplos:
     Frase: "Quais são os efeitos colaterais do medicamento?"
-    Tópico mais relevante: "QUAIS OS MALES QUE ESTE MEDICAMENTO PODE ME CAUSAR?"
+    Tópicos mais relevantes: "QUAIS OS MALES QUE ESTE MEDICAMENTO PODE ME CAUSAR?"
 
     Frase: "Como devo armazenar o remédio?"
-    Tópico mais relevante: "ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"
+    Tópicos mais relevantes: "ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"
 
     Frase: "Para que serve este remédio?"
-    Tópico mais relevante: "PARA QUE ESTE MEDICAMENTO É INDICADO?"
+    Tópicos mais relevantes: "PARA QUE ESTE MEDICAMENTO É INDICADO?"
 
     Agora, classifique a frase fornecida:
 
     Frase: "{question}"
-    Tópico mais relevante:
+    Tópicos mais relevantes:
     """
 
     prompt = PromptTemplate(
@@ -76,9 +76,9 @@ def topic_classify(llm, query):
         return response.strip()
 
     matched_topic = identify_topic_with_model(query)
-    '''print("Tópico mais relevante:", matched_topic)'''
+    ''' print("Classificação do Tópico: ", matched_topic)'''
     # Regex para capturar o tópico entre aspas duplas
-    pattern = r'Tópico mais relevante:\s*"?(.*?)"?$'
-    result = re.search(pattern, matched_topic)
+    pattern = r'["\'](.*?)["\']'
+    result = re.findall(pattern, matched_topic)
     
-    return result.group(1) if result else None
+    return result if result else None
