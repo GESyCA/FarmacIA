@@ -87,7 +87,7 @@ def predict_rag_answer(example: dict):
     chain = (
         RunnablePassthrough.assign(context=lambda _: example["context"])
         | rag_prompt
-        | llm_mistral
+        | llm_llama
         | StrOutputParser()
     )
     response = chain.invoke({"query": example["query"], "context": example["context"]})
