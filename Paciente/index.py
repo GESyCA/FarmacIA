@@ -55,9 +55,10 @@ llm = ChatOllama(
 client = Client()
 
 @traceable
-def buscar_resposta(contexto, contexto_esp, pergunta, medicamento):
-    return chain.invoke({"contexto": contexto, "contexto_esp": contexto_esp, "pergunta": pergunta, "medicamento": medicamento})
+def buscar_resposta(contexto, contexto_esp, pergunta, medicamento, historico):
+    return chain.invoke({"contexto": contexto, "contexto_esp": contexto_esp, "pergunta": pergunta, "medicamento": medicamento, "historico": historico})
 
+historico = ""
 print("====== Assistente Farmacêutico - Chat ======")
 while True:
     # Consulta
@@ -66,7 +67,7 @@ while True:
     if query == "sair":
         print("Até mais!")
         break
-    
+        
     # Prompt
     RAG_TEMPLATE = """
     Você é um assistente farmacêutico especializado em medicamentos. Seu objetivo é fornecer informações precisas, confiáveis e diretamente extraídas do contexto sobre um medicamento em específico.
@@ -74,6 +75,12 @@ while True:
     Se a pergunta estiver fora do escopo da bula ou a informação não for encontrada, informe que os dados não estão disponíveis na seção fornecida. Seja preciso e detalhado em suas respostas.
     
     Sua resposta deve iniciar com: "De acordo com a bula do medicamento..." e fornecer a resposta completa à pergunta.
+    
+    Converse de maneira natural e mantenha o contexto das interações anteriores. Aqui estão as conversas anteriores:
+
+    {historico}
+
+    Agora, continue a conversa.
     
     Passo a passo para responder a pergunta:
     1. Leia o nome do remédio fornecido.
@@ -140,6 +147,7 @@ while True:
                 query="", 
                 filter=filtros
             )
+            '''print("Tópico: ", topic, "\nContexto: ", contexto)'''
             
             # Adiciona o contexto retornado à lista de contextos
             if contexto:
@@ -148,7 +156,7 @@ while True:
         context_llm = "".join(context_list)
     else:
         context_llm = "Sem contexto"
-        
+    
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
         RunnablePassthrough.assign(context=lambda input: format_docs(input["contexto"])) # Atribui o resultado de format_docs(input["contexto"]) a context
@@ -160,6 +168,14 @@ while True:
     # Busca a similaridade
     docs = search_bula(nome_remedio, query)
     '''print(" BUSCA POR SIMILARIDADE : \n", docs, "\n\n")'''
-        
-    resposta = buscar_resposta(docs, context_llm, query, nome_remedio)
+    
+    memoria = [] # Inicializando a memória
+    
+    resposta = buscar_resposta(docs, context_llm, query, nome_remedio, historico)
+    
+    # Adiciona a interação à memória
+    memoria.append({"usuario": query, "assistente": resposta})
+    
+    historico = "\n".join([f"Usuário: {item['usuario']}\nAssistente: {item['assistente']}" for item in memoria])
+    
     print("Assistente: " + resposta + "\n")
