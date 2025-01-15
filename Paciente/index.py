@@ -12,12 +12,13 @@ from utils.topics_classification import topic_classify
 from langsmith import Client
 from langsmith import traceable
 from dotenv import load_dotenv
+import streamlit as st
 
 # Carregar variáveis de ambiente
 load_dotenv()
 
-nome_remedio = str(input("Digite o nome do remédio: "))
-caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
+# Setup do Streamlit
+st.title("FarmacIA - Assistente Farmacêutico")
 
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
@@ -25,49 +26,52 @@ embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-
 chroma_client = chromadb.PersistentClient(path="./chroma_bulas")
 vectorstore = Chroma(collection_name="bulas", client=chroma_client, embedding_function=embeddings)
 
-# Verifica se o medicamento já está no banco
-bula_existe = bula_exists(nome_remedio)
-
-if bula_existe:
-    print(f"A bula de '{nome_remedio}' já está armazenada localmente.")
-else:
-    # Realiza o processo de download e adição da bula caso não exista no banco
-    resultado = buscar_remedio(nome_remedio, 1)
-    
-    if resultado and resultado['status'] != 'not_found':
-        pdf_buffer = resultado['pdf']['data']
-        
-        # Salva o PDF
-        salvar_pdf(pdf_buffer, f'bula_{nome_remedio.lower()}.pdf')
-        
-        # Processa a bula
-        vectorstore, sectioned_docs = processar_bula(caminho_arquivo, nome_remedio)
-    else:
-        print("Bula do Remédio não encontrada!")
-        exit()
-
-
 llm = ChatOllama(
     model = "llama3.2:3b",
     temperature=0
 )
 
-client = Client()
-
-@traceable
-def buscar_resposta(contexto, contexto_esp, pergunta, medicamento, historico):
-    return chain.invoke({"contexto": contexto, "contexto_esp": contexto_esp, "pergunta": pergunta, "medicamento": medicamento, "historico": historico})
-
-historico = ""
-print("====== Assistente Farmacêutico - Chat ======")
-while True:
-    # Consulta
-    query = input("Você: ")
+# Inicializar histórico
+if "historico" not in st.session_state:
+    st.session_state["historico"] = ""
     
-    if query == "sair":
-        print("Até mais!")
-        break
-        
+# Entrada do nome do remédio
+nome_remedio = st.text_input("Digite o nome do remédio:")
+
+if nome_remedio:
+    caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
+    bula_existe = bula_exists(nome_remedio)
+
+    if bula_existe:
+        st.info(f"A bula de '{nome_remedio}' já está armazenada localmente.")
+    else:
+        st.warning("Bula não encontrada localmente. Clique para baixar.")
+        if st.button("Baixar Bula"):
+            resultado = buscar_remedio(nome_remedio, 1)
+            if resultado and resultado['status'] != 'not_found':
+                pdf_buffer = resultado['pdf']['data']
+                salvar_pdf(pdf_buffer, caminho_arquivo)
+                vectorstore, _ = processar_bula(caminho_arquivo, nome_remedio)
+                st.success("Bula processada e adicionada ao banco!")
+            else:
+                st.error("Bula do remédio não encontrada na ANVISA.")
+                
+caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
+
+# Entrada para perguntas ao assistente
+pergunta = st.text_input("Pergunte algo sobre o medicamento:")
+
+if pergunta:
+    # Classifica o tópico e busca contexto
+    topic_llm = topic_classify(llm, pergunta)
+    context_list = []
+    for topic in topic_llm:
+        filtros = {"$and": [{"medicamento": nome_remedio.lower()}, {"section": topic.upper()}]}
+        contexto = vectorstore.similarity_search(query="", filter=filtros)
+        context_list.extend([doc.page_content for doc in contexto])
+    
+    context_llm = "".join(context_list) if context_list else "Sem contexto"
+    
     # Prompt
     RAG_TEMPLATE = """
     Você é um assistente farmacêutico especializado em medicamentos. Seu objetivo é fornecer informações precisas, confiáveis e diretamente extraídas do contexto sobre um medicamento em específico.
@@ -128,35 +132,7 @@ while True:
     
     Resposta: 
     """
-
-    # Cria uma instância de 'ChatPromptTemplate' e Permite que o template de prompt seja preenchido com diferentes valores de {contexto}, {pergunta}...
     rag_prompt = ChatPromptTemplate.from_template(RAG_TEMPLATE)
-    
-    # Classifica o tópico
-    topic_llm = topic_classify(llm, query)
-    
-    '''print("Tópicos classificados pelo LLM: ", topic_llm)'''
-    
-    context_list = []
-    if topic_llm:
-        # Puxa o contexto específico no banco de dados vetorial para cada um dos tópicos
-        for topic in topic_llm:
-            # Puxa o tópico específico no banco de dados vetorial
-            filtros = { "$and": [{"medicamento": nome_remedio.lower()}, {"section": topic.upper()}]}
-            contexto = vectorstore.similarity_search(
-                query="", 
-                filter=filtros
-            )
-            '''print("Tópico: ", topic, "\nContexto: ", contexto)'''
-            
-            # Adiciona o contexto retornado à lista de contextos
-            if contexto:
-                context_list.extend([doc.page_content for doc in contexto])
-        # Junta os contextos em uma única string
-        context_llm = "".join(context_list)
-    else:
-        context_llm = "Sem contexto"
-    
     # Cadeia de Operações que processa a entrada e gera uma resposta
     chain = (
         RunnablePassthrough.assign(context=lambda input: format_docs(input["contexto"])) # Atribui o resultado de format_docs(input["contexto"]) a context
@@ -165,17 +141,17 @@ while True:
         | StrOutputParser()
     )
     
-    # Busca a similaridade
-    docs = search_bula(nome_remedio, query)
-    '''print(" BUSCA POR SIMILARIDADE : \n", docs, "\n\n")'''
+    # Busca resposta
+    docs = search_bula(nome_remedio, pergunta)
+    resposta = chain.invoke({"contexto": docs, "contexto_esp": context_llm, "pergunta": pergunta, "medicamento": nome_remedio, "historico": st.session_state["historico"]})
     
-    memoria = [] # Inicializando a memória
+    # Atualizar histórico
+    historico_atual = f"Usuário: {pergunta}\nAssistente: {resposta}\n"
+    st.session_state["historico"] += historico_atual
     
-    resposta = buscar_resposta(docs, context_llm, query, nome_remedio, historico)
-    
-    # Adiciona a interação à memória
-    memoria.append({"usuario": query, "assistente": resposta})
-    
-    historico = "\n".join([f"Usuário: {item['usuario']}\nAssistente: {item['assistente']}" for item in memoria])
-    
-    print("Assistente: " + resposta + "\n")
+    # Exibir resposta
+    st.markdown(f"**Assistente:** {resposta}")
+
+# Exibir histórico
+st.subheader("Histórico de Conversa")
+st.text_area("Histórico", value=st.session_state["historico"], height=300)
