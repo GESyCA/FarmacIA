@@ -80,6 +80,8 @@ if pergunta:
     
     Sua resposta deve iniciar com: "De acordo com a bula do medicamento..." e fornecer a resposta completa à pergunta.
     
+    Caso a pergunta não tenha nenhuma relação com a bula ou o medicamento, responda de forma educada que não pode fornecer informações sobre o assunto.
+    
     Converse de maneira natural e mantenha o contexto das interações anteriores. Aqui estão as conversas anteriores:
 
     {historico}
@@ -130,7 +132,7 @@ if pergunta:
     Pergunta:
     {pergunta}
     
-    Resposta: 
+    Resposta:
     """
     rag_prompt = ChatPromptTemplate.from_template(RAG_TEMPLATE)
     # Cadeia de Operações que processa a entrada e gera uma resposta
