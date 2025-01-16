@@ -50,7 +50,7 @@ if nome_remedio:
             resultado = buscar_remedio(nome_remedio, 1)
             if resultado and resultado['status'] != 'not_found':
                 pdf_buffer = resultado['pdf']['data']
-                salvar_pdf(pdf_buffer, caminho_arquivo)
+                salvar_pdf(pdf_buffer, f'bula_{nome_remedio.lower()}.pdf')
                 vectorstore, _ = processar_bula(caminho_arquivo, nome_remedio)
                 st.success("Bula processada e adicionada ao banco!")
             else:
