@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool _isObscured = true; // Controls whether the text is hidden
+class _RegisterPageState extends State<RegisterPage> {
+  bool _isObscuredPassword = true; // Controls whether the text is hidden
+  bool _isObscuredConfirm = true;
+
+  void _togglePassword() {
+    setState(() {
+      _isObscuredPassword = !_isObscuredPassword;
+    });
+  }
+
+  void _toggleConfirm() {
+    setState(() {
+      _isObscuredConfirm = !_isObscuredConfirm;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +39,11 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      height: 80,
-                    ),
-                    const Text("Bem vindo ao aplicativo",
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFB9160C))),
-                    const SizedBox(
-                      height: 10,
+                      height: 60,
                     ),
                     Image.asset(
                       "assets/Label.png",
                       height: 80,
-                    ),
-                    SizedBox(
-                      height: 10,
                     ),
                   ],
                 ),
@@ -60,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Login",
+                      "Cadastro",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -70,25 +72,30 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 16,
                     ),
-                    emailInput(),
+                    emailInput("Nome"),
                     SizedBox(
                       height: 24,
                     ),
-                    senhaInput(),
+                    emailInput("Email"),
                     SizedBox(
-                      height: 12,
+                      height: 24,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          "Esqueceu a senha?",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                    emailInput("Telefone"),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    senhaInput(
+                      _isObscuredPassword,
+                      "Senha",
+                      _togglePassword,
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    senhaInput(
+                      _isObscuredConfirm,
+                      "Confirmar Senha",
+                      _toggleConfirm,
                     ),
                     SizedBox(
                       height: 24,
@@ -102,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                             backgroundColor: Color(0xFF2656E6),
                             padding: EdgeInsets.symmetric(
                               vertical: 12,
-                              horizontal: 64,
+                              horizontal: 48,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),
@@ -110,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                             elevation: 4,
                           ),
                           child: Text(
-                            "Entrar",
+                            "Registrar",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -121,38 +128,15 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     SizedBox(
-                      height: 28,
-                    ),
-                    Center(
-                      child: Text(
-                        "Ou Acesse pelo",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _otherOptions("assets/Google.png"),
-                        _otherOptions("assets/Facebook.png"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
+                      height: 8,
                     ),
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, "/register");
+                            Navigator.of(context).pop();
                           },
                           child: Text(
-                            "Cadastre-se",
+                            "Já tem uma conta? Login",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -170,30 +154,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container _otherOptions(String iconName) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.white, // Background color for the square
-        borderRadius: BorderRadius.circular(12), // Rounded corners
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Shadow color
-            blurRadius: 6, // Shadow blur
-            offset: Offset(0, 3), // Shadow position
-          ),
-        ],
-      ),
-      child: IconButton(
-        onPressed: () {},
-        icon: Image.asset(iconName), // Replace with your Google icon
-        iconSize: 30, // Adjust icon size to fit nicely
-      ),
-    );
-  }
-
-  Container emailInput() {
+  Container emailInput(String placeholder) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // Background color of the TextField
@@ -210,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: TextField(
         decoration: InputDecoration(
-          labelText: "Email ou número de telefone",
+          labelText: placeholder,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
@@ -218,7 +179,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container senhaInput() {
+  Container senhaInput(
+      bool isObscured, String placeholder, VoidCallback onToggle) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -233,20 +195,16 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
       child: TextField(
-        obscureText: _isObscured, // Hides or shows the password
+        obscureText: isObscured, // Hides or shows the password
         decoration: InputDecoration(
-          labelText: "Senha",
+          labelText: placeholder,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           suffixIcon: IconButton(
             icon: Icon(
-              _isObscured ? Icons.visibility_off : Icons.visibility,
+              isObscured ? Icons.visibility_off : Icons.visibility,
             ),
-            onPressed: () {
-              setState(() {
-                _isObscured = !_isObscured; // Toggles password visibility
-              });
-            },
+            onPressed: onToggle,
           ),
         ),
       ),
