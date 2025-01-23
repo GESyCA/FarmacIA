@@ -49,7 +49,7 @@ if nome_remedio:
             if resultado and resultado['status'] != 'not_found':
                 pdf_buffer = resultado['pdf']['data']
                 salvar_pdf(pdf_buffer, f'bula_{nome_remedio.lower()}.pdf')
-                vectorstore, _ = processar_bula(caminho_arquivo, nome_remedio)
+                vectorstore = processar_bula(caminho_arquivo, nome_remedio)
                 st.success("Bula processada e adicionada ao banco!")
             else:
                 st.error("Bula do remédio não encontrada na ANVISA.")
