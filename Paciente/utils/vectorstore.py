@@ -9,8 +9,8 @@ vectorstore = Chroma(collection_name="bulas", client=chroma_client, embedding_fu
 
 # Verifica se a bula de um medicamento já está armazenada localmente
 def bula_exists(nome_remedio):
-    documentos_existentes = vectorstore.similarity_search("IDENTIFICAÇÃO DO MEDICAMENTO", k=10)
-    return any(doc.metadata.get("medicamento") == nome_remedio.lower() for doc in documentos_existentes)
+    documentos_existentes = vectorstore.similarity_search(query="", filter={"medicamento": nome_remedio.lower()})
+    return (documentos_existentes != [])
 
 # Busca por similaridade na bula específica
 def search_bula(nome_remedio, query):

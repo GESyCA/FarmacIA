@@ -70,7 +70,7 @@ def processar_bula(pdf_path, nome_remedio):
     
     print("Bula processada com sucesso!")
     
-    return vectorstore, sectioned_docs
+    return vectorstore
 
 # Converte os documentos em texto formatado
 def format_docs(docs):
