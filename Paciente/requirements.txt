@@ -1,0 +1,8 @@
+flask
+langchain_ollama
+langchain_core
+langchain_chroma
+langchain_huggingface
+chromadb
+sentence-transformers
+python-dotenv
