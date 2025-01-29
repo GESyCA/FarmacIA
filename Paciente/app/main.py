@@ -1,5 +1,5 @@
 from flask import Flask
-from app.routes import bula_routes
+from routes import bula_routes
 
 def create_app():
     app = Flask(__name__)

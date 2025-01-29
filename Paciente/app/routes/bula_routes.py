@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.services.bula_service import buscar_bula, perguntar_sobre_bula
+from services.bula_service import buscar_bula, perguntar_sobre_bula
 
 bp = Blueprint('bula', __name__)
 

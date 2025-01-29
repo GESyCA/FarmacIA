@@ -1,7 +1,7 @@
-from app.utils.bulario import buscar_remedio, salvar_pdf
-from app.utils.process import processar_bula
-from app.utils.vectorstore import bula_exists
-from app.utils.topics_classification import topic_classify
+from utils.bulario import buscar_remedio, salvar_pdf
+from utils.process import processar_bula
+from utils.vectorstore import bula_exists
+from utils.topics_classification import topic_classify
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
