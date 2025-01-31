@@ -1,5 +1,6 @@
 import subprocess
 import json, os
+import requests
 
 # Verifica se o arquivo existe
 def verificar_arquivo(caminho_arquivo):
@@ -7,7 +8,24 @@ def verificar_arquivo(caminho_arquivo):
         return True
     else:
         return False
-    
+
+# Busca o remédio no servidor
+def buscar_server(nome, pagina=1):
+    try:
+        remedio = requests.get(f'http://localhost:3000/buscar/{nome}')
+        return remedio.json()
+    except Exception as e:
+        print(f"Erro ao buscar o remédio: {e}")
+        return None
+
+def pdf_server(id):
+    try:
+        pdf = requests.get(f'http://localhost:3000/bula/{id}')
+        return pdf.content
+    except Exception as e:
+        print(f"Erro ao buscar o PDF: {e}")
+        return None
+"""
 def buscar_remedio(nome, pagina=1):
     try:
         # Executa o script JavaScript passando o nome do remédio e a página como argumentos
@@ -44,3 +62,4 @@ def salvar_pdf(buffer_data, filename):
     
     except Exception as e:
         print(f"Erro ao salvar o PDF: {e}")
+"""
