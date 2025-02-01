@@ -97,7 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/chat");
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF2656E6),
                             padding: EdgeInsets.symmetric(
