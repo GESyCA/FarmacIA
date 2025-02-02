@@ -27,7 +27,6 @@ def assign_metadata(texts, section_titles):
     
 # Carregar a bula em PDF e dividir o texto
 def processar_bula(pdf_path, nome_remedio):
-    print(f"Bula encontrada! Processando...")
     loader = PyPDFLoader(pdf_path)
     documents = loader.load()
 

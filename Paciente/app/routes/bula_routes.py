@@ -1,17 +1,7 @@
 from flask import Blueprint, request, jsonify
-from services.bula_service import buscar_bula, perguntar_sobre_bula
+from services.bula_service import perguntar_sobre_bula
 
 bp = Blueprint('bula', __name__)
-
-@bp.route('/buscar_bula', methods=['POST'])
-def buscar_bula_route():
-    data = request.json
-    nome_remedio = data.get('nome_remedio')
-    if not nome_remedio:
-        return jsonify({"error": "Nome do remédio é obrigatório"}), 400
-    
-    resultado = buscar_bula(nome_remedio)
-    return jsonify(resultado)
 
 @bp.route('/perguntar', methods=['POST'])
 def perguntar_sobre_bula_route():

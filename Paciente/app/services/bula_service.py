@@ -1,11 +1,10 @@
-from utils.bulario import buscar_remedio, salvar_pdf
 from utils.process import processar_bula
 from utils.vectorstore import bula_exists
 from utils.topics_classification import topic_classify
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-import chromadb
+import chromadb, os
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 
@@ -18,24 +17,20 @@ llm = ChatOllama(
     temperature=0,
 )
 
-def buscar_bula(nome_remedio):
-    caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
+def perguntar_sobre_bula(nome_remedio, pergunta):
+    
+    # Obtém o diretório onde o script atual está localizado
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    # Caminho absoluto da pasta 'bulas_pdf'
+    BULAS_PDF_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "bulas_pdf"))
+
+    caminho_arquivo = os.path.join(BULAS_PDF_DIR, f"bula_{nome_remedio.lower()}.pdf")
+
     bula_existe = bula_exists(nome_remedio)
 
-    if bula_existe:
-        return {"status": "exists", "message": f"A bula de '{nome_remedio}' já está armazenada localmente."}
-    else:
-        resultado = buscar_remedio(nome_remedio, 1)
-        if resultado and resultado['status'] != 'not_found':
-            pdf_buffer = resultado['pdf']['data']
-            salvar_pdf(pdf_buffer, f'bula_{nome_remedio.lower()}.pdf')
-            processar_bula(caminho_arquivo, nome_remedio)
-            return {"status": "success", "message": "Bula processada e adicionada ao banco!"}
-        else:
-            return {"status": "error", "message": "Bula do remédio não encontrada na ANVISA."}
-
-def perguntar_sobre_bula(nome_remedio, pergunta):
-    caminho_arquivo = f"bulas_pdf/bula_{nome_remedio.lower()}.pdf"
+    if not (bula_existe):
+        processar_bula(caminho_arquivo, nome_remedio)
     
     topic_llm = topic_classify(llm, pergunta)
     context_list = []
