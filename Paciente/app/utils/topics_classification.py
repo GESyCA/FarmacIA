@@ -1,4 +1,4 @@
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 import re
 
@@ -18,15 +18,12 @@ def topic_classify(llm, query):
         "O QUE FAZER SE ALGUÉM USAR UMA QUANTIDADE MAIOR DO QUE A INDICADA DESTE MEDICAMENTO?": "Orientações sobre overdose, incluindo sintomas e o que fazer em caso de uso excessivo.",
     }
 
-    # Template do prompt
-    template = """
-    Você é um assistente farmacêutico especializado em medicamentos. Abaixo estão os tópicos possíveis de uma bula de remédio, com suas respectivas descrições:
+    SYSTEM_PROMPT = """
+    Você é um assistente farmacêutico especializado em medicamentos. Você vai receber do usuário, os tópicos possíveis de uma bula de remédio, com suas respectivas descrições.
 
-    {topics}
-
-    Sua tarefa é identificar três dos tópicos (da lista acima) mais relevantes para a frase fornecida.
+    Sua tarefa é identificar três dos tópicos mais relevantes para a frase fornecida.
     
-    Caso não encontre um tópico adequado, escolha o tópico que mais se aproxima do contexto da frase. Se a pergunta estiver fora do contexto de um Assistente farmacêutico, informe que sua resposta não está disponível. 
+    Caso não encontre os tópicos adequados, escolha os tópicos que mais se aproximam do contexto da frase. Se a pergunta estiver fora do contexto de um Assistente farmacêutico, informe que sua resposta não está disponível. 
     
     Passo a passo (não precisa escrever os passos):
     1. Leia a frase fornecida.
@@ -42,18 +39,24 @@ def topic_classify(llm, query):
 
     Frase: "Para que serve este remédio?"
     Tópicos mais relevantes: "PARA QUE ESTE MEDICAMENTO É INDICADO?"
-
-    Agora, classifique a frase fornecida:
+    """
+    # Template do prompt
+    PROMPT_TEMPLATE = """
+    Classifique a frase fornecida com base nos tópicos listados abaixo.
+    
+    Tópicos: {topics}
 
     Frase: "{question}"
+    
     Tópicos mais relevantes:
     """
-
-    prompt = PromptTemplate(
-        input_variables=["topics", "question"],
-        template=template
-    )
-
+    
+    # Criando o prompt
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", SYSTEM_PROMPT),
+        ("human", PROMPT_TEMPLATE)
+    ])
+    
     # Função para identificar o tópico
     def identify_topic_with_model(question: str) -> str:
         # Formatando os tópicos e suas descrições como uma string
