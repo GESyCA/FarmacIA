@@ -1,1 +1,0 @@
- C:\\Joas\\Joas\\UFERSA\\CC\\IC\\FarmacIA\\Paciente\\app\\.dart_tool\\flutter_build\\24baf2ca576317756c54597676cd5a49\\native_assets.yaml: 
