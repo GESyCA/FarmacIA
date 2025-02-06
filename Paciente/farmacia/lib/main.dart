@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
-import 'register_page.dart';
-import 'chat_page.dart';
+import 'app/ui/pages/login_page.dart';
+import 'app/ui/pages/register_page.dart';
+import 'app/ui/pages/chat_page.dart';
 
 void main() {
   runApp(const MyApp());
