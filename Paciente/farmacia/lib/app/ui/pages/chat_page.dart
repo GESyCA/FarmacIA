@@ -1,3 +1,6 @@
+import 'package:farmacia/app/data/http/http_client.dart';
+import 'package:farmacia/app/data/models/question_model.dart';
+import 'package:farmacia/app/data/repositories/chat_repository.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -12,6 +15,12 @@ class _ChatPageState extends State<ChatPage> {
   final List<Widget> _messages = [];
   bool _showPrompts = true;
   int _selectedIndex = 1;
+
+  final ChatRepository _chatRepository = ChatRepository(
+    httpClient: HttpClient(
+      baseUrl: "https://127.0.0.1:5050",
+    ),
+  );
 
   void _onItemTapped(int index) {
     setState(() {
@@ -97,18 +106,29 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  void _handleSubmitted(String text) {
-    if (!text.isEmpty) {
-      _textController.clear();
+  Future<void> _handleSubmitted(String text) async {
+    if (text.isEmpty) return;
+
+    _textController.clear();
     setState(() {
-      // Add user message
       _messages.insert(0, _buildUserMessage(text));
-      // Simulate LLM response
-      _messages.insert(0, _buildLLMResponse());
-      // Hide prompts after a message is sent
       _showPrompts = false;
     });
-    }
+
+    // Add "Thinking..." message to the chat
+    final int loadingIndex = 0;
+    setState(() {
+      _messages.insert(loadingIndex, _buildLoadingMessage());
+    });
+
+    // Call API to get bot response
+    final answer = await _chatRepository.sendMessage(QuestionModel(nomeRemedio: "Paracetamol",pergunta: text,));
+
+    // Replace the loading message with the actual response
+    setState(() {
+      _messages.removeAt(loadingIndex); // Remove "Thinking..." message
+      _messages.insert(loadingIndex, _buildLLMResponse(answer.resposta));
+    });
   }
 
   void _sendPrompt(String prompt) {
@@ -127,7 +147,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 14.0 , color: Colors.white),
+          style: TextStyle(fontSize: 14.0, color: Colors.white),
         ),
       ),
     );
@@ -290,7 +310,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildLLMResponse() {
+  Widget _buildLLMResponse(String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,
@@ -313,7 +333,7 @@ class _ChatPageState extends State<ChatPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Resposta do LLM: Zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+                    text,
                     style: TextStyle(fontSize: 14.0),
                   ),
                 ],
@@ -323,5 +343,59 @@ class _ChatPageState extends State<ChatPage> {
         ],
       ),
     );
+  }
+  
+  Widget _buildLoadingMessage() {
+    return Container(
+    margin: EdgeInsets.symmetric(vertical: 4.0),
+    alignment: Alignment.centerLeft,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          backgroundColor: Color(0xFFB9160C),
+          child: Icon(Icons.person, color: Colors.white),
+        ),
+        SizedBox(width: 8.0),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Row(
+              children: [
+                _buildTypingIndicator(), // Animation for typing effect
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  }
+  
+  _buildTypingIndicator() {
+    return SizedBox(
+    height: 10,
+    width: 24,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(3, (index) {
+        return AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          height: 6,
+          width: 6,
+          margin: EdgeInsets.symmetric(horizontal: 1),
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            shape: BoxShape.circle,
+          ),
+        );
+      }),
+    ),
+  );
   }
 }
