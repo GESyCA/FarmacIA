@@ -18,7 +18,7 @@ class _ChatPageState extends State<ChatPage> {
 
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
-      baseUrl: "https://127.0.0.1:5050",
+      baseUrl: "http://172.18.208.1:5000",
     ),
   );
 
