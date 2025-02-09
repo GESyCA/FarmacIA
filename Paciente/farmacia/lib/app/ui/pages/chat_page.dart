@@ -12,7 +12,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
-  final List<Widget> _messages = [];
+  final ValueNotifier<List<Widget>> _messagesNotifier = ValueNotifier([]);
   bool _showPrompts = true;
   int _selectedIndex = 1;
 
@@ -57,13 +57,18 @@ class _ChatPageState extends State<ChatPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: ListView(
-                  reverse: true, // Keeps the latest message at the bottom
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  children: [
-                    ..._messages, // Displays messages dynamically
-                    _LLMFirstMessage(),
-                  ],
+                child: ValueListenableBuilder<List<Widget>>(
+                  valueListenable: _messagesNotifier,
+                  builder: (context, messages, child) {
+                    return ListView(
+                      reverse: true, // Keeps latest messages at the bottom
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      children: [
+                        ...messages, // Dynamically updates messages
+                        _LLMFirstMessage(),
+                      ],
+                    );
+                  },
                 ),
               ),
               Column(
@@ -111,24 +116,31 @@ class _ChatPageState extends State<ChatPage> {
 
     _textController.clear();
     setState(() {
-      _messages.insert(0, _buildUserMessage(text));
       _showPrompts = false;
     });
 
-    // Add "Thinking..." message to the chat
-    final int loadingIndex = 0;
-    setState(() {
-      _messages.insert(loadingIndex, _buildLoadingMessage());
-    });
+    // Get current messages and add user message
+    List<Widget> currentMessages = List.from(_messagesNotifier.value);
+    currentMessages.insert(0, _buildUserMessage(text));
 
-    // Call API to get bot response
-    final answer = await _chatRepository.sendMessage(QuestionModel(nomeRemedio: "Paracetamol",pergunta: text,));
+    // Add "Thinking..." message
+    final loadingMessage = _buildLoadingMessage();
+    currentMessages.insert(0, loadingMessage);
+    _messagesNotifier.value = currentMessages;
 
-    // Replace the loading message with the actual response
-    setState(() {
-      _messages.removeAt(loadingIndex); // Remove "Thinking..." message
-      _messages.insert(loadingIndex, _buildLLMResponse(answer.resposta));
-    });
+    // Fetch API response
+    final answer = await _chatRepository.sendMessage(QuestionModel(
+      nomeRemedio: "Paracetamol",
+      pergunta: text,
+    ));
+
+    // Replace loading message with actual response
+    currentMessages = List.from(_messagesNotifier.value);
+    currentMessages.remove(loadingMessage); // Remove the loading state
+    currentMessages.insert(0, _buildLLMResponse(answer.resposta));
+
+    // Update messages
+    _messagesNotifier.value = currentMessages;
   }
 
   void _sendPrompt(String prompt) {
@@ -344,58 +356,58 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-  
+
   Widget _buildLoadingMessage() {
     return Container(
-    margin: EdgeInsets.symmetric(vertical: 4.0),
-    alignment: Alignment.centerLeft,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          backgroundColor: Color(0xFFB9160C),
-          child: Icon(Icons.person, color: Colors.white),
-        ),
-        SizedBox(width: 8.0),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Row(
-              children: [
-                _buildTypingIndicator(), // Animation for typing effect
-              ],
+      margin: EdgeInsets.symmetric(vertical: 4.0),
+      alignment: Alignment.centerLeft,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: Color(0xFFB9160C),
+            child: Icon(Icons.person, color: Colors.white),
+          ),
+          SizedBox(width: 8.0),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Row(
+                children: [
+                  _buildTypingIndicator(), // Animation for typing effect
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
   }
-  
+
   _buildTypingIndicator() {
     return SizedBox(
-    height: 10,
-    width: 24,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(3, (index) {
-        return AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          height: 6,
-          width: 6,
-          margin: EdgeInsets.symmetric(horizontal: 1),
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            shape: BoxShape.circle,
-          ),
-        );
-      }),
-    ),
-  );
+      height: 10,
+      width: 24,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(3, (index) {
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            height: 6,
+            width: 6,
+            margin: EdgeInsets.symmetric(horizontal: 1),
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              shape: BoxShape.circle,
+            ),
+          );
+        }),
+      ),
+    );
   }
 }
