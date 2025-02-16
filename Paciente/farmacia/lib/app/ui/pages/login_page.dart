@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, "/chat");
+                            Navigator.pushReplacementNamed(context, "/navigation");
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF2656E6),
