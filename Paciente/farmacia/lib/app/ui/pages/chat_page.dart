@@ -14,19 +14,12 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textController = TextEditingController();
   final ValueNotifier<List<Widget>> _messagesNotifier = ValueNotifier([]);
   bool _showPrompts = true;
-  int _selectedIndex = 1;
 
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
       baseUrl: "http://172.18.208.1:5000",
     ),
   );
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,68 +38,44 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        return Container(
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
-          padding: EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ValueListenableBuilder<List<Widget>>(
-                  valueListenable: _messagesNotifier,
-                  builder: (context, messages, child) {
-                    return ListView(
-                      reverse: true, // Keeps latest messages at the bottom
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      children: [
-                        ...messages, // Dynamically updates messages
-                        _LLMFirstMessage(),
-                      ],
-                    );
-                  },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ValueListenableBuilder<List<Widget>>(
+                    valueListenable: _messagesNotifier,
+                    builder: (context, messages, child) {
+                      return ListView(
+                        reverse: true, // Keeps latest messages at the bottom
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        children: [
+                          ...messages, // Dynamically updates messages
+                          _LLMFirstMessage(),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Column(
-                children: [
-                  if (_showPrompts) _buildPromptButtons(),
-                  SizedBox(height: 12.0),
-                  _buildInputField(),
-                ],
-              )
-            ],
-          ),
-        );
-      }),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_pharmacy),
-            label: 'Medicamentos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Perfil',
-          ),
-        ],
+                Column(
+                  children: [
+                    if (_showPrompts) _buildPromptButtons(),
+                    SizedBox(height: 12.0),
+                    _buildInputField(),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
