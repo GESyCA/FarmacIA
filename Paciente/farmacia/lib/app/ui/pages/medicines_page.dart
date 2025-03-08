@@ -52,60 +52,111 @@ class _MedicinesPageState extends State<MedicinesPage> {
             ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 20,
-                ),
+                padding: EdgeInsets.zero,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: ListView.builder(
-                  itemCount: _medicines.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      color: Colors.white,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
-                        leading: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFB9160C),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              "assets/Edit.png",
-                              width: 24,
-                              height: 24,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${_medicines.length} medicamentos",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
                           ),
-                        ),
-                        title: Text(
-                          _medicines[index].name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                //Navigator.pushNamed(context, '/add_medicine');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(12),
+                                ),
+                                backgroundColor:
+                                    Color(0xFFB9160C),
+                                padding: EdgeInsets.all(10),
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 30, // Icon size
+                              ),
+                            ),
                           ),
-                        ),
-                        subtitle:
-                            Text("Próximo: ${_medicines[index].nextDate}"),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _medicines.removeAt(index);
-                            });
-                          },
-                        ),
+                        ],
                       ),
-                    );
-                  },
+                    ),
+                    Divider(
+                      color: Colors.grey[300],
+                      thickness: 1,
+                    ),
+                    ListView.builder(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      shrinkWrap: true,
+                      itemCount: _medicines.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          color: Colors.white,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                            ),
+                            leading: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFB9160C),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  "assets/Edit.png",
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              _medicines[index].name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle:
+                                Text("Próximo: ${_medicines[index].nextDate}"),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _medicines.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
