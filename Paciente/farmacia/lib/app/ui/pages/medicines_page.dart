@@ -37,7 +37,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.grey[200],
         ),
@@ -51,32 +51,62 @@ class _MedicinesPageState extends State<MedicinesPage> {
               height: 16,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: _medicines.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.edit,
-                        color: Colors.red,
-                      ),
-                      title: Text(_medicines[index].name),
-                      subtitle: Text(_medicines[index].nextDate),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListView.builder(
+                  itemCount: _medicines.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      color: Colors.white,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _medicines.removeAt(index);
-                          });
-                        },
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFB9160C),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/Edit.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          _medicines[index].name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle:
+                            Text("Próximo: ${_medicines[index].nextDate}"),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _medicines.removeAt(index);
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
