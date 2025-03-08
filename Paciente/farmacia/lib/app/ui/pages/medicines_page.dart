@@ -50,7 +50,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
             SizedBox(
               height: 16,
             ),
-            Expanded(
+            Flexible(
               child: Container(
                 padding: EdgeInsets.zero,
                 decoration: BoxDecoration(
@@ -60,9 +60,11 @@ class _MedicinesPageState extends State<MedicinesPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        left: 20,
+                        right: 20,
+                        bottom: 2,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,7 +96,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
                               child: Icon(
                                 Icons.add,
                                 color: Colors.white,
-                                size: 30, // Icon size
+                                size: 30, 
                               ),
                             ),
                           ),
@@ -105,56 +107,58 @@ class _MedicinesPageState extends State<MedicinesPage> {
                       color: Colors.grey[300],
                       thickness: 1,
                     ),
-                    ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      shrinkWrap: true,
-                      itemCount: _medicines.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: Colors.white,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                            ),
-                            leading: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFB9160C),
-                                borderRadius: BorderRadius.circular(8),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        itemCount: _medicines.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            color: Colors.white,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
                               ),
-                              child: Center(
-                                child: Image.asset(
-                                  "assets/Edit.png",
-                                  width: 24,
-                                  height: 24,
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFB9160C),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/Edit.png",
+                                    width: 24,
+                                    height: 24,
+                                  ),
                                 ),
                               ),
-                            ),
-                            title: Text(
-                              _medicines[index].name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                              title: Text(
+                                _medicines[index].name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle:
+                                  Text("Próximo: ${_medicines[index].nextDate}"),
+                              trailing: IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _medicines.removeAt(index);
+                                  });
+                                },
                               ),
                             ),
-                            subtitle:
-                                Text("Próximo: ${_medicines[index].nextDate}"),
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _medicines.removeAt(index);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
