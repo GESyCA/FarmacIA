@@ -9,6 +9,7 @@ class MedicinesPage extends StatefulWidget {
 }
 
 class _MedicinesPageState extends State<MedicinesPage> {
+  final TextEditingController _searchController = TextEditingController();
   final List<Medicine> _medicines = [
     Medicine(id: 1, name: "Paracetamol", nextDate: "10/10/2025 07:00"),
     Medicine(id: 2, name: "Ibuprofeno", nextDate: "10/10/2025 07:00"),
@@ -16,6 +17,23 @@ class _MedicinesPageState extends State<MedicinesPage> {
     Medicine(id: 4, name: "Amoxilinina", nextDate: "10/10/2025 07:00"),
     Medicine(id: 5, name: "Dipirona", nextDate: "10/10/2025 07:00"),
   ];
+
+  var searchedItems = <Medicine>[];
+
+  @override
+  void initState() {
+    searchedItems = _medicines;
+    super.initState();
+  }
+
+  void filterSearchResults(String query) {
+    setState(() {
+      searchedItems = _medicines
+          .where((medicine) =>
+              medicine.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +89,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "${_medicines.length} medicamentos",
+                            "${searchedItems.length} medicamentos",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -86,17 +104,15 @@ class _MedicinesPageState extends State<MedicinesPage> {
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                backgroundColor:
-                                    Color(0xFFB9160C),
+                                backgroundColor: Color(0xFFB9160C),
                                 padding: EdgeInsets.all(10),
                               ),
                               child: Icon(
                                 Icons.add,
                                 color: Colors.white,
-                                size: 30, 
+                                size: 30,
                               ),
                             ),
                           ),
@@ -113,7 +129,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
                           horizontal: 12,
                           vertical: 8,
                         ),
-                        itemCount: _medicines.length,
+                        itemCount: searchedItems.length,
                         itemBuilder: (context, index) {
                           return Card(
                             color: Colors.white,
@@ -137,13 +153,13 @@ class _MedicinesPageState extends State<MedicinesPage> {
                                 ),
                               ),
                               title: Text(
-                                _medicines[index].name,
+                                searchedItems[index].name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              subtitle:
-                                  Text("Próximo: ${_medicines[index].nextDate}"),
+                              subtitle: Text(
+                                  "Próximo: ${searchedItems[index].nextDate}"),
                               trailing: IconButton(
                                 icon: const Icon(
                                   Icons.delete,
@@ -151,7 +167,13 @@ class _MedicinesPageState extends State<MedicinesPage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    _medicines.removeAt(index);
+                                    // Find the actual medicine to remove
+                                    Medicine medicineToRemove =
+                                        searchedItems[index];
+                                    _medicines.removeWhere((medicine) =>
+                                        medicine.id == medicineToRemove.id);
+                                    // Reapply the filter to update searchedItems
+                                    filterSearchResults(_searchController.text);
                                   });
                                 },
                               ),
@@ -172,9 +194,18 @@ class _MedicinesPageState extends State<MedicinesPage> {
 
   TextField _searchBar() {
     return TextField(
+      controller: _searchController,
+      onChanged: (value) {
+        filterSearchResults(value);
+      },
       decoration: InputDecoration(
         hintText: "Buscar por medicamento",
-        prefixIcon: Icon(Icons.search),
+        prefixIcon: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Icon(Icons.search),
+        ),
         suffixIcon: Icon(Icons.mic),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
