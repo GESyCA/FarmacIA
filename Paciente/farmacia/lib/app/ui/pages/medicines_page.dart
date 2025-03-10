@@ -1,5 +1,6 @@
 import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:flutter/material.dart';
+import 'package:farmacia/app/ui/modal/delete_dialog.dart';
 
 class MedicinesPage extends StatefulWidget {
   const MedicinesPage({super.key});
@@ -33,6 +34,23 @@ class _MedicinesPageState extends State<MedicinesPage> {
               medicine.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
+  }
+
+  void _showDeleteDialog(Medicine medicine) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DeleteDialog(
+          medicineName: medicine.name,
+          onDelete: () {
+            setState(() {
+              _medicines.removeWhere((element) => element.id == medicine.id);
+              filterSearchResults(_searchController.text);
+            });
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -166,15 +184,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
                                   color: Colors.red,
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    // Find the actual medicine to remove
-                                    Medicine medicineToRemove =
-                                        searchedItems[index];
-                                    _medicines.removeWhere((medicine) =>
-                                        medicine.id == medicineToRemove.id);
-                                    // Reapply the filter to update searchedItems
-                                    filterSearchResults(_searchController.text);
-                                  });
+                                  _showDeleteDialog(searchedItems[index]);
                                 },
                               ),
                             ),
