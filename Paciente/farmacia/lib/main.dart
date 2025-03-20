@@ -1,4 +1,5 @@
 import 'package:farmacia/app/ui/navigation_menu.dart';
+import 'package:farmacia/app/ui/pages/add_medicine_page.dart';
 import 'package:farmacia/app/ui/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'app/ui/pages/login_page.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/chat': (BuildContext context) => ChatPage(),
         '/home': (BuildContext context) => HomePage(),
         '/navigation': (BuildContext context) => NavigationMenu(),
+        '/add_medicine': (BuildContext context) => AddMedicinePage(),
       },
     );
   }
