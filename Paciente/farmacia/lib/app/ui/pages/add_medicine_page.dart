@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddMedicinePage extends StatefulWidget {
   const AddMedicinePage({super.key});
@@ -14,6 +15,10 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
   String dose = "500 mg";
   String? selectedForm = "Comprimido";
   DateTime? selectedDate;
+
+  final _dateController = TextEditingController();
+  final _endDateController = TextEditingController();
+  bool _indeterminate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +64,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Medicamento",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    _title("Medicamento"),
                     SizedBox(
                       height: 8,
                     ),
@@ -77,13 +76,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Receber notificações",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        _title("Receber notificações"),
                         Switch(
                           value: receiveNotifications,
                           activeColor: Colors.red,
@@ -103,13 +96,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                     SizedBox(
                       height: 32,
                     ),
-                    Text(
-                      "Horários de lembrete",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    _title("Horários de lembrete"),
                     SizedBox(
                       height: 8,
                     ),
@@ -123,10 +110,153 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         time: "23:00", description: "Tomar 1 comprimido"),
                   ],
                 ),
-              )
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _title("Dose"),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    _inputField(),
+                    SizedBox(
+                      height: 32,
+                    ),
+                    _title("Forma farmacêutica"),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    _dropDown("Comprimido", ["Comprimido", "Gotas", "Pomada"]),
+                    SizedBox(
+                      height: 32,
+                    ),
+                    _title("Duração do tratamento"),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _inputDate(context, "Date", _dateController),
+                        SizedBox(width: 10),
+                        _inputDate(context, "End Date", _endDateController),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    CheckboxListTile(
+                      title: Text("Tempo indeterminado"),
+                      value: _indeterminate,
+                      activeColor: Colors.red,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _indeterminate = value ?? false;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded _inputDate(
+      BuildContext context, String label, TextEditingController controller) {
+    return Expanded(
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: "MM/DD/YYYY",
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.red),
+          ),
+        ),
+        readOnly: true,
+        onTap: () => _selectDate(context, controller),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('MM/dd/yyyy').format(pickedDate);
+      setState(() {
+        controller.text = formattedDate;
+      });
+    }
+  }
+
+  TextField _inputField() {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: "500 mg",
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+      ),
+      onChanged: (value) {
+        setState(() {
+          dose = value;
+        });
+      },
+    );
+  }
+
+  Text _title(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -142,12 +272,11 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
           .map((med) => DropdownMenuItem(
                 value: med,
                 child: Text(med,
-                    style: TextStyle(fontSize: 16, color: Colors.black87)),
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600])),
               ))
           .toList(),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey),
@@ -174,10 +303,10 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          
           children: [
             Text(
               time,
