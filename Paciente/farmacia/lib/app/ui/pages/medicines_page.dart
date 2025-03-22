@@ -118,7 +118,7 @@ class _MedicinesPageState extends State<MedicinesPage> {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                //Navigator.pushNamed(context, '/add_medicine');
+                                Navigator.pushNamed(context, '/add_medicine');
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
