@@ -1,3 +1,5 @@
+import 'package:farmacia/app/ui/widgets/achivements.dart';
+import 'package:farmacia/app/ui/widgets/statistics.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -59,25 +61,15 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               _profileCard(),
               const SizedBox(
-                height: 42,
+                height: 32,
               ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
                   onPageChanged: _onPageChanged,
                   children: <Widget>[
-                    Container(
-                      color: Colors.white,
-                      child: Center(
-                        child: Text("Estatísticas"),
-                      ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: Center(
-                        child: Text("Conquistas"),
-                      ),
-                    ),
+                    Statistics(),
+                    Achivements(),
                   ],
                 ),
               ),
