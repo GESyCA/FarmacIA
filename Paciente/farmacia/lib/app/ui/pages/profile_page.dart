@@ -8,9 +8,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
   int _selectedIndex = 0;
-  final String _name = "Antonio Neto";
+  final String _name = "Antônio Neto";
 
   void _onPageChanged(int index) {
     setState(() {
@@ -53,13 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(
                 height: 30,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildTabButton("ESTATÍSTICAS", 0),
-                  _buildTabButton("CONQUISTAS", 1),
-                ],
-              ),
+              _showTabBar(),
               const SizedBox(
                 height: 20,
               ),
@@ -94,42 +88,99 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Padding _showTabBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: LayoutBuilder(builder: (context, constraints) {
+        double tabWidth = constraints.maxWidth / 2;
+        return Container(
+          height: 30,
+          decoration: BoxDecoration(
+            color: Colors.red[200],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Stack(
+            children: <Widget>[
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                top: 0,
+                left: _selectedIndex == 0 ? 0 : tabWidth,
+                right: _selectedIndex == 0 ? tabWidth : 0,
+                child: Container(
+                  // half of the width of the container
+                  width: tabWidth,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  _buildTabButton("ESTATÍSTICAS", 0),
+                  _buildTabButton("CONQUISTAS", 1),
+                ],
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
   Widget _buildTabButton(String title, int index) {
-    return GestureDetector(
-      onTap: () => _onTabTapped(index),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: _selectedIndex == index ? Colors.white : Colors.transparent,
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: _selectedIndex == index ? Colors.red : Colors.white,
-            fontWeight: FontWeight.bold,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _onTabTapped(index),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: _selectedIndex == index ? Colors.black : Colors.black54,
+            ),
           ),
         ),
       ),
     );
   }
 
-  _profileCard() {
+  Widget _profileCard() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Card(
-        child: ListTile(
-          title: Text(
-            _name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          leading: Icon(
-            Icons.account_circle,
-            color: Colors.red,
-            size: 50,
+        color: Colors.red[200],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 4,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              CircleAvatar(
+                radius: 32,
+                backgroundColor: Colors.white,
+                child:
+                    Icon(Icons.person_outline, size: 30, color: Colors.black),
+              ),
+              //const SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  _name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
