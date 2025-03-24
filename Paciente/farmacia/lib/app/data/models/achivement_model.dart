@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AchivementModel {
   final String title;
-  final Icon icon;
+  final IconData icon;
   final double progress; // Between 0-100
   final Color color;
   final Color progressColor;

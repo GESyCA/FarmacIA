@@ -7,29 +7,29 @@ class Achivements extends StatelessWidget {
   final List<AchivementModel> achivements = [
     AchivementModel(
       title: "Cuidado com os medicamentos",
-      icon: const Icon(Icons.health_and_safety),
+      icon: Icons.health_and_safety,
       progress: 75,
       color: Colors.blue[100]!,
       progressColor: Colors.blue,
     ),
     AchivementModel(
       title: "Foco e disciplina",
-      icon: const Icon(Icons.self_improvement),
+      icon: Icons.self_improvement,
       progress: 50,
       color: Colors.green[100]!,
       progressColor: Colors.green,
     ),
     AchivementModel(
       title: "Adesão aos medicamentos",
-      icon: const Icon(Icons.assignment_turned_in),
+      icon: Icons.assignment_turned_in,
       progress: 30,
       color: Colors.amber[100]!,
       progressColor: Colors.orange,
     ),
     AchivementModel(
       title: "Autocuidado",
-      icon: const Icon(Icons.person),
-      progress: 90, 
+      icon: Icons.person,
+      progress: 90,
       color: Colors.red[100]!,
       progressColor: Colors.red,
     ),
@@ -62,7 +62,7 @@ class Achivements extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 16,
+            height: 8,
           ),
           Expanded(
             child: ListView.builder(
@@ -78,53 +78,59 @@ class Achivements extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildAchivementCard(AchivementModel achivement) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: achivement.color,
-        borderRadius: BorderRadius.circular(12),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        children: <Widget>[
-          achivement.icon,
-          const SizedBox(
-            width: 16,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  achivement.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+      color: achivement.color,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            // Progress Circle
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    value: achivement.progress / 100,
+                    strokeWidth: 5,
+                    backgroundColor: achivement.progressColor.withOpacity(0.2),
+                    valueColor:
+                        AlwaysStoppedAnimation(achivement.progressColor),
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
-                LinearProgressIndicator(
-                  value: achivement.progress / 100,
-                  backgroundColor: achivement.color,
-                  valueColor: AlwaysStoppedAnimation<Color>(achivement.progressColor),
+                Icon(
+                  achivement.icon,
+                  color: achivement.progressColor.withOpacity(0.7),
+                  size: 24,
                 ),
               ],
             ),
-          ),
-          Text(
-            "${achivement.progress}%",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                achivement.title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ],
+
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.black38,
+            ),
+          ],
+        ),
       ),
     );
   }
-
 }
