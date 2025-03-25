@@ -17,7 +17,7 @@ class _ChatPageState extends State<ChatPage> {
 
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
-      baseUrl: "http://172.18.208.1:5000",
+      baseUrl: "https://55bb-187-19-156-72.ngrok-free.app",
     ),
   );
 

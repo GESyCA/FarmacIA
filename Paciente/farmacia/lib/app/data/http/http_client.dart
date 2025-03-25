@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 abstract class IHttpClient {
@@ -10,15 +12,21 @@ class HttpClient implements IHttpClient {
 
   HttpClient({required this.baseUrl});
 
+  @override
   Future<http.Response> get(String endpoint) async {
     final response = await http.get(Uri.parse('$baseUrl/$endpoint'));
     return response;
   }
 
+  @override
   Future<http.Response> post(String endpoint, {required Map<String, dynamic> body}) async {
     final response = await http.post(
       Uri.parse('$baseUrl/$endpoint'),
-      body: body,
+      headers: {
+        'Content-Type': 'application/json',  // Setting the Content-Type header to JSON
+        'Accept': 'application/json',         // Optional: Specify that you accept JSON responses
+      },
+      body: json.encode(body),
     );
     return response;
   }
