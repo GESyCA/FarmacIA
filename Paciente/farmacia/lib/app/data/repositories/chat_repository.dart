@@ -15,17 +15,19 @@ class ChatRepository {
           .post(
             '/perguntar',
             body: question.toJson(),
-          )
-          .timeout(const Duration(seconds: 5));
+          );
+          //.timeout(const Duration(seconds: 5));
       if (response.statusCode == 200) {
-        return Answer.fromJson(response.body as Map<String, dynamic>);
-      } else {
+        return Answer.fromRawJson(response.body);
+      } else if (response.statusCode == 415) {
         return Answer(resposta: 'Desculpe, não entendi a pergunta');
+      } else {
+        return Answer(resposta: 'Erro de conexão');
       }
     } on TimeoutException {
       return Answer(resposta: 'Desculpe, tempo foi exedido');
     } catch (e) {
-      return Answer(resposta: 'Desculpe, não entendi a pergunta');
+      return Answer(resposta: e.toString());
     }
   }
 }
