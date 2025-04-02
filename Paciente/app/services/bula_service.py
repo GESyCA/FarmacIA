@@ -14,8 +14,7 @@ vectorstore = Chroma(collection_name="bulas", client=chroma_client, embedding_fu
 
 llm = ChatOllama(
     model="llama3.2:3b",
-    temperature=0,
-    base_url="http://host.docker.internal:11434"
+    temperature=0
 )
 
 def perguntar_sobre_bula(nome_remedio, pergunta):

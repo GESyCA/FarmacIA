@@ -21,7 +21,7 @@ def topic_classify(llm, query):
     SYSTEM_PROMPT = """
     Você é um assistente farmacêutico especializado em medicamentos. Você vai receber do usuário, os tópicos possíveis de uma bula de remédio, com suas respectivas descrições.
 
-    Sua tarefa é identificar três dos tópicos mais relevantes para a frase fornecida.
+    Sua tarefa é identificar os tópicos mais relevantes para a frase fornecida, escolha quantos tópicos achar necessário.
     
     Caso não encontre os tópicos adequados, escolha os tópicos que mais se aproximam do contexto da frase. Se a pergunta estiver fora do contexto de um Assistente farmacêutico, informe que sua resposta não está disponível. 
     
