@@ -2,13 +2,32 @@ import 'package:farmacia/app/ui/widgets/rating_buttons.dart';
 import 'package:flutter/material.dart';
 
 class QuizCard extends StatefulWidget {
+  final String question;
+  final String imageAsset;
+  final int questionNumber;
+  final int totalQuestions;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
+  int selectedRating;
+  final ValueChanged<int> onChanged;
+
+  QuizCard({
+    super.key,
+    required this.question,
+    required this.imageAsset,
+    required this.questionNumber,
+    required this.totalQuestions,
+    required this.onNext,
+    required this.onPrevious,
+    required this.selectedRating,
+    required this.onChanged,
+  });
+
   @override
-  _QuizCardState createState() => _QuizCardState();
+  State<QuizCard> createState() => _QuizCardState();
 }
 
 class _QuizCardState extends State<QuizCard> {
-  int selected = 4;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,10 +43,10 @@ class _QuizCardState extends State<QuizCard> {
             // Navigation & Page count
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Icon(Icons.arrow_back_ios),
-                Text("1/5", style: TextStyle(fontWeight: FontWeight.bold)),
-                Icon(Icons.arrow_forward_ios),
+              children: [
+                IconButton(icon: const Icon(Icons.arrow_back_ios), onPressed: widget.onPrevious),
+                Text("${widget.questionNumber}/${widget.totalQuestions}", style: TextStyle(fontWeight: FontWeight.bold)),
+                IconButton(icon: const Icon(Icons.arrow_forward_ios), onPressed: widget.onNext),
               ],
             ),
             const SizedBox(height: 20),
@@ -36,8 +55,8 @@ class _QuizCardState extends State<QuizCard> {
 
             const SizedBox(height: 20),
 
-            const Text(
-              "Evito comportamentos que podem prejudicar a minha saúde (ex. tabaco, álcool)",
+            Text(
+              widget.question,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -45,7 +64,14 @@ class _QuizCardState extends State<QuizCard> {
             const SizedBox(height: 20),
 
             // Rating buttons
-            RatingButtons(),
+            RatingButtons(
+              selected: widget.selectedRating,
+              onChanged: (val) {
+                setState(() {
+                  widget.onChanged(val);
+                });
+              },
+            ),
 
             const SizedBox(height: 20),
 

@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 
 class RatingButtons extends StatefulWidget {
-  const RatingButtons({super.key});
+  int selected;
+  final ValueChanged<int> onChanged;
+
+  RatingButtons({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
 
   @override
   State<RatingButtons> createState() => _RatingButtonsState();
 }
 
 class _RatingButtonsState extends State<RatingButtons> {
-  int _selected = 4;
   @override
   Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.center,
-
       children: List.generate(7, (index) {
         int value = index + 1;
-        bool isSelected = value == _selected;
+        bool isSelected = value == widget.selected;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -44,8 +49,9 @@ class _RatingButtonsState extends State<RatingButtons> {
             ),
             onSelected: (_) {
               setState(() {
-                _selected = value;
+                widget.selected = value;
               });
+              widget.onChanged(value);
             },
           ),
         );
