@@ -2,6 +2,7 @@ import 'package:farmacia/app/ui/pages/chat_page.dart';
 import 'package:farmacia/app/ui/pages/home_page.dart';
 import 'package:farmacia/app/ui/pages/medicines_page.dart';
 import 'package:farmacia/app/ui/pages/profile_page.dart';
+import 'package:farmacia/app/ui/pages/quizz_page.dart';
 import 'package:flutter/material.dart';
 
 class NavigationMenu extends StatefulWidget {
@@ -17,7 +18,8 @@ class _NavigationMenuState extends State<NavigationMenu> {
     const HomePage(),
     const ChatPage(),
     const MedicinesPage(),
-    const ProfilePage()
+    const ProfilePage(),
+    const QuizzPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,11 @@ class _NavigationMenuState extends State<NavigationMenu> {
           BottomNavigationBarItem(
             icon: Icon(Icons.description),
             label: 'Perfil',
-          )
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.quiz_outlined),
+            label: 'Quizz',
+          ),
         ],
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
