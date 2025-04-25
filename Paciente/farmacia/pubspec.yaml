@@ -70,6 +70,7 @@ flutter:
     - assets/alert_circle.svg
     - assets/remedio.png
     - assets/no_alcohol.png
+    - assets/quiz/
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
