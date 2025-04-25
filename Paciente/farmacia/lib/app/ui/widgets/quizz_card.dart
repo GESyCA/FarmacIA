@@ -51,7 +51,7 @@ class _QuizCardState extends State<QuizCard> {
             ),
             const SizedBox(height: 20),
 
-            Image.asset('assets/no_alcohol.png', height: 80),
+            Image.asset(widget.imageAsset, height: 80),
 
             const SizedBox(height: 20),
 
