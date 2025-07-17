@@ -1,6 +1,7 @@
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/navigation_menu.dart';
 import 'package:farmacia/app/ui/pages/add_medicine_page.dart';
+import 'package:farmacia/app/ui/pages/auth_page.dart';
 import 'package:farmacia/app/ui/pages/chat_page.dart';
 import 'package:farmacia/app/ui/pages/home_page.dart';
 import 'package:farmacia/app/ui/pages/login_page.dart';
@@ -32,6 +33,10 @@ class AppPage {
     GetPage(
       name: Routes.register,
       page: () => RegisterPage(),
+    ),
+    GetPage(
+      name: Routes.initial,
+      page: () => AuthPage(),
     ),
   ];
 }

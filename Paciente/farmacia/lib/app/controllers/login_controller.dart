@@ -41,7 +41,7 @@ class LoginController extends GetxController {
       _isLoading.value = false;
 
       // You could check response.session as well if needed
-      Get.offNamed(Routes.navigation);
+      //Get.offNamed(Routes.navigation);
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar(
