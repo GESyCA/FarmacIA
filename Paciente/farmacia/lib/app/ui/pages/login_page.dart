@@ -1,4 +1,6 @@
+import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -151,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, "/register");
+                            Get.offNamed(Routes.register); // Navigate to the registration page
                           },
                           child: Text(
                             "Cadastre-se",
