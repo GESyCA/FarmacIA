@@ -1,7 +1,7 @@
 import 'package:farmacia/app/data/supabase/auth_service.dart';
-import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController extends GetxController {
   // Define any necessary variables and methods for the login functionality here
@@ -18,7 +18,7 @@ class LoginController extends GetxController {
   final _isObscure = true.obs;
   bool get isObscure => _isObscure.value;
 
-  final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
 
   // Method to handle login
   void login() async {

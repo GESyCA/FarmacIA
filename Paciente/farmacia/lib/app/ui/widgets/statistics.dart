@@ -1,4 +1,4 @@
-import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:farmacia/app/data/models/medicine.dart';
 import 'package:flutter/material.dart';
 
 class Statistics extends StatelessWidget {

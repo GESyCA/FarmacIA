@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController extends GetxController{
-  final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
 
   final Rxn<User> _currentUser = Rxn<User>();
 
