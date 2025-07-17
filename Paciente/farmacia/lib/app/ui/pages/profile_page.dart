@@ -1,30 +1,12 @@
+import 'package:farmacia/app/controllers/profile_controller.dart';
 import 'package:farmacia/app/ui/widgets/achivements.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:farmacia/app/ui/widgets/statistics.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  final PageController _pageController = PageController(initialPage: 0);
-  int _selectedIndex = 0;
-  final String _name = "Antônio Neto";
-
-  void _onPageChanged(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  void _onTabTapped(int index) {
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +35,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Expanded(
                 child: PageView(
-                  controller: _pageController,
-                  onPageChanged: _onPageChanged,
+                  controller: controller.pageController,
+                  onPageChanged: controller.onPageChanged,
                   children: <Widget>[
                     Statistics(),
                     Achivements(),
@@ -81,22 +63,22 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           child: Stack(
             children: <Widget>[
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                top: 0,
-                left: _selectedIndex == 0 ? 0 : tabWidth,
-                right: _selectedIndex == 0 ? tabWidth : 0,
-                child: Container(
-                  // half of the width of the container
-                  width: tabWidth,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
+              Obx(() => AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    top: 0,
+                    left: controller.selectedIndex == 0 ? 0 : tabWidth,
+                    right: controller.selectedIndex == 0 ? tabWidth : 0,
+                    child: Container(
+                      // half of the width of the container
+                      width: tabWidth,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  )),
               Row(
                 children: <Widget>[
                   _buildTabButton("ESTATÍSTICAS", 0),
@@ -113,16 +95,18 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildTabButton(String title, int index) {
     return Expanded(
       child: GestureDetector(
-        onTap: () => _onTabTapped(index),
+        onTap: () => controller.onTabTapped(index),
         child: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: _selectedIndex == index ? Colors.black : Colors.black54,
-            ),
-          ),
+          child: Obx(() => Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: controller.selectedIndex == index
+                      ? Colors.black
+                      : Colors.black54,
+                ),
+              )),
         ),
       ),
     );
@@ -151,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
               //const SizedBox(width: 20),
               Expanded(
                 child: Text(
-                  _name,
+                  controller.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

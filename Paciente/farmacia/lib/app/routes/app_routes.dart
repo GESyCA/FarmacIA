@@ -6,4 +6,6 @@ abstract class Routes {
   static const String add_medicine = '/add_medicine';
   static const String register = '/register';
   static const String initial = '/';
+  static const String profile = '/profile';
+  static const String quizz = '/quizz';
 }
