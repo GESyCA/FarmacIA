@@ -5,7 +5,22 @@ class AuthService {
   final SupabaseClient _client = Supabase.instance.client;
 
   Future<AuthResponse> signIn(String email, String password) async {
-    return await _client.auth.signInWithPassword(email: email, password: password);
+    try {
+      final response = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      if (response.user == null) {
+        throw Exception("Usuário não encontrado.");
+      }
+
+      return response;
+    } on AuthException catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      throw Exception("Erro inesperado ao tentar logar.");
+    }
   }
 
   Future<AuthResponse> signUp(String email, String password) async {
@@ -43,5 +58,9 @@ class AuthService {
   // listen to auth state changes
   Stream<AuthState> authStateChanges() {
     return _client.auth.onAuthStateChange;
+  }
+
+  Session? get currentSession {
+    return _client.auth.currentSession;
   }
 }
