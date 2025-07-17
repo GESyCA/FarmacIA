@@ -53,7 +53,7 @@ class LoginPage extends GetView<LoginController> {
                   ),
                 ),
                 child: Form(
-                  key: null,
+                  key: controller.formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -223,6 +223,7 @@ class LoginPage extends GetView<LoginController> {
       ),
       child: TextFormField(
         controller: controller,
+        keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           labelText: "Email ou número de telefone",
           border: InputBorder.none,
@@ -232,7 +233,7 @@ class LoginPage extends GetView<LoginController> {
           if (value == null || value.trim().isEmpty) {
             return 'Informe o e-mail.';
           }
-          if (!value.contains('@')) return 'E-mail inválido.';
+          if (!GetUtils.isEmail(value)) return 'E-mail inválido.';
           return null;
         },
       ),
@@ -271,8 +272,9 @@ class LoginPage extends GetView<LoginController> {
           if (value == null || value.trim().isEmpty) {
             return 'Informe a senha.';
           }
-          if (value.length < 6)
+          if (value.length < 6) {
             return 'Senha deve ter pelo menos 6 caracteres.';
+          }
           return null;
         },
       ),

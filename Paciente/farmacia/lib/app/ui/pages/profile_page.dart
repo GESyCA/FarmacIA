@@ -1,4 +1,5 @@
 import 'package:farmacia/app/ui/widgets/achivements.dart';
+import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:farmacia/app/ui/widgets/statistics.dart';
 import 'package:flutter/material.dart';
 
@@ -28,20 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text("Perfil"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'Perfil'),
       body: Center(
         child: Container(
           width: MediaQuery.of(context).size.width,

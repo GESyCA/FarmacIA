@@ -1,6 +1,7 @@
 import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
+import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -24,20 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text("Chat"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Chat"),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Container(

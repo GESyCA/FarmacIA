@@ -40,6 +40,8 @@ class AuthService {
     if (response.user == null) {
       throw Exception('Failed to sign up: Invalid email or password.');
     }
+
+    signOut();
   }
 
   Future<void> signOut() async {
