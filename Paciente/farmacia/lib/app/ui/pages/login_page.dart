@@ -1,23 +1,17 @@
+import 'package:farmacia/app/controllers/login_controller.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  bool _isObscured = true; // Controls whether the text is hidden
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,113 +52,128 @@ class _LoginPageState extends State<LoginPage> {
                     topRight: Radius.circular(48),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                child: Form(
+                  key: null,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    emailInput(),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    senhaInput(),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          "Esqueceu a senha?",
+                      SizedBox(
+                        height: 16,
+                      ),
+                      emailInput(controller.emailController),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Obx(
+                        () => senhaInput(controller.passwordController),
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Esqueceu a senha?",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Obx(
+                            () => ElevatedButton(
+                              onPressed: () => controller.isLoading
+                                  ? null
+                                  : controller.login(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF2656E6),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 64,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                elevation: 4,
+                              ),
+                              child: controller.isLoading
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Entrar",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 28,
+                      ),
+                      Center(
+                        child: Text(
+                          "Ou Acesse pelo",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, "/navigation");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2656E6),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 64,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            elevation: 4,
-                          ),
-                          child: Text(
-                            "Entrar",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 28,
-                    ),
-                    Center(
-                      child: Text(
-                        "Ou Acesse pelo",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _otherOptions("assets/Google.png"),
-                        _otherOptions("assets/Facebook.png"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Center(
-                      child: TextButton(
-                          onPressed: () {
-                            Get.offNamed(Routes.register); // Navigate to the registration page
-                          },
-                          child: Text(
-                            "Cadastre-se",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          )),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _otherOptions("assets/Google.png"),
+                          _otherOptions("assets/Facebook.png"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Center(
+                        child: TextButton(
+                            onPressed: () {
+                              Get.offNamed(Routes.register);
+                            },
+                            child: Text(
+                              "Cadastre-se",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
@@ -197,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container emailInput() {
+  Container emailInput(TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // Background color of the TextField
@@ -212,17 +221,25 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-      child: TextField(
+      child: TextFormField(
+        controller: controller,
         decoration: InputDecoration(
           labelText: "Email ou número de telefone",
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Informe o e-mail.';
+          }
+          if (!value.contains('@')) return 'E-mail inválido.';
+          return null;
+        },
       ),
     );
   }
 
-  Container senhaInput() {
+  Container senhaInput(TextEditingController textController) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -236,23 +253,28 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-      child: TextField(
-        obscureText: _isObscured, // Hides or shows the password
+      child: TextFormField(
+        controller: textController,
+        obscureText: controller.isObscure, // Hides or shows the password
         decoration: InputDecoration(
           labelText: "Senha",
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           suffixIcon: IconButton(
             icon: Icon(
-              _isObscured ? Icons.visibility_off : Icons.visibility,
+              controller.isObscure ? Icons.visibility_off : Icons.visibility,
             ),
-            onPressed: () {
-              setState(() {
-                _isObscured = !_isObscured; // Toggles password visibility
-              });
-            },
+            onPressed: () => controller.togglePasswordVisibility(),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Informe a senha.';
+          }
+          if (value.length < 6)
+            return 'Senha deve ter pelo menos 6 caracteres.';
+          return null;
+        },
       ),
     );
   }
