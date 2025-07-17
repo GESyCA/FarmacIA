@@ -1,4 +1,6 @@
+import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -133,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Get.offNamed(Routes.login); // Navigate to the login page
                           },
                           child: Text(
                             "Já tem uma conta? Login",
