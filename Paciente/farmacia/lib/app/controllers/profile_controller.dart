@@ -1,6 +1,7 @@
 import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileController extends GetxController{
   final PageController _pageController = PageController(initialPage: 0);
@@ -12,7 +13,7 @@ class ProfileController extends GetxController{
   late final String _name;
   String get name => _name;
 
-  final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
 
   @override
   void onInit() async {

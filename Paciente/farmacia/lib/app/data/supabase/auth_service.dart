@@ -2,7 +2,11 @@ import 'package:farmacia/app/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
-  final SupabaseClient _client = Supabase.instance.client;
+  final SupabaseClient _client;
+
+  AuthService({required SupabaseClient client}) : _client = client;
+
+  
 
   Future<AuthResponse> signIn(String email, String password) async {
     try {

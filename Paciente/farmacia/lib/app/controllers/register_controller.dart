@@ -3,10 +3,11 @@ import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterController extends GetxController {
 
-  final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

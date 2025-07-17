@@ -1,4 +1,4 @@
-import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:farmacia/app/data/models/medicine.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';

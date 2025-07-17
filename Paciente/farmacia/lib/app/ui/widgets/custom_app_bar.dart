@@ -1,9 +1,10 @@
 import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
   CustomAppBar({super.key, required this.title});
 
   @override
