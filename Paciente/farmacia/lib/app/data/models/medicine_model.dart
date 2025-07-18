@@ -24,15 +24,15 @@ class MedicineModel {
   factory MedicineModel.fromJson(Map<String, dynamic> json) {
     return MedicineModel(
       id: json['id'] as int,
-      userId: json['userId'] as String,
+      userId: json['user_id'] as String,
       nome: json['nome'] as String,
-      receberNotificacao: json['receberNotificacao'] as bool,
-      notificacoesPorDia: json['notificacoesPorDia'] as int?,
+      receberNotificacao: json['receber_notificacao'] as bool,
+      notificacoesPorDia: json['notificacoes_por_dia'] as int?,
       dose: json['dose'] as String,
       forma: json['forma'] as String,
-      inicioTratamento: DateTime.parse(json['inicioTratamento'] as String),
-      fimTratamento: json['fimTratamento'] != null
-          ? DateTime.parse(json['fimTratamento'] as String)
+      inicioTratamento: DateTime.parse(json['inicio_tratamento'] as String),
+      fimTratamento: json['fim_tratamento'] != null
+          ? DateTime.parse(json['fim_tratamento'] as String)
           : null,
     );
   }
