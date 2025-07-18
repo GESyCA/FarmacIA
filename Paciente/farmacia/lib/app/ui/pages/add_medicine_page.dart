@@ -44,13 +44,11 @@ class AddMedicinePage extends GetView<AddMedicineController> {
                       SizedBox(
                         height: 8,
                       ),
-                      Obx(
-                        () => _dropDown(
-                          controller.medicineList.first,
-                          controller.medicineList,
-                          controller.selectedMedicine,
-                          true,
-                        ),
+                      _dropDown(
+                        controller.medicineList.first,
+                        controller.medicineList,
+                        (value) => controller.setSelectedMedicine(value ?? ''),
+                        true,
                       ),
                       SizedBox(
                         height: 32,
@@ -77,7 +75,8 @@ class AddMedicinePage extends GetView<AddMedicineController> {
                         () => _dropDown(
                           controller.frequencia.first,
                           controller.frequencia,
-                          controller.selectedFrequency,
+                          (value) =>
+                              controller.setSelectedFrequency(value ?? ''),
                           controller.recieveNotification,
                         ),
                       ),
@@ -131,7 +130,7 @@ class AddMedicinePage extends GetView<AddMedicineController> {
                     _dropDown(
                       controller.formasFarmaceuticas.first,
                       controller.formasFarmaceuticas,
-                      controller.selectedForma,
+                      (value) => controller.setSelectedForma(value ?? ''),
                       true,
                     ),
                     SizedBox(
@@ -189,36 +188,45 @@ class AddMedicinePage extends GetView<AddMedicineController> {
     );
   }
 
-  ElevatedButton _saveButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Save medicine
-        Navigator.pop(context);
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFFB9160C),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 12,
-        ),
-      ),
-      child: Text(
-        "Concluir",
-        style: TextStyle(
-          fontSize: 20,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
+  Obx _saveButton(BuildContext context) {
+    return Obx(() => ElevatedButton(
+          onPressed: () async {
+            controller.isLoading.value
+                ? null
+                : await controller.createMedicine();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFB9160C),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
+          ),
+          child: controller.isLoading.value
+              ? SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  "Concluir",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+        ));
   }
 
   ElevatedButton _cancelButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => Get.back(),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -330,15 +338,14 @@ class AddMedicinePage extends GetView<AddMedicineController> {
     );
   }
 
-  DropdownButtonFormField<String> _dropDown(String? selectedMedication,
-      List<String> selectItems, String controlVariable, bool isEnabled) {
+  DropdownButtonFormField<String> _dropDown(
+      String? selectedMedication,
+      List<String> selectItems,
+      void Function(String?) onChanged,
+      bool isEnabled) {
     return DropdownButtonFormField<String>(
       value: selectedMedication, // Default selected value
-      onChanged: isEnabled
-          ? (newValue) {
-              controlVariable = newValue!;
-            }
-          : null,
+      onChanged: isEnabled ? onChanged : null,
       items: selectItems
           .map((med) => DropdownMenuItem(
                 value: med,
