@@ -35,7 +35,7 @@ class DatabaseService {
 
   // delete a medicine
   Future<void> deleteMedicine(MedicineModel medicine) async {
-    await database.delete().eq("id", medicine.id!).single();
+    await database.delete().eq("id", medicine.id!);
   }
 
   // retrieve the collumn 'nome' content for a especific user
