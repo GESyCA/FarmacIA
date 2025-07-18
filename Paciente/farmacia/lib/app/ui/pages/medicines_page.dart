@@ -14,8 +14,7 @@ class MedicinesPage extends GetView<MedicineController> {
       context: context,
       builder: (context) {
         return DeleteDialog(
-          medicineName: medicine.nome,
-          onDelete: () {},
+          medicine: medicine,
         );
       },
     );

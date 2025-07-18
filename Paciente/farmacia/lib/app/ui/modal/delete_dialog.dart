@@ -1,14 +1,15 @@
+import 'package:farmacia/app/controllers/medicine_controller.dart';
+import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class DeleteDialog extends StatelessWidget {
-  final String medicineName;
-  final VoidCallback onDelete;
+  final MedicineModel medicine;
 
   const DeleteDialog({
     super.key,
-    required this.medicineName,
-    required this.onDelete,
+    required this.medicine,
   });
 
   @override
@@ -46,7 +47,7 @@ class DeleteDialog extends StatelessWidget {
             height: 12,
           ),
           Text(
-            "Tem certeza que deseja excluir o medicamento $medicineName?",
+            "Tem certeza que deseja excluir o medicamento ${medicine.nome}?",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -71,7 +72,7 @@ class DeleteDialog extends StatelessWidget {
               children: [
                 TextButton.icon(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Get.back();
                   },
                   icon: Icon(
                     Icons.close,
@@ -89,27 +90,42 @@ class DeleteDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                  
-                ElevatedButton.icon(
-                  onPressed: () {
-                    onDelete();
-                    Navigator.pop(context);
+                GetBuilder<MedicineController>(
+                  init: MedicineController(),
+                  initState: (_) {},
+                  builder: (controller) {
+                    return ElevatedButton.icon(
+                      onPressed: () async {
+                        controller.isLoadingDelete
+                            ? null
+                            : await controller.deleteMedicine(medicine);
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                      label: controller.isLoadingDelete
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                            child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                          )
+                          : Text(
+                              "Deletar",
+                            ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFB9160C),
+                        foregroundColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
                   },
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    "Deletar",
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFB9160C),
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
                 ),
               ],
             ),

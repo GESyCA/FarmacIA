@@ -9,6 +9,9 @@ class MedicineController extends GetxController {
   final _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
+  final _isLoadingDelete = false.obs;
+  bool get isLoadingDelete => _isLoadingDelete.value;
+
   // Add other necessary controllers and methods as needed
   final database = DatabaseService(client: Supabase.instance.client);
 
@@ -33,6 +36,35 @@ class MedicineController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
       return [];
+    }
+  }
+
+  Future<void> deleteMedicine(MedicineModel medicine) async {
+    try {
+      _isLoadingDelete.value = true;
+      await database.deleteMedicine(medicine);
+      _medicines.remove(medicine);
+      _searchedItems.remove(medicine);
+      update();
+      Get.back();
+      Get.snackbar(
+        "Sucesso",
+        "Medicamento excluído com sucesso.",
+        backgroundColor: Colors.green.withOpacity(0.8),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      print("Error deleting medicine: $e");
+      Get.snackbar(
+        "Erro",
+        "Não foi possível excluir o medicamento: ${e.toString()}",
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      _isLoadingDelete.value = false;
     }
   }
 
