@@ -1,6 +1,7 @@
 import 'package:farmacia/app/controllers/add_medicine_controller.dart';
 import 'package:farmacia/app/controllers/auth_controller.dart';
 import 'package:farmacia/app/controllers/login_controller.dart';
+import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/controllers/navigation_controller.dart';
 import 'package:farmacia/app/controllers/profile_controller.dart';
 import 'package:farmacia/app/controllers/register_controller.dart';
@@ -18,6 +19,9 @@ class InitBindings implements Bindings {
     );
     Get.put(
       AddMedicineController(),
+    );
+    Get.put(
+      MedicineController(),
     );
   }
 }
