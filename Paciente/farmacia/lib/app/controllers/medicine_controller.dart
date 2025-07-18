@@ -21,7 +21,8 @@ class MedicineController extends GetxController {
   final RxList<MedicineModel> _searchedItems = <MedicineModel>[].obs;
   List<MedicineModel> get searchedItems => _searchedItems;
 
-  final Rx<TextEditingController> _searchController = TextEditingController().obs;
+  final Rx<TextEditingController> _searchController =
+      TextEditingController().obs;
   TextEditingController get searchController => _searchController.value;
 
   Future<List<MedicineModel>> fetchMedicines() async {
@@ -68,6 +69,10 @@ class MedicineController extends GetxController {
     }
   }
 
+  Future<List<String>> getMedicinesName() async {
+    return await database.getMedicineNames();
+  }
+
   void filterSearchResults() {
     String query = _searchController.value.text.trim();
     if (query.isEmpty) {
@@ -81,7 +86,7 @@ class MedicineController extends GetxController {
   }
 
   @override
-  void onInit() async{
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
     _isLoading.value = true;
@@ -91,5 +96,4 @@ class MedicineController extends GetxController {
     _searchedItems.value = _medicines.toList();
     _isLoading.value = false;
   }
-
 }
