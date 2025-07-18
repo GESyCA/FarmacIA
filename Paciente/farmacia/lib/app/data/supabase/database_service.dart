@@ -37,4 +37,14 @@ class DatabaseService {
   Future<void> deleteMedicine(MedicineModel medicine) async {
     await database.delete().eq("id", medicine.id).single();
   }
+
+  // retrieve the collumn 'nome' content for a especific user
+  Future<List<String>> getMedicineNames() async {
+    final response = await database
+        .select("nome")
+        .eq("user_id", currentUser!.id)
+        .order("created_at", ascending: false);
+
+    return response.map((e) => e['nome'] as String).toList();
+  }
 }
