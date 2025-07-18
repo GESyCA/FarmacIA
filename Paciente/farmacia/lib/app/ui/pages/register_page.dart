@@ -1,34 +1,17 @@
+import 'package:farmacia/app/controllers/register_controller.dart';
+import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends GetView<RegisterController> {
   const RegisterPage({super.key});
-
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
-  bool _isObscuredPassword = true; // Controls whether the text is hidden
-  bool _isObscuredConfirm = true;
-
-  void _togglePassword() {
-    setState(() {
-      _isObscuredPassword = !_isObscuredPassword;
-    });
-  }
-
-  void _toggleConfirm() {
-    setState(() {
-      _isObscuredConfirm = !_isObscuredConfirm;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,93 +41,103 @@ class _RegisterPageState extends State<RegisterPage> {
                     topRight: Radius.circular(48),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Cadastro",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    emailInput("Nome"),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    emailInput("Email"),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    emailInput("Telefone"),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    senhaInput(
-                      _isObscuredPassword,
-                      "Senha",
-                      _togglePassword,
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    senhaInput(
-                      _isObscuredConfirm,
-                      "Confirmar Senha",
-                      _toggleConfirm,
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2656E6),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 48,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            elevation: 4,
-                          ),
-                          child: Text(
-                            "Registrar",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Cadastro",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Center(
-                      child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            "Já tem uma conta? Login",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      nomeInput("Nome", controller.nameController),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      emailInput("Email", controller.emailController),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      telefoneInput("Telefone", controller.phoneController),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Obx(() =>
+                          senhaInput("Senha", controller.passwordController)),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Obx(() => confirmaSenhaInput("Confirmar senha",
+                          controller.confirmPasswordController)),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Obx(
+                            () => ElevatedButton(
+                              onPressed: () => controller.isLoading
+                                  ? null
+                                  : controller.register(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF2656E6),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 48,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                elevation: 4,
+                              ),
+                              child: controller.isLoading
+                                  ? SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Registrar",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
-                          )),
-                    ),
-                  ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Center(
+                        child: TextButton(
+                            onPressed: () {
+                              Get.offNamed(
+                                  Routes.login); // Navigate to the login page
+                            },
+                            child: Text(
+                              "Já tem uma conta? Login",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
@@ -154,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Container emailInput(String placeholder) {
+  Container emailInput(String placeholder, TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // Background color of the TextField
@@ -169,18 +162,94 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ],
       ),
-      child: TextField(
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           labelText: placeholder,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor, preencha este campo.';
+          }
+          if (placeholder == "Email" && !GetUtils.isEmail(value)) {
+            return 'Por favor, insira um email válido.';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Container nomeInput(String placeholder, TextEditingController controller) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white, // Background color of the TextField
+        borderRadius: BorderRadius.circular(12), // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            // ignore: deprecated_member_use
+            color: Colors.black.withOpacity(0.2), // Shadow color
+            blurRadius: 6, // Spread of the shadow
+            offset:
+                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: placeholder,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor, preencha este campo.';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Container telefoneInput(
+      String placeholder, TextEditingController controller) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white, // Background color of the TextField
+        borderRadius: BorderRadius.circular(12), // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            // ignore: deprecated_member_use
+            color: Colors.black.withOpacity(0.2), // Shadow color
+            blurRadius: 6, // Spread of the shadow
+            offset:
+                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: placeholder,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor, preencha este campo.';
+          }
+          return null;
+        },
       ),
     );
   }
 
   Container senhaInput(
-      bool isObscured, String placeholder, VoidCallback onToggle) {
+      String placeholder, TextEditingController textController) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -194,19 +263,74 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ],
       ),
-      child: TextField(
-        obscureText: isObscured, // Hides or shows the password
+      child: TextFormField(
+        controller: textController,
+        obscureText: controller.isObscure, // Hides or shows the password
         decoration: InputDecoration(
           labelText: placeholder,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           suffixIcon: IconButton(
             icon: Icon(
-              isObscured ? Icons.visibility_off : Icons.visibility,
+              controller.isObscure ? Icons.visibility_off : Icons.visibility,
             ),
-            onPressed: onToggle,
+            onPressed: () => controller.togglePasswordVisibility(),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor, preencha este campo.';
+          }
+          if (value.length < 6) {
+            return 'A senha deve ter pelo menos 6 caracteres.';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Container confirmaSenhaInput(
+      String placeholder, TextEditingController textController) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            // ignore: deprecated_member_use
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: textController,
+        obscureText:
+            controller.isConfirmPasswordObscure, // Hides or shows the password
+        decoration: InputDecoration(
+          labelText: placeholder,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          suffixIcon: IconButton(
+            icon: Icon(
+              controller.isConfirmPasswordObscure
+                  ? Icons.visibility_off
+                  : Icons.visibility,
+            ),
+            onPressed: () => controller.toggleConfirmPasswordVisibility(),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor, preencha este campo.';
+          }
+          if (value.length < 6) {
+            return 'A senha deve ter pelo menos 6 caracteres.';
+          }
+          return null;
+        },
       ),
     );
   }
