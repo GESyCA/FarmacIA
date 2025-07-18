@@ -35,6 +35,17 @@ class RegisterController extends GetxController {
     _isObscure.value = !_isObscure.value;
   }
 
+  @override
+  void onClose() {
+    // Dispose of the controllers to free up resources
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    nameController.dispose();
+    phoneController.dispose();
+    super.onClose();
+  }
+
   Future<void> register() async {
     if (!(_formKey.currentState?.validate() ?? false)) {
       Get.snackbar(

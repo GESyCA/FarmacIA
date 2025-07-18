@@ -85,6 +85,14 @@ class AddMedicineController extends GetxController{
     setSelectedMedicine(medicineList.first);
   }
 
+  @override
+  void onClose() {
+    dateController.dispose();
+    dateEndController.dispose();
+    doseController.dispose();
+    super.onClose();
+  }
+
   Future<void> createMedicine() async {
     if (formKey.currentState?.validate() ?? false) {
       isLoading.value = true;
@@ -116,6 +124,7 @@ class AddMedicineController extends GetxController{
         );
         await databaseService.registerMedicine(medicine);
         print(medicine.toString());
+        update();
         Get.back();
         Get.snackbar('Sucesso', 'Medicamento adicionado com sucesso!', 
           snackPosition: SnackPosition.BOTTOM,
@@ -132,6 +141,12 @@ class AddMedicineController extends GetxController{
       } finally {
         isLoading.value = false;
       }
+    } else {
+      Get.snackbar('Erro', 'Por favor, preencha todos os campos corretamente.', 
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
     }
   }
 

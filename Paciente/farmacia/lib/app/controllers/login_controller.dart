@@ -20,6 +20,14 @@ class LoginController extends GetxController {
 
   final AuthService _authService = AuthService(client: Supabase.instance.client);
 
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
   // Method to handle login
   void login() async {
     if (!(_formKey.currentState?.validate() ?? false)) {
