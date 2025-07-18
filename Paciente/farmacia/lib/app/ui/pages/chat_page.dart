@@ -1,7 +1,10 @@
+import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
+import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -15,29 +18,25 @@ class _ChatPageState extends State<ChatPage> {
   final ValueNotifier<List<Widget>> _messagesNotifier = ValueNotifier([]);
   bool _showPrompts = true;
 
+  // final MedicineController _medicineController = Get.find<MedicineController>();
+  // List<String> medicinesAvailable = []; 
+
+  // Future<void> _fetchAvailableMedicines() {
+
+  // }
+
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
-      baseUrl: "https://6c07-187-19-156-72.ngrok-free.app",
+      baseUrl: "https://086eb0217e49.ngrok-free.app",
     ),
   );
+
+  String nomeRemedio = "Paracetamol"; // Example medicine name
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text("Chat"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "Chat"),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Container(
@@ -99,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
 
     // Fetch API response
     final answer = await _chatRepository.sendMessage(QuestionModel(
-      nomeRemedio: "Paracetamol",
+      nomeRemedio: nomeRemedio,
       pergunta: text,
     ));
 

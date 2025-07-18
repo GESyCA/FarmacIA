@@ -1,53 +1,20 @@
+import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:farmacia/app/routes/app_routes.dart';
+import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';
+import 'package:get/get.dart';
 
-class MedicinesPage extends StatefulWidget {
+class MedicinesPage extends GetView<MedicineController> {
   const MedicinesPage({super.key});
 
-  @override
-  State<MedicinesPage> createState() => _MedicinesPageState();
-}
-
-class _MedicinesPageState extends State<MedicinesPage> {
-  final TextEditingController _searchController = TextEditingController();
-  final List<Medicine> _medicines = [
-    Medicine(id: 1, name: "Paracetamol", nextDate: "10/10/2025 07:00"),
-    Medicine(id: 2, name: "Ibuprofeno", nextDate: "10/10/2025 07:00"),
-    Medicine(id: 3, name: "Omeprazol", nextDate: "10/10/2025 07:00"),
-    Medicine(id: 4, name: "Amoxilinina", nextDate: "10/10/2025 07:00"),
-    Medicine(id: 5, name: "Dipirona", nextDate: "10/10/2025 07:00"),
-  ];
-
-  var searchedItems = <Medicine>[];
-
-  @override
-  void initState() {
-    searchedItems = _medicines;
-    super.initState();
-  }
-
-  void filterSearchResults(String query) {
-    setState(() {
-      searchedItems = _medicines
-          .where((medicine) =>
-              medicine.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
-
-  void _showDeleteDialog(Medicine medicine) {
+  void _showDeleteDialog(MedicineModel medicine, BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return DeleteDialog(
-          medicineName: medicine.name,
-          onDelete: () {
-            setState(() {
-              _medicines.removeWhere((element) => element.id == medicine.id);
-              filterSearchResults(_searchController.text);
-            });
-          },
+          medicine: medicine,
         );
       },
     );
@@ -56,157 +23,162 @@ class _MedicinesPageState extends State<MedicinesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text("Medicamentos"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            _searchBar(),
-            SizedBox(
-              height: 16,
-            ),
-            Flexible(
+      appBar: CustomAppBar(title: 'Medicamentos'),
+      body: Obx(
+        () => controller.isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+              backgroundColor: Colors.white,
+              color: Color(0xFFB9160C),
+              onRefresh: () async {
+                controller.onInit();
+              },
               child: Container(
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        left: 20,
-                        right: 20,
-                        bottom: 2,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 16,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${searchedItems.length} medicamentos",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/add_medicine');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                backgroundColor: Color(0xFFB9160C),
-                                padding: EdgeInsets.all(10),
-                              ),
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        ],
+                      _searchBar(context),
+                      SizedBox(
+                        height: 16,
                       ),
-                    ),
-                    Divider(
-                      color: Colors.grey[300],
-                      thickness: 1,
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        itemCount: searchedItems.length,
-                        itemBuilder: (context, index) {
-                          return Card(
+                      Flexible(
+                        child: Container(
+                          padding: EdgeInsets.zero,
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            child: ListTile(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                              ),
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFB9160C),
-                                  borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  left: 20,
+                                  right: 20,
+                                  bottom: 2,
                                 ),
-                                child: Center(
-                                  child: Image.asset(
-                                    "assets/Edit.png",
-                                    width: 24,
-                                    height: 24,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${controller.searchedItems.length} medicamentos",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Get.toNamed(Routes.add_medicine);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          backgroundColor: Color(0xFFB9160C),
+                                          padding: EdgeInsets.all(10),
+                                        ),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.grey[300],
+                                thickness: 1,
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
                                   ),
+                                  itemCount: controller.searchedItems.length,
+                                  itemBuilder: (context, index) {
+                                    final medicine =
+                                        controller.searchedItems[index];
+                                    return Card(
+                                      color: Colors.white,
+                                      child: ListTile(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        leading: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFB9160C),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child: Image.asset(
+                                              "assets/Edit.png",
+                                              width: 24,
+                                              height: 24,
+                                            ),
+                                          ),
+                                        ),
+                                        title: Text(
+                                          medicine.nome,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                            "Próximo: ${medicine.inicioTratamento.toLocal().toString().split(' ')[0]}"),
+                                        trailing: IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            _showDeleteDialog(medicine, context);
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                              title: Text(
-                                searchedItems[index].name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                  "Próximo: ${searchedItems[index].nextDate}"),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  _showDeleteDialog(searchedItems[index]);
-                                },
-                              ),
-                            ),
-                          );
-                        },
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
             ),
-          ],
-        ),
       ),
     );
   }
 
-  TextField _searchBar() {
+  TextField _searchBar(BuildContext context) {
     return TextField(
-      controller: _searchController,
+      controller: controller.searchController,
       onChanged: (value) {
-        filterSearchResults(value);
+        controller.filterSearchResults();
       },
       decoration: InputDecoration(
         hintText: "Buscar por medicamento",

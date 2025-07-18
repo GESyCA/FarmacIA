@@ -1,67 +1,32 @@
-import 'package:farmacia/app/ui/pages/chat_page.dart';
-import 'package:farmacia/app/ui/pages/home_page.dart';
-import 'package:farmacia/app/ui/pages/medicines_page.dart';
-import 'package:farmacia/app/ui/pages/profile_page.dart';
-import 'package:farmacia/app/ui/pages/quizz_page.dart';
+import 'package:farmacia/app/controllers/navigation_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class NavigationMenu extends StatefulWidget {
+class NavigationMenu extends GetView<NavigationController> {
   const NavigationMenu({super.key});
 
   @override
-  State<NavigationMenu> createState() => _NavigationMenuState();
-}
-
-class _NavigationMenuState extends State<NavigationMenu> {
-  int myIndex = 0;
-  List<Widget> pages = <Widget>[
-    const HomePage(),
-    const ChatPage(),
-    const MedicinesPage(),
-    const ProfilePage(),
-    const QuizzPage(),
-  ];
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: myIndex,
-        children: pages,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: myIndex,
-        onTap: (index) {
-          setState(() {
-            myIndex = index;
-          });
-        },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    return Obx(() => Scaffold(
+          body: IndexedStack(
+            index: controller.currentIndex,
+            children: controller.pages,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: controller.currentIndex,
+            onTap: controller.changeTab,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+              BottomNavigationBarItem(icon: Icon(Icons.local_pharmacy), label: 'Medicamentos'),
+              BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Perfil'),
+              BottomNavigationBarItem(icon: Icon(Icons.quiz_outlined), label: 'Quizz'),
+            ],
+            selectedItemColor: Colors.red,
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_pharmacy),
-            label: 'Medicamentos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Perfil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.quiz_outlined),
-            label: 'Quizz',
-          ),
-        ],
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-      )
-    );
+        ));
   }
 }

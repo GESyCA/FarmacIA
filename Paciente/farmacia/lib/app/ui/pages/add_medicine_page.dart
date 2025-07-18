@@ -1,42 +1,16 @@
+import 'package:farmacia/app/controllers/add_medicine_controller.dart';
+import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class AddMedicinePage extends StatefulWidget {
+class AddMedicinePage extends GetView<AddMedicineController> {
   const AddMedicinePage({super.key});
-
-  @override
-  State<AddMedicinePage> createState() => _AddMedicinePageState();
-}
-
-class _AddMedicinePageState extends State<AddMedicinePage> {
-  String? selectedMedication = "Dipirona";
-  bool receiveNotifications = true;
-  String? selectedFrequency = "3 vezes ao dia";
-  String dose = "500 mg";
-  String? selectedForm = "Comprimido";
-  DateTime? selectedDate;
-
-  final _dateController = TextEditingController();
-  final _endDateController = TextEditingController();
-  bool _indeterminate = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text("Cadastro"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'Adicionar Medicamento'),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -61,58 +35,68 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _title("Medicamento"),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    _dropDown(
-                        "Dipirona",
-                        ["Dipirona", "Paracetamol", "Ibuprofeno"],
-                        selectedMedication!),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _title("Receber notificações"),
-                        Switch(
-                          value: receiveNotifications,
-                          activeColor: Colors.red,
-                          onChanged: (value) {
-                            setState(() {
-                              receiveNotifications = value;
-                            });
-                          },
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _title("Medicamento"),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      _dropDown(
+                        controller.medicineList.first,
+                        controller.medicineList,
+                        (value) => controller.setSelectedMedicine(value ?? ''),
+                        true,
+                      ),
+                      SizedBox(
+                        height: 32,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _title("Receber notificações"),
+                          Obx(
+                            () => Switch(
+                              value: controller.recieveNotification,
+                              activeColor: Colors.red,
+                              onChanged: (value) {
+                                controller.setRecieveNotification(value);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Obx(
+                        () => _dropDown(
+                          controller.frequencia.first,
+                          controller.frequencia,
+                          (value) =>
+                              controller.setSelectedFrequency(value ?? ''),
+                          controller.recieveNotification,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    _dropDown(
-                        "3 vezes ao dia",
-                        ["3 vezes ao dia", "2 vezes ao dia", "1 vez ao dia"],
-                        selectedFrequency!),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    _title("Horários de lembrete"),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    _reminderCard(
-                        time: "7:00", description: "Tomar 1 comprimido"),
-                    SizedBox(height: 10),
-                    _reminderCard(
-                        time: "15:00", description: "Tomar 1 comprimido"),
-                    SizedBox(height: 10),
-                    _reminderCard(
-                        time: "23:00", description: "Tomar 1 comprimido"),
-                  ],
+                      ),
+                      SizedBox(
+                        height: 32,
+                      ),
+                      _title("Horários de lembrete"),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      _reminderCard(
+                          time: "7:00", description: "Tomar 1 comprimido"),
+                      SizedBox(height: 10),
+                      _reminderCard(
+                          time: "15:00", description: "Tomar 1 comprimido"),
+                      SizedBox(height: 10),
+                      _reminderCard(
+                          time: "23:00", description: "Tomar 1 comprimido"),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -135,7 +119,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                     SizedBox(
                       height: 8,
                     ),
-                    _inputField(),
+                    _inputField(controller.doseController),
                     SizedBox(
                       height: 32,
                     ),
@@ -143,8 +127,12 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                     SizedBox(
                       height: 8,
                     ),
-                    _dropDown("Comprimido", ["Comprimido", "Gotas", "Pomada"],
-                        selectedForm!),
+                    _dropDown(
+                      controller.formasFarmaceuticas.first,
+                      controller.formasFarmaceuticas,
+                      (value) => controller.setSelectedForma(value ?? ''),
+                      true,
+                    ),
                     SizedBox(
                       height: 32,
                     ),
@@ -155,27 +143,29 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _inputDate(context, "Inicio", _dateController),
+                        _inputDate(
+                            context, "Inicio", controller.dateController),
                         SizedBox(width: 10),
-                        _inputDate(context, "Fim", _endDateController),
+                        _inputDate(
+                            context, "Fim", controller.dateEndController),
                       ],
                     ),
-                    CheckboxListTile(
-                      title: Text(
-                        "Tempo indeterminado",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
+                    Obx(
+                      () => CheckboxListTile(
+                        title: Text(
+                          "Tempo indeterminado",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
                         ),
+                        value: controller.indeterminate,
+                        activeColor: Colors.red,
+                        onChanged: (bool? value) {
+                          controller.indeterminate = value ?? false;
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
                       ),
-                      value: _indeterminate,
-                      activeColor: Colors.red,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _indeterminate = value ?? false;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
                     ),
                   ],
                 ),
@@ -198,92 +188,103 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
     );
   }
 
-  ElevatedButton _saveButton(BuildContext context) {
-    return ElevatedButton(
-                  onPressed: () {
-                    // Save medicine
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFB9160C),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
+  Obx _saveButton(BuildContext context) {
+    return Obx(() => ElevatedButton(
+          onPressed: () async {
+            controller.isLoading.value
+                ? null
+                : await controller.createMedicine();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFB9160C),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
+          ),
+          child: controller.isLoading.value
+              ? SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
                   ),
-                  child: Text(
-                    "Concluir",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                )
+              : Text(
+                  "Concluir",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
+                ),
+        ));
   }
 
   ElevatedButton _cancelButton(BuildContext context) {
     return ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(color: Color(0xFFB9160C)),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: Text(
-                    "Cancelar",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFFB9160C),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
+      onPressed: () => Get.back(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Color(0xFFB9160C)),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 24,
+          vertical: 12,
+        ),
+      ),
+      child: Text(
+        "Cancelar",
+        style: TextStyle(
+          fontSize: 20,
+          color: Color(0xFFB9160C),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 
-  Expanded _inputDate(
-      BuildContext context, String label, TextEditingController controller) {
+  Expanded _inputDate(BuildContext context, String label,
+      TextEditingController textController) {
     return Expanded(
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: "MM/DD/YYYY",
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
+      child: Obx(
+        () => TextFormField(
+          controller: textController,
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: "MM/DD/YYYY",
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.red),
+            ),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.red),
-          ),
+          readOnly: true,
+          enabled: !controller.indeterminate,
+          onTap: () => _selectDate(context, textController),
         ),
-        readOnly: true,
-        enabled: !_indeterminate,
-        onTap: () => _selectDate(context, controller),
       ),
     );
   }
 
   Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+      BuildContext context, TextEditingController textController) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -292,14 +293,13 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
     );
     if (pickedDate != null) {
       String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
-      setState(() {
-        controller.text = formattedDate;
-      });
+      textController.text = formattedDate;
     }
   }
 
-  TextField _inputField() {
-    return TextField(
+  TextFormField _inputField(TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         hintText: "500 mg",
         contentPadding: EdgeInsets.symmetric(
@@ -319,10 +319,11 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
           borderSide: BorderSide(color: Colors.grey),
         ),
       ),
-      onChanged: (value) {
-        setState(() {
-          dose = value;
-        });
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor, insira a dose';
+        }
+        return null;
       },
     );
   }
@@ -337,16 +338,14 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
     );
   }
 
-  DropdownButtonFormField<String> _dropDown(String? selectedMedication,
-      List<String> selectItems, String controlVariable) {
+  DropdownButtonFormField<String> _dropDown(
+      String? selectedMedication,
+      List<String> selectItems,
+      void Function(String?) onChanged,
+      bool isEnabled) {
     return DropdownButtonFormField<String>(
       value: selectedMedication, // Default selected value
-      onChanged: (newValue) {
-        // Handle value change
-        setState(() {
-          controlVariable = newValue!;
-        });
-      },
+      onChanged: isEnabled ? onChanged : null,
       items: selectItems
           .map((med) => DropdownMenuItem(
                 value: med,

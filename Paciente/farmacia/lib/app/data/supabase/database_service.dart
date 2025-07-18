@@ -1,0 +1,50 @@
+import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class DatabaseService {
+  final SupabaseClient _client;
+
+  DatabaseService({required SupabaseClient client}) : _client = client;
+
+  // get the current user
+  final User? currentUser = Supabase.instance.client.auth.currentUser;
+
+  final database = Supabase.instance.client.from("medicine");
+
+  Future registerMedicine(MedicineModel medicine) async {
+    return await database.insert(medicine.toJson()).select("id").single();
+  }
+
+  // list all medicines from the current user
+  Future<List<MedicineModel>> getMedicines() async {
+    final response = await database
+        .select()
+        .eq("user_id", currentUser!.id)
+        .order("created_at", ascending: false);
+
+    return response.map((e) => MedicineModel.fromJson(e)).toList();
+    }
+
+    // update a medicine
+    Future<void> updateMedicine(MedicineModel medicine) async {
+      await database
+          .update(medicine.toJson())
+          .eq("id", medicine.id!)
+          .single();
+    }
+
+  // delete a medicine
+  Future<void> deleteMedicine(MedicineModel medicine) async {
+    await database.delete().eq("id", medicine.id!);
+  }
+
+  // retrieve the collumn 'nome' content for a especific user
+  Future<List<String>> getMedicineNames() async {
+    final response = await database
+        .select("nome")
+        .eq("user_id", currentUser!.id)
+        .order("created_at", ascending: false);
+
+    return response.map((e) => e['nome'] as String).toList();
+  }
+}
