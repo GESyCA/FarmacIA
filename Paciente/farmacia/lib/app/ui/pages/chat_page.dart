@@ -22,6 +22,8 @@ class _ChatPageState extends State<ChatPage> {
     ),
   );
 
+  String nomeRemedio = "Paracetamol"; // Example medicine name
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
 
     // Fetch API response
     final answer = await _chatRepository.sendMessage(QuestionModel(
-      nomeRemedio: "Paracetamol",
+      nomeRemedio: nomeRemedio,
       pergunta: text,
     ));
 
