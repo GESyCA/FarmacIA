@@ -1,8 +1,10 @@
+import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -16,9 +18,16 @@ class _ChatPageState extends State<ChatPage> {
   final ValueNotifier<List<Widget>> _messagesNotifier = ValueNotifier([]);
   bool _showPrompts = true;
 
+  // final MedicineController _medicineController = Get.find<MedicineController>();
+  // List<String> medicinesAvailable = []; 
+
+  // Future<void> _fetchAvailableMedicines() {
+
+  // }
+
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
-      baseUrl: "https://bc77-187-19-156-72.ngrok-free.app",
+      baseUrl: "https://086eb0217e49.ngrok-free.app",
     ),
   );
 
