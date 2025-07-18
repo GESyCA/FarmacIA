@@ -1,6 +1,8 @@
+import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddMedicineController extends GetxController{
@@ -32,6 +34,9 @@ class AddMedicineController extends GetxController{
   // coleta de medicamentos selecionados
     final RxString _selectedMedicine = ''.obs;
     String get selectedMedicine => _selectedMedicine.value;
+    void setSelectedMedicine(String value) {
+      _selectedMedicine.value = value;
+    }
 
   // variaveis para controle de notificacoes
   final _recieveNotification = false.obs;
@@ -56,9 +61,8 @@ class AddMedicineController extends GetxController{
 
   final RxString _selectedFrequency = ''.obs;
   String get selectedFrequency => _selectedFrequency.value;
-
-  void setSelectedMedicine(String value) {
-    _selectedMedicine.value = value;
+  void setSelectedFrequency(String value) {
+    _selectedFrequency.value = value;
   }
 
   List<String> formasFarmaceuticas = [
@@ -69,5 +73,66 @@ class AddMedicineController extends GetxController{
 
   final RxString _selectedForma = ''.obs;
   String get selectedForma => _selectedForma.value;
+  void setSelectedForma(String value) {
+    _selectedForma.value = value;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    setSelectedForma(formasFarmaceuticas.first);
+    setSelectedFrequency(frequencia.first);
+    setSelectedMedicine(medicineList.first);
+  }
+
+  Future<void> createMedicine() async {
+    if (formKey.currentState?.validate() ?? false) {
+      isLoading.value = true;
+      try {
+
+        final nome = _selectedMedicine.value;
+        final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
+        final receberNotificacao = _recieveNotification.value;
+        final notificacoesPorDia = recieveNotification
+            ? int.parse(_selectedFrequency.value.split(' ')[0])
+            : null;
+        final dose = doseController.text;
+        final forma = _selectedForma.value;
+        final inicioTratamento = indeterminate ? DateTime.now() : DateFormat('dd/MM/yyyy').parse(dateController.text);
+        final fimTratamento = indeterminate
+            ? null
+            : DateFormat('dd/MM/yyyy').parse(dateEndController.text);
+
+        final medicine = MedicineModel(
+          id: null,
+          userId: userId,
+          nome: nome,
+          receberNotificacao: receberNotificacao,
+          notificacoesPorDia: notificacoesPorDia,
+          dose: dose,
+          forma: forma,
+          inicioTratamento: inicioTratamento,
+          fimTratamento: fimTratamento,
+        );
+        await databaseService.registerMedicine(medicine);
+        print(medicine.toString());
+        Get.back();
+        Get.snackbar('Sucesso', 'Medicamento adicionado com sucesso!', 
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+      } catch (e) {
+        Get.snackbar('Erro', 'Não foi possível adicionar o medicamento: $e', 
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+        print('Erro ao adicionar medicamento: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  }
 
 }

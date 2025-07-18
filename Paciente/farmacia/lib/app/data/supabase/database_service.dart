@@ -29,13 +29,13 @@ class DatabaseService {
     Future<void> updateMedicine(MedicineModel medicine) async {
       await database
           .update(medicine.toJson())
-          .eq("id", medicine.id)
+          .eq("id", medicine.id!)
           .single();
     }
 
   // delete a medicine
   Future<void> deleteMedicine(MedicineModel medicine) async {
-    await database.delete().eq("id", medicine.id).single();
+    await database.delete().eq("id", medicine.id!).single();
   }
 
   // retrieve the collumn 'nome' content for a especific user

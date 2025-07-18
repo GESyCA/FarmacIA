@@ -1,5 +1,5 @@
 class MedicineModel {
-  final int id;
+  final int? id;
   final String userId;
   final String nome;
   final bool receberNotificacao;
@@ -48,5 +48,11 @@ class MedicineModel {
       'inicio_tratamento': inicioTratamento.toIso8601String(),
       'fim_tratamento': fimTratamento?.toIso8601String(),
     };
+  }
+
+  // create tostring method for debugging
+  @override
+  String toString() {
+    return 'MedicineModel{id: $id, userId: $userId, nome: $nome, receberNotificacao: $receberNotificacao, notificacoesPorDia: $notificacoesPorDia, dose: $dose, forma: $forma, inicioTratamento: $inicioTratamento, fimTratamento: $fimTratamento}';
   }
 }
