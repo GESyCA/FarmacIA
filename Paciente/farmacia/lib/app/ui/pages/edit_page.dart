@@ -7,6 +7,19 @@ class EditPage extends GetView<EditController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text('Medicamento'),
+      ),
+      body: Column(
+        children: [
+          Text('Nome: ${controller.medicine.nome}'),
+          Text('Dosagem: ${controller.medicine.forma}'),
+        ],
+      ),
+    );
   }
 }

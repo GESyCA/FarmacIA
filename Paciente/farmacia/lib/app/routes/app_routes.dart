@@ -8,4 +8,5 @@ abstract class Routes {
   static const String initial = '/';
   static const String profile = '/profile';
   static const String quizz = '/quizz';
+  static const String edit = '/edit';
 }
