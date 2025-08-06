@@ -17,7 +17,6 @@ class NavigationMenu extends GetView<NavigationController> {
             onTap: controller.changeTab,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
               BottomNavigationBarItem(icon: Icon(Icons.local_pharmacy), label: 'Medicamentos'),
               BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Perfil'),
               BottomNavigationBarItem(icon: Icon(Icons.quiz_outlined), label: 'Quizz'),

@@ -1,4 +1,5 @@
 import 'package:farmacia/app/controllers/chat_controller.dart';
+import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
@@ -9,7 +10,7 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Chat"),
+      appBar: CustomAppBar(title: "Chat ${controller.medicineName}"),
       body: Container(
         padding: EdgeInsets.all(16),
         color: Colors.grey[200],
@@ -47,7 +48,7 @@ class ChatPage extends GetView<ChatController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(backgroundColor: Color(0xFFB9160C), child: Icon(Icons.person, color: Colors.white)),
+          RobotAvatar(),
           SizedBox(width: 8),
           Expanded(
             child: Container(
@@ -57,10 +58,10 @@ class ChatPage extends GetView<ChatController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Olá! Eu sou uma inteligência artificial generativa desenvolvida especialmente para auxiliar...',
+                    'Olá! Eu sou uma inteligência artificial generativa desenvolvida especialmente para auxiliar suas dúvidas sobre o(a) ${controller.medicineName}, aqui posso ajudar com:',
                     style: TextStyle(fontSize: 14),
                   ),
-                  _buildBulletPoint('Análise e interpretação da bula de medicamentos.'),
+                  _buildBulletPoint('Análise e interpretação da bula.'),
                   _buildBulletPoint('Alertas relacionados ao uso do medicamento.'),
                   _buildBulletPoint('Informações de acesso ao medicamento.'),
                   _buildBulletPoint('Dosagem adequada do medicamento.'),

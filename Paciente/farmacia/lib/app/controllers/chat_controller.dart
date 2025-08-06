@@ -1,5 +1,6 @@
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
+import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -64,7 +65,8 @@ class ChatController extends GetxController {
           color: Colors.red,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Text(text, style: TextStyle(fontSize: 14.0, color: Colors.white)),
+        child:
+            Text(text, style: TextStyle(fontSize: 14.0, color: Colors.white)),
       ),
     );
   }
@@ -76,12 +78,14 @@ class ChatController extends GetxController {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(backgroundColor: Color(0xFFB9160C), child: Icon(Icons.person, color: Colors.white)),
+          RobotAvatar(),
           SizedBox(width: 8.0),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12.0)),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0)),
               child: Text(text, style: TextStyle(fontSize: 14.0)),
             ),
           ),
@@ -97,12 +101,14 @@ class ChatController extends GetxController {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(backgroundColor: Color(0xFFB9160C), child: Icon(Icons.person, color: Colors.white)),
+          RobotAvatar(),
           SizedBox(width: 8.0),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12.0)),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0)),
               child: Row(children: [_buildTypingIndicator()]),
             ),
           ),
@@ -124,7 +130,8 @@ class ChatController extends GetxController {
             height: 6,
             width: 6,
             margin: EdgeInsets.symmetric(horizontal: 1),
-            decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+            decoration:
+                BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
           );
         }),
       ),
