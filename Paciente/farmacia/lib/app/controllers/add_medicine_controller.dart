@@ -24,7 +24,7 @@ class AddMedicineController extends GetxController{
   // lista de medicamentos, frequencias e formas farmaceuticas
   List<String> medicineList = [
     'Paracetamol',
-    'Amoxicillina',
+    'Amoxicilina',
     'Amoxil',
     'Dramin',
     'Rivotril',

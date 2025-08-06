@@ -30,12 +30,12 @@ class MedicinesPage extends GetView<MedicineController> {
                 child: CircularProgressIndicator(),
               )
             : RefreshIndicator(
-              backgroundColor: Colors.white,
-              color: Color(0xFFB9160C),
-              onRefresh: () async {
-                controller.onInit();
-              },
-              child: Container(
+                backgroundColor: Colors.white,
+                color: Color(0xFFB9160C),
+                onRefresh: () async {
+                  controller.onInit();
+                },
+                child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   padding: const EdgeInsets.all(14),
@@ -124,19 +124,27 @@ class MedicinesPage extends GetView<MedicineController> {
                                         contentPadding: EdgeInsets.symmetric(
                                           horizontal: 12,
                                         ),
-                                        leading: Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFB9160C),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Center(
-                                            child: Image.asset(
-                                              "assets/Edit.png",
-                                              width: 24,
-                                              height: 24,
+                                        leading: GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed(
+                                              Routes.chat,
+                                              arguments: medicine.nome,
+                                            );
+                                          },
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFB9160C),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Center(
+                                              child: Image.asset(
+                                                "assets/Edit.png",
+                                                width: 24,
+                                                height: 24,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -154,7 +162,8 @@ class MedicinesPage extends GetView<MedicineController> {
                                             color: Colors.red,
                                           ),
                                           onPressed: () {
-                                            _showDeleteDialog(medicine, context);
+                                            _showDeleteDialog(
+                                                medicine, context);
                                           },
                                         ),
                                       ),
@@ -169,7 +178,7 @@ class MedicinesPage extends GetView<MedicineController> {
                     ],
                   ),
                 ),
-            ),
+              ),
       ),
     );
   }
