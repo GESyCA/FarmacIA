@@ -2,7 +2,6 @@ import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MedicineController extends GetxController {
   // Define any necessary variables and methods for the medicine functionality here
@@ -13,7 +12,9 @@ class MedicineController extends GetxController {
   bool get isLoadingDelete => _isLoadingDelete.value;
 
   // Add other necessary controllers and methods as needed
-  final database = DatabaseService(client: Supabase.instance.client);
+  final DatabaseService database;
+
+  MedicineController(this.database);
 
   final RxList<MedicineModel> _medicines = <MedicineModel>[].obs;
   List<MedicineModel> get medicines => _medicines;
