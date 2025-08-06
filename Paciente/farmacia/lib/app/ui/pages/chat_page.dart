@@ -27,11 +27,11 @@ class _ChatPageState extends State<ChatPage> {
 
   final ChatRepository _chatRepository = ChatRepository(
     httpClient: HttpClient(
-      baseUrl: "https://086eb0217e49.ngrok-free.app",
+      baseUrl: "https://f9d804e1ebc4.ngrok-free.app",
     ),
   );
 
-  String nomeRemedio = "Paracetamol"; // Example medicine name
+  String nomeRemedio = "Rivotril"; // Example medicine name
 
   @override
   Widget build(BuildContext context) {
