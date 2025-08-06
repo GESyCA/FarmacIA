@@ -4,7 +4,6 @@ import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class MedicinesPage extends GetView<MedicineController> {
@@ -122,6 +121,12 @@ class MedicinesPage extends GetView<MedicineController> {
                                     return Card(
                                       color: Colors.white,
                                       child: ListTile(
+                                        onTap: () {
+                                          Get.toNamed(
+                                            Routes.edit,
+                                            arguments: medicine,
+                                          );
+                                        },
                                         contentPadding: EdgeInsets.symmetric(
                                           horizontal: 12,
                                         ),
