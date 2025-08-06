@@ -1,5 +1,6 @@
 import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -91,7 +92,7 @@ class DeleteDialog extends StatelessWidget {
                   ),
                 ),
                 GetBuilder<MedicineController>(
-                  init: MedicineController(),
+                  init: MedicineController(Get.find<DatabaseService>()),
                   initState: (_) {},
                   builder: (controller) {
                     return ElevatedButton.icon(

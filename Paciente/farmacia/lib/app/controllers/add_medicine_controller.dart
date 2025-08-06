@@ -8,7 +8,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AddMedicineController extends GetxController{
 
   // acesso ao banco de dados no supabase
-  final DatabaseService databaseService = DatabaseService(client: Supabase.instance.client);
+  final DatabaseService databaseService;
+
+  AddMedicineController(this.databaseService);
 
   // chave do formulario
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
