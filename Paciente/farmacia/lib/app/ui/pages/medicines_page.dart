@@ -4,6 +4,7 @@ import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class MedicinesPage extends GetView<MedicineController> {
@@ -135,15 +136,15 @@ class MedicinesPage extends GetView<MedicineController> {
                                             width: 40,
                                             height: 40,
                                             decoration: BoxDecoration(
-                                              color: Color(0xFFB9160C),
+                                              color: Color(0xFFE8F3FF),
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                             ),
                                             child: Center(
-                                              child: Image.asset(
-                                                "assets/Edit.png",
-                                                width: 24,
-                                                height: 24,
+                                              child: Icon(
+                                                Icons.chat_bubble_outline,
+                                                color: Color(0xFF0A84FF),
+                                                size: 24,
                                               ),
                                             ),
                                           ),
