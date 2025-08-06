@@ -1,4 +1,3 @@
-import 'package:farmacia/app/ui/pages/chat_page.dart';
 import 'package:farmacia/app/ui/pages/home_page.dart';
 import 'package:farmacia/app/ui/pages/medicines_page.dart';
 import 'package:farmacia/app/ui/pages/profile_page.dart';
@@ -12,7 +11,6 @@ class NavigationController extends GetxController{
 
   final List<Widget> pages = const [
     HomePage(),
-    ChatPage(),
     MedicinesPage(),
     ProfilePage(),
     QuizzPage(),
