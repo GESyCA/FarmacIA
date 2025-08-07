@@ -22,7 +22,9 @@ class InitBindings implements Bindings {
       permanent: true,
     );
     Get.put(
-      ProfileController(),
+      ProfileController(
+        databaseService: Get.find<DatabaseService>(),
+      ),
     );
     Get.put(
       MedicineController(Get.find<DatabaseService>()),
