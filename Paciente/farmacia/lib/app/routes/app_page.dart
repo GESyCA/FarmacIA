@@ -1,3 +1,4 @@
+import 'package:farmacia/app/bindings/add_medicine_binding.dart';
 import 'package:farmacia/app/bindings/chat_binding.dart';
 import 'package:farmacia/app/bindings/edit_binding.dart';
 import 'package:farmacia/app/bindings/profile_binding.dart';
@@ -36,6 +37,7 @@ class AppPage {
     GetPage(
       name: Routes.add_medicine,
       page: () => AddMedicinePage(),
+      binding: AddMedicineBinding(),
     ),
     GetPage(
       name: Routes.register,

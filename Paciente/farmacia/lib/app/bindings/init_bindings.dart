@@ -1,4 +1,3 @@
-import 'package:farmacia/app/controllers/add_medicine_controller.dart';
 import 'package:farmacia/app/controllers/auth_controller.dart';
 import 'package:farmacia/app/controllers/login_controller.dart';
 import 'package:farmacia/app/controllers/medicine_controller.dart';
@@ -24,9 +23,6 @@ class InitBindings implements Bindings {
     );
     Get.put(
       ProfileController(),
-    );
-    Get.put(
-      AddMedicineController(Get.find<DatabaseService>()),
     );
     Get.put(
       MedicineController(Get.find<DatabaseService>()),

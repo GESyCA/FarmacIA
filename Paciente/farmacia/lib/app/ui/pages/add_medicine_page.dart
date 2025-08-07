@@ -11,180 +11,192 @@ class AddMedicinePage extends GetView<AddMedicineController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'Adicionar Medicamento'),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 24,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
+      body: Obx(() {
+        return controller.isInitialLoading
+            ? Center(child: CircularProgressIndicator())
+            : Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 24,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey[200],
                 ),
-                child: Form(
-                  key: controller.formKey,
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _title("Medicamento"),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      _dropDown(
-                        controller.medicineList.first,
-                        controller.medicineList,
-                        (value) => controller.setSelectedMedicine(value ?? ''),
-                        true,
-                      ),
-                      SizedBox(
-                        height: 32,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _title("Receber notificações"),
-                          Obx(
-                            () => Switch(
-                              value: controller.recieveNotification,
-                              activeColor: Colors.red,
-                              onChanged: (value) {
-                                controller.setRecieveNotification(value);
-                              },
-                            ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Form(
+                          key: controller.formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _title("Medicamento"),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              _dropDown(
+                                controller.medicineList.first,
+                                controller.medicineList,
+                                (value) =>
+                                    controller.setSelectedMedicine(value ?? ''),
+                                true,
+                              ),
+                              SizedBox(
+                                height: 32,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _title("Receber notificações"),
+                                  Obx(
+                                    () => Switch(
+                                      value: controller.recieveNotification,
+                                      activeColor: Colors.red,
+                                      onChanged: (value) {
+                                        controller
+                                            .setRecieveNotification(value);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Obx(
+                                () => _dropDown(
+                                  controller.frequencia.first,
+                                  controller.frequencia,
+                                  (value) => controller
+                                      .setSelectedFrequency(value ?? ''),
+                                  controller.recieveNotification,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 32,
+                              ),
+                              _title("Horários de lembrete"),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              _reminderCard(
+                                  time: "7:00",
+                                  description: "Tomar 1 comprimido"),
+                              SizedBox(height: 10),
+                              _reminderCard(
+                                  time: "15:00",
+                                  description: "Tomar 1 comprimido"),
+                              SizedBox(height: 10),
+                              _reminderCard(
+                                  time: "23:00",
+                                  description: "Tomar 1 comprimido"),
+                            ],
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Obx(
-                        () => _dropDown(
-                          controller.frequencia.first,
-                          controller.frequencia,
-                          (value) =>
-                              controller.setSelectedFrequency(value ?? ''),
-                          controller.recieveNotification,
                         ),
                       ),
                       SizedBox(
-                        height: 32,
+                        height: 24,
                       ),
-                      _title("Horários de lembrete"),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _title("Dose"),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            _inputField(controller.doseController),
+                            SizedBox(
+                              height: 32,
+                            ),
+                            _title("Forma farmacêutica"),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            _dropDown(
+                              controller.formasFarmaceuticas.first,
+                              controller.formasFarmaceuticas,
+                              (value) =>
+                                  controller.setSelectedForma(value ?? ''),
+                              true,
+                            ),
+                            SizedBox(
+                              height: 32,
+                            ),
+                            _title("Duração do tratamento"),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _inputDate(context, "Inicio",
+                                    controller.dateController),
+                                SizedBox(width: 10),
+                                _inputDate(context, "Fim",
+                                    controller.dateEndController),
+                              ],
+                            ),
+                            Obx(
+                              () => CheckboxListTile(
+                                title: Text(
+                                  "Tempo indeterminado",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                value: controller.indeterminate,
+                                activeColor: Colors.red,
+                                onChanged: (bool? value) {
+                                  controller.indeterminate = value ?? false;
+                                },
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(
-                        height: 8,
+                        height: 16,
                       ),
-                      _reminderCard(
-                          time: "7:00", description: "Tomar 1 comprimido"),
-                      SizedBox(height: 10),
-                      _reminderCard(
-                          time: "15:00", description: "Tomar 1 comprimido"),
-                      SizedBox(height: 10),
-                      _reminderCard(
-                          time: "23:00", description: "Tomar 1 comprimido"),
+                      // Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _cancelButton(context),
+                          _saveButton(context),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _title("Dose"),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    _inputField(controller.doseController),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    _title("Forma farmacêutica"),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    _dropDown(
-                      controller.formasFarmaceuticas.first,
-                      controller.formasFarmaceuticas,
-                      (value) => controller.setSelectedForma(value ?? ''),
-                      true,
-                    ),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    _title("Duração do tratamento"),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _inputDate(
-                            context, "Inicio", controller.dateController),
-                        SizedBox(width: 10),
-                        _inputDate(
-                            context, "Fim", controller.dateEndController),
-                      ],
-                    ),
-                    Obx(
-                      () => CheckboxListTile(
-                        title: Text(
-                          "Tempo indeterminado",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        value: controller.indeterminate,
-                        activeColor: Colors.red,
-                        onChanged: (bool? value) {
-                          controller.indeterminate = value ?? false;
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              // Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _cancelButton(context),
-                  _saveButton(context),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+      }),
     );
   }
 

@@ -17,7 +17,10 @@ class AddMedicineController extends GetxController{
 
   // variavel para controlar o estado de carregamento
   final isLoading = false.obs;
-  
+
+  final _isInitialLoading = false.obs;
+  bool get isInitialLoading => _isInitialLoading.value;
+
   // controladores de texto para os campos do formulario
   final TextEditingController dateController = TextEditingController();
   final TextEditingController dateEndController = TextEditingController();
@@ -80,8 +83,10 @@ class AddMedicineController extends GetxController{
   }
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
+    await _initialMedicineFilter();
+
     setSelectedForma(formasFarmaceuticas.first);
     setSelectedFrequency(frequencia.first);
     setSelectedMedicine(medicineList.first);
@@ -150,6 +155,18 @@ class AddMedicineController extends GetxController{
         colorText: Colors.white,
       );
     }
+  }
+
+  Future<void> _initialMedicineFilter() async {
+    _isInitialLoading.value = true;
+    List<String> registedMedicines = await databaseService.getMedicineNames();
+    if (registedMedicines.isNotEmpty) {
+      // Atualiza a lista de medicamentos com os não registrados
+      medicineList = medicineList.where((med) => !registedMedicines.contains(med)).toList();
+    }
+
+    _isInitialLoading.value = false;
+    update();
   }
 
 }
