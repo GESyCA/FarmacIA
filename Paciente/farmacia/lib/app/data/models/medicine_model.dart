@@ -55,4 +55,28 @@ class MedicineModel {
   String toString() {
     return 'MedicineModel{id: $id, userId: $userId, nome: $nome, receberNotificacao: $receberNotificacao, notificacoesPorDia: $notificacoesPorDia, dose: $dose, forma: $forma, inicioTratamento: $inicioTratamento, fimTratamento: $fimTratamento}';
   }
+
+  MedicineModel copyWith({
+    int? id,
+    String? userId,
+    String? nome,
+    bool? receberNotificacao,
+    int? notificacoesPorDia,
+    String? dose,
+    String? forma,
+    DateTime? inicioTratamento,
+    DateTime? fimTratamento,
+  }) {
+    return MedicineModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      nome: nome ?? this.nome,
+      receberNotificacao: receberNotificacao ?? this.receberNotificacao,
+      notificacoesPorDia: notificacoesPorDia,
+      dose: dose ?? this.dose,
+      forma: forma ?? this.forma,
+      inicioTratamento: inicioTratamento ?? this.inicioTratamento,
+      fimTratamento: fimTratamento,
+    );
+  }
 }
