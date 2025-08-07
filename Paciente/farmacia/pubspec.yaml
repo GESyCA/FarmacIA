@@ -78,6 +78,7 @@ flutter:
     - assets/robot.svg
     - assets/icone_remedio.png
     - assets/waiting.png
+    - assets/ai_in_medicine.png
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
