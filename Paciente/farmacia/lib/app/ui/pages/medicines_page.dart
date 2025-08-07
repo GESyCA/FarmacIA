@@ -1,6 +1,7 @@
 import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
+import 'package:farmacia/app/ui/modal/full_space_dialog.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';
@@ -16,6 +17,15 @@ class MedicinesPage extends GetView<MedicineController> {
         return DeleteDialog(
           medicine: medicine,
         );
+      },
+    );
+  }
+
+  void _showFullSpaceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return FullSpaceDialog();
       },
     );
   }
@@ -82,23 +92,25 @@ class MedicinesPage extends GetView<MedicineController> {
                                     SizedBox(
                                       width: 50,
                                       height: 50,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Get.toNamed(Routes.add_medicine);
-                                        },
+                                      child: GetBuilder<MedicineController>(
+                                      builder: (controller) => ElevatedButton(
+                                        onPressed: () => controller.medicines.length < 6
+                                          ? Get.toNamed(Routes.add_medicine)
+                                          : _showFullSpaceDialog(context),
                                         style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor: Color(0xFFB9160C),
-                                          padding: EdgeInsets.all(10),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                            BorderRadius.circular(12),
+                                        ),
+                                        backgroundColor: Color(0xFFB9160C),
+                                        padding: EdgeInsets.all(10),
                                         ),
                                         child: Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                          size: 30,
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 30,
                                         ),
+                                      ),
                                       ),
                                     ),
                                   ],
