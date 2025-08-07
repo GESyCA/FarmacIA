@@ -3,6 +3,7 @@ import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/modal/full_space_dialog.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
+import 'package:farmacia/app/ui/widgets/no_medicine_registered.dart';
 import 'package:flutter/material.dart';
 import 'package:farmacia/app/ui/modal/delete_dialog.dart';
 import 'package:get/get.dart';
@@ -93,24 +94,26 @@ class MedicinesPage extends GetView<MedicineController> {
                                       width: 50,
                                       height: 50,
                                       child: GetBuilder<MedicineController>(
-                                      builder: (controller) => ElevatedButton(
-                                        onPressed: () => controller.medicines.length < 6
-                                          ? Get.toNamed(Routes.add_medicine)
-                                          : _showFullSpaceDialog(context),
-                                        style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                            BorderRadius.circular(12),
+                                        builder: (controller) => ElevatedButton(
+                                          onPressed: () => controller
+                                                      .medicines.length <
+                                                  6
+                                              ? Get.toNamed(Routes.add_medicine)
+                                              : _showFullSpaceDialog(context),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            backgroundColor: Color(0xFFB9160C),
+                                            padding: EdgeInsets.all(10),
+                                          ),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
                                         ),
-                                        backgroundColor: Color(0xFFB9160C),
-                                        padding: EdgeInsets.all(10),
-                                        ),
-                                        child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: 30,
-                                        ),
-                                      ),
                                       ),
                                     ),
                                   ],
@@ -121,73 +124,78 @@ class MedicinesPage extends GetView<MedicineController> {
                                 thickness: 1,
                               ),
                               Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  itemCount: controller.searchedItems.length,
-                                  itemBuilder: (context, index) {
-                                    final medicine =
-                                        controller.searchedItems[index];
-                                    return Card(
-                                      color: Colors.white,
-                                      child: ListTile(
-                                        onTap: () {
-                                          Get.toNamed(
-                                            Routes.edit,
-                                            arguments: medicine,
-                                          );
-                                        },
-                                        contentPadding: EdgeInsets.symmetric(
+                                child: controller.medicines.isEmpty
+                                    ? NoMedicineRegistered()
+                                    : ListView.builder(
+                                        padding: EdgeInsets.symmetric(
                                           horizontal: 12,
+                                          vertical: 8,
                                         ),
-                                        leading: GestureDetector(
-                                          onTap: () {
-                                            Get.toNamed(
-                                              Routes.chat,
-                                              arguments: medicine.nome,
-                                            );
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFE8F3FF),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.chat_bubble_outline,
-                                                color: Color(0xFF0A84FF),
-                                                size: 24,
+                                        itemCount:
+                                            controller.searchedItems.length,
+                                        itemBuilder: (context, index) {
+                                          final medicine =
+                                              controller.searchedItems[index];
+                                          return Card(
+                                            color: Colors.white,
+                                            child: ListTile(
+                                              onTap: () {
+                                                Get.toNamed(
+                                                  Routes.edit,
+                                                  arguments: medicine,
+                                                );
+                                              },
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                              ),
+                                              leading: GestureDetector(
+                                                onTap: () {
+                                                  Get.toNamed(
+                                                    Routes.chat,
+                                                    arguments: medicine.nome,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFE8F3FF),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.chat_bubble_outline,
+                                                      color: Color(0xFF0A84FF),
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              title: Text(
+                                                medicine.nome,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                  "Próximo: ${medicine.inicioTratamento.toLocal().toString().split(' ')[0]}"),
+                                              trailing: IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  _showDeleteDialog(
+                                                      medicine, context);
+                                                },
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        title: Text(
-                                          medicine.nome,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                            "Próximo: ${medicine.inicioTratamento.toLocal().toString().split(' ')[0]}"),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            _showDeleteDialog(
-                                                medicine, context);
-                                          },
-                                        ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
                               ),
                             ],
                           ),
