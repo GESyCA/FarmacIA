@@ -27,10 +27,13 @@ class DatabaseService {
 
     // update a medicine
     Future<void> updateMedicine(MedicineModel medicine) async {
+      // imprimir o json do medicamento
+      print(medicine.toJson());
+
       await database
           .update(medicine.toJson())
           .eq("id", medicine.id!)
-          .single();
+          .maybeSingle();
     }
 
   // delete a medicine

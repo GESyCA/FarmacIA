@@ -1,10 +1,12 @@
+import 'package:farmacia/app/bindings/add_medicine_binding.dart';
 import 'package:farmacia/app/bindings/chat_binding.dart';
-import 'package:farmacia/app/bindings/profile_binding.dart';
+import 'package:farmacia/app/bindings/edit_binding.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/navigation_menu.dart';
 import 'package:farmacia/app/ui/pages/add_medicine_page.dart';
 import 'package:farmacia/app/ui/pages/auth_page.dart';
 import 'package:farmacia/app/ui/pages/chat_page.dart';
+import 'package:farmacia/app/ui/pages/edit_page.dart';
 import 'package:farmacia/app/ui/pages/home_page.dart';
 import 'package:farmacia/app/ui/pages/login_page.dart';
 import 'package:farmacia/app/ui/pages/profile_page.dart';
@@ -34,6 +36,7 @@ class AppPage {
     GetPage(
       name: Routes.add_medicine,
       page: () => AddMedicinePage(),
+      binding: AddMedicineBinding(),
     ),
     GetPage(
       name: Routes.register,
@@ -46,11 +49,15 @@ class AppPage {
     GetPage(
       name: Routes.profile,
       page: () => ProfilePage(),
-      binding: ProfileBinding()
     ),
     GetPage(
       name: Routes.quizz,
       page: () => QuizzPage(),
+    ),
+    GetPage(
+      name: Routes.edit,
+      page: () => EditPage(),
+      binding: EditBinding(),
     ),
   ];
 }
