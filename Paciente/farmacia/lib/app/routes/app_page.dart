@@ -1,7 +1,6 @@
 import 'package:farmacia/app/bindings/add_medicine_binding.dart';
 import 'package:farmacia/app/bindings/chat_binding.dart';
 import 'package:farmacia/app/bindings/edit_binding.dart';
-import 'package:farmacia/app/bindings/profile_binding.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:farmacia/app/ui/navigation_menu.dart';
 import 'package:farmacia/app/ui/pages/add_medicine_page.dart';
@@ -48,9 +47,9 @@ class AppPage {
       page: () => AuthPage(),
     ),
     GetPage(
-        name: Routes.profile,
-        page: () => ProfilePage(),
-        binding: ProfileBinding()),
+      name: Routes.profile,
+      page: () => ProfilePage(),
+    ),
     GetPage(
       name: Routes.quizz,
       page: () => QuizzPage(),
