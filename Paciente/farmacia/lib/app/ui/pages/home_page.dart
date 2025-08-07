@@ -20,6 +20,10 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             color: Colors.grey[200],
           ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 24,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const <Widget>[
