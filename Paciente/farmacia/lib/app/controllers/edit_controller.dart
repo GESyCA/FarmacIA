@@ -82,13 +82,14 @@ class EditController extends GetxController{
   }
 
   void _updateMedicine() {
+    
     medicine = medicine.copyWith(
       inicioTratamento: DateFormat('dd/MM/yyyy').parse(dateController.text),
-      fimTratamento: indeterminate
+      fimTratamento: _indeterminate.value 
             ? null
             : DateFormat('dd/MM/yyyy').parse(dateEndController.text),
       dose: doseController.text,
-      notificacoesPorDia: recieveNotification
+      notificacoesPorDia: _recieveNotification.value
             ? int.parse(_selectedFrequency.value.split(' ')[0])
             : null,
       forma: selectedForma,
