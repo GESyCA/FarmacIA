@@ -5,42 +5,45 @@ class NoMedicineRegistered extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Sem medicamentos cadastrados',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Sem medicamentos cadastrados',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.start,
               ),
-              textAlign: TextAlign.start,
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Text(
-              'Comece agora o acompanhamento do seu tratamento',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
+              const SizedBox(
+                height: 16,
               ),
-              textAlign: TextAlign.start,
-            ),
-            const SizedBox(
-              height: 32,
-            ),
-            Image.asset(
-              'assets/waiting.png',
-              height: 200,
-            ),
-          ],
+              Text(
+                'Comece agora o acompanhamento do seu tratamento',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              Image.asset(
+                'assets/waiting.png',
+                height: 200,
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
