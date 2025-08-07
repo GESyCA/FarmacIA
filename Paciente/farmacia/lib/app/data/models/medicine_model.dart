@@ -72,11 +72,11 @@ class MedicineModel {
       userId: userId ?? this.userId,
       nome: nome ?? this.nome,
       receberNotificacao: receberNotificacao ?? this.receberNotificacao,
-      notificacoesPorDia: notificacoesPorDia ?? this.notificacoesPorDia,
+      notificacoesPorDia: notificacoesPorDia,
       dose: dose ?? this.dose,
       forma: forma ?? this.forma,
       inicioTratamento: inicioTratamento ?? this.inicioTratamento,
-      fimTratamento: fimTratamento ?? this.fimTratamento,
+      fimTratamento: fimTratamento,
     );
   }
 }
