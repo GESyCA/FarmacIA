@@ -23,28 +23,23 @@ class ChatPage extends GetView<ChatController> {
                 if (conversation == null) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                return ListView.builder(
-                  reverse: true,
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  // A contagem de itens inclui as mensagens + a mensagem inicial + o indicador de "digitando"
-                  itemCount: conversation.messages.length + (controller.isLoading ? 1 : 0) + 1,
-                  itemBuilder: (context, index) {
-                    // Lógica para exibir os itens na ordem correta (invertida)
-                    if (index == 0) {
-                      return _LLMFirstMessage();
-                    }
-                    if (controller.isLoading && index == 1) {
-                      return controller.buildLoadingMessage();
-                    }
-                    final messageIndex = index - (controller.isLoading ? 1 : 0) - 1;
-                    final message = conversation.messages.reversed.toList()[messageIndex];
+                // Usamos um ListView simples, que é mais fácil de organizar
+                return ListView(
+                  reverse: true, // Mantemos a lista invertida
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  children: [
+                    if (controller.isLoading) controller.buildLoadingMessage(),
 
-                    if (message.isUserMessage) {
-                      return controller.buildUserMessage(message.text);
-                    } else {
-                      return controller.buildLLMResponse(message.text);
-                    }
-                  }
+                    ...conversation.messages.reversed.map((message) {
+                      if (message.isUserMessage) {
+                        return controller.buildUserMessage(message.text);
+                      } else {
+                        return controller.buildLLMResponse(message.text);
+                      }
+                    }),
+
+                    _LLMFirstMessage(),
+                  ],
                 );
               }),
             ),
