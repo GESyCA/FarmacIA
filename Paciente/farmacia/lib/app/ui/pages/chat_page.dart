@@ -2,7 +2,6 @@ import 'package:farmacia/app/controllers/chat_controller.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({super.key});
@@ -10,7 +9,12 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Chat ${controller.medicineName}"),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text('Chat ${controller.medicineName}'),
+      ),
       body: Container(
         padding: EdgeInsets.all(16),
         color: Colors.grey[200],
