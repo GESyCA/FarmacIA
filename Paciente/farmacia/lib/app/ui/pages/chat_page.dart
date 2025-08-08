@@ -130,6 +130,10 @@ class ChatPage extends GetView<ChatController> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             ),
             child: Text('Faça um breve resumo da bula'),
           ),
@@ -142,6 +146,10 @@ class ChatPage extends GetView<ChatController> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             ),
             child: Text('Com que frequência devo tomar'),
           ),
