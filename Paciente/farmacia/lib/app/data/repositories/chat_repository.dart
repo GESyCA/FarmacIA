@@ -20,14 +20,14 @@ class ChatRepository {
       if (response.statusCode == 200) {
         return Answer.fromRawJson(response.body);
       } else if (response.statusCode == 415) {
-        return Answer(resposta: 'Desculpe, não entendi a pergunta');
+        return Answer(resposta: 'Desculpe, não entendi a pergunta', conversationId: "");
       } else {
-        return Answer(resposta: 'Erro de conexão');
+        return Answer(resposta: 'Erro de conexão', conversationId: "");
       }
     } on TimeoutException {
-      return Answer(resposta: 'Desculpe, tempo foi exedido');
+      return Answer(resposta: 'Desculpe, tempo foi exedido', conversationId: "");
     } catch (e) {
-      return Answer(resposta: e.toString());
+      return Answer(resposta: e.toString(), conversationId: "");
     }
   }
 }
