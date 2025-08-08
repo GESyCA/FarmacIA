@@ -36,7 +36,7 @@ class ChatController extends GetxController {
   }
 
   void _loadConversation() {
-    final key = '$userId-$medicineName';
+    final key = '${userId}_$medicineName';
     final existingConversation = _conversationBox.get(key);
     if (existingConversation != null) {
       currentConversation.value = existingConversation;
@@ -44,7 +44,7 @@ class ChatController extends GetxController {
       currentConversation.value = Conversation(
         medicineName: medicineName,
         userId: userId,
-        messages: HiveList(_conversationBox),
+        messages: [],
       );
     }
   }

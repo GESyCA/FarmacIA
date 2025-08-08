@@ -37,7 +37,7 @@ class ChatPage extends GetView<ChatController> {
                       return controller.buildLoadingMessage();
                     }
                     final messageIndex = index - (controller.isLoading ? 1 : 0) - 1;
-                    final message = conversation.messages.toList()[messageIndex];
+                    final message = conversation.messages.reversed.toList()[messageIndex];
 
                     if (message.isUserMessage) {
                       return controller.buildUserMessage(message.text);
