@@ -1,8 +1,10 @@
+import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class ChatController extends GetxController {
   final ChatRepository repository;
@@ -11,8 +13,8 @@ class ChatController extends GetxController {
 
   final TextEditingController textController = TextEditingController();
 
-  final List<Widget> _messages = <Widget>[].obs;
-  List<Widget> get messages => _messages;
+  // Substituímos a lista de widgets por um objeto reativo de Conversa
+  final Rx<Conversation?> currentConversation = Rx(null);
 
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
@@ -22,12 +24,29 @@ class ChatController extends GetxController {
 
   late final String medicineName;
   late final String userId;
+  late Box<Conversation> _conversationBox;
 
   @override
   void onInit() {
     super.onInit();
     medicineName = Get.arguments['medicine'] ?? 'Paracetamol';
     userId = Get.arguments['userId'] ?? '';
+    _conversationBox = Hive.box<Conversation>('conversations');
+    _loadConversation();
+  }
+
+  void _loadConversation() {
+    final key = '$userId-$medicineName';
+    final existingConversation = _conversationBox.get(key);
+    if (existingConversation != null) {
+      currentConversation.value = existingConversation;
+    } else {
+      currentConversation.value = Conversation(
+        medicineName: medicineName,
+        userId: userId,
+        messages: HiveList(_conversationBox),
+      );
+    }
   }
 
   void togglePrompts() {
@@ -35,28 +54,51 @@ class ChatController extends GetxController {
   }
 
   void handleSubmitted(String text) async {
-    if (text.isEmpty) return;
+    if (text.isEmpty || _isLoading.value) return;
 
-    textController.clear();
+    _isLoading.value = true;
     _showPrompts.value = false;
-
-    messages.insert(0, _buildUserMessage(text));
-    final loading = _buildLoadingMessage();
-    messages.insert(0, loading);
+    final userMessage = ChatMessage(
+      text: text,
+      isUserMessage: true,
+      timestamp: DateTime.now(),
+    );
+    currentConversation.value?.messages.add(userMessage);
+    currentConversation.update((val) {}); // Força a atualização da UI
+    textController.clear();
 
     final answer = await repository.sendMessage(
-      QuestionModel(nomeRemedio: medicineName, pergunta: text),
+      QuestionModel(
+        nomeRemedio: medicineName,
+        pergunta: text,
+        conversationId: currentConversation.value?.conversationId,
+      ),
     );
 
-    messages.remove(loading);
-    messages.insert(0, _buildLLMResponse(answer.resposta));
+    // Salva o ID da conversa retornado pela API
+    if (currentConversation.value!.conversationId == null && answer.conversationId != "") {
+      currentConversation.value!.conversationId = answer.conversationId;
+    }
+
+    final botMessage = ChatMessage(
+      text: answer.resposta,
+      isUserMessage: false,
+      timestamp: DateTime.now(),
+    );
+    currentConversation.value!.messages.add(botMessage);
+
+    // Salva a conversa inteira no Hive
+    await _conversationBox.put(currentConversation.value!.boxKey, currentConversation.value!);
+
+    _isLoading.value = false;
+    currentConversation.update((val) {}); // Força a atualização da UI
   }
 
   void sendPrompt(String prompt) {
     handleSubmitted(prompt);
   }
 
-  Widget _buildUserMessage(String text) {
+  Widget buildUserMessage(String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerRight,
@@ -74,7 +116,7 @@ class ChatController extends GetxController {
     );
   }
 
-  Widget _buildLLMResponse(String text) {
+  Widget buildLLMResponse(String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,
@@ -98,7 +140,7 @@ class ChatController extends GetxController {
     );
   }
 
-  Widget _buildLoadingMessage() {
+  Widget buildLoadingMessage() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,

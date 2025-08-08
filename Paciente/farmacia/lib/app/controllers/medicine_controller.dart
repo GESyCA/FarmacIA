@@ -101,7 +101,8 @@ class MedicineController extends GetxController {
 
     final user = await _authService.getCurrentUser();
     _userId = user?.id ?? '';
-    
+    print('User ID: $_userId');
+
     _medicines.clear();
     final data = await fetchMedicines();
     _medicines.addAll(data);

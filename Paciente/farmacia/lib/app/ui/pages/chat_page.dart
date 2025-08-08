@@ -19,19 +19,43 @@ class ChatPage extends GetView<ChatController> {
           children: [
             Expanded(
               child: Obx(() {
-                return ListView(
+                final conversation = controller.currentConversation.value;
+                if (conversation == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return ListView.builder(
                   reverse: true,
                   padding: EdgeInsets.symmetric(vertical: 8),
-                  children: [
-                    ...controller.messages,
-                    _LLMFirstMessage(),
-                  ],
+                  // A contagem de itens inclui as mensagens + a mensagem inicial + o indicador de "digitando"
+                  itemCount: conversation.messages.length + (controller.isLoading ? 1 : 0) + 1,
+                  itemBuilder: (context, index) {
+                    // Lógica para exibir os itens na ordem correta (invertida)
+                    if (index == 0) {
+                      return _LLMFirstMessage();
+                    }
+                    if (controller.isLoading && index == 1) {
+                      return controller.buildLoadingMessage();
+                    }
+                    final messageIndex = index - (controller.isLoading ? 1 : 0) - 1;
+                    final message = conversation.messages.toList()[messageIndex];
+
+                    if (message.isUserMessage) {
+                      return controller.buildUserMessage(message.text);
+                    } else {
+                      return controller.buildLLMResponse(message.text);
+                    }
+                  }
                 );
               }),
             ),
             Column(
               children: [
-                Obx(() => controller.showPrompts ? _buildPromptButtons() : SizedBox.shrink()),
+                Obx(
+                  () =>
+                      controller.showPrompts
+                          ? _buildPromptButtons()
+                          : SizedBox.shrink(),
+                ),
                 SizedBox(height: 12),
                 _buildInputField(),
               ],
@@ -53,7 +77,10 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: Container(
               padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,7 +89,9 @@ class ChatPage extends GetView<ChatController> {
                     style: TextStyle(fontSize: 14),
                   ),
                   _buildBulletPoint('Análise e interpretação da bula.'),
-                  _buildBulletPoint('Alertas relacionados ao uso do medicamento.'),
+                  _buildBulletPoint(
+                    'Alertas relacionados ao uso do medicamento.',
+                  ),
                   _buildBulletPoint('Informações de acesso ao medicamento.'),
                   _buildBulletPoint('Dosagem adequada do medicamento.'),
                   _buildBulletPoint('Dentre outros.'),
@@ -81,8 +110,16 @@ class ChatPage extends GetView<ChatController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          Expanded(child: Text(text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
+          Text(
+            '• ',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -93,16 +130,24 @@ class ChatPage extends GetView<ChatController> {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () => controller.sendPrompt('Faça um breve resumo da bula'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed:
+                () => controller.sendPrompt('Faça um breve resumo da bula'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
             child: Text('Faça um breve resumo da bula'),
           ),
         ),
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => controller.sendPrompt('Com que frequência devo tomar'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed:
+                () => controller.sendPrompt('Com que frequência devo tomar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
             child: Text('Com que frequência devo tomar'),
           ),
         ),
@@ -116,7 +161,13 @@ class ChatPage extends GetView<ChatController> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 4, offset: Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -125,13 +176,18 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: TextField(
               controller: controller.textController,
-              decoration: InputDecoration(border: InputBorder.none, hintText: 'Pergunte algo'),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Pergunte algo',
+              ),
               onSubmitted: controller.handleSubmitted,
             ),
           ),
           IconButton(
             icon: Icon(Icons.send, color: Colors.grey),
-            onPressed: () => controller.handleSubmitted(controller.textController.text),
+            onPressed:
+                () =>
+                    controller.handleSubmitted(controller.textController.text),
           ),
         ],
       ),
