@@ -20,12 +20,14 @@ class ChatController extends GetxController {
   final RxBool _showPrompts = true.obs;
   bool get showPrompts => _showPrompts.value;
 
-  late final medicineName;
+  late final String medicineName;
+  late final String userId;
 
   @override
   void onInit() {
     super.onInit();
-    medicineName = Get.arguments;
+    medicineName = Get.arguments['medicine'] ?? 'Paracetamol';
+    userId = Get.arguments['userId'] ?? '';
   }
 
   void togglePrompts() {
@@ -42,10 +44,9 @@ class ChatController extends GetxController {
     final loading = _buildLoadingMessage();
     messages.insert(0, loading);
 
-    final answer = await repository.sendMessage(QuestionModel(
-      nomeRemedio: medicineName,
-      pergunta: text,
-    ));
+    final answer = await repository.sendMessage(
+      QuestionModel(nomeRemedio: medicineName, pergunta: text),
+    );
 
     messages.remove(loading);
     messages.insert(0, _buildLLMResponse(answer.resposta));
@@ -65,8 +66,10 @@ class ChatController extends GetxController {
           color: Colors.red,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child:
-            Text(text, style: TextStyle(fontSize: 14.0, color: Colors.white)),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 14.0, color: Colors.white),
+        ),
       ),
     );
   }
@@ -84,8 +87,9 @@ class ChatController extends GetxController {
             child: Container(
               padding: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12.0)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
               child: Text(text, style: TextStyle(fontSize: 14.0)),
             ),
           ),
@@ -107,8 +111,9 @@ class ChatController extends GetxController {
             child: Container(
               padding: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12.0)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
               child: Row(children: [_buildTypingIndicator()]),
             ),
           ),
@@ -130,8 +135,10 @@ class ChatController extends GetxController {
             height: 6,
             width: 6,
             margin: EdgeInsets.symmetric(horizontal: 1),
-            decoration:
-                BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              shape: BoxShape.circle,
+            ),
           );
         }),
       ),
