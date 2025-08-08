@@ -1,5 +1,4 @@
 import 'package:farmacia/app/controllers/add_medicine_controller.dart';
-import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +9,12 @@ class AddMedicinePage extends GetView<AddMedicineController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Adicionar Medicamento'),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text('Adicionar Medicamento'),
+      ),
       body: Obx(() {
         return controller.isInitialLoading
             ? Center(child: CircularProgressIndicator())

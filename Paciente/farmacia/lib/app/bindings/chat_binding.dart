@@ -10,7 +10,7 @@ class ChatBinding extends Bindings {
       () => ChatController(
         ChatRepository(
           httpClient: HttpClient(
-            baseUrl: "https://765ba1469829.ngrok-free.app",
+            baseUrl: "https://dec29dd50c50.ngrok-free.app",
           ),
         ),
       ),

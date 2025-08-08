@@ -2,7 +2,6 @@ import 'package:farmacia/app/controllers/chat_controller.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({super.key});
@@ -10,7 +9,12 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Chat ${controller.medicineName}"),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text('Chat ${controller.medicineName}'),
+      ),
       body: Container(
         padding: EdgeInsets.all(16),
         color: Colors.grey[200],
@@ -19,11 +23,25 @@ class ChatPage extends GetView<ChatController> {
           children: [
             Expanded(
               child: Obx(() {
+                final conversation = controller.currentConversation.value;
+                if (conversation == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                // Usamos um ListView simples, que é mais fácil de organizar
                 return ListView(
-                  reverse: true,
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  reverse: true, // Mantemos a lista invertida
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   children: [
-                    ...controller.messages,
+                    if (controller.isLoading) controller.buildLoadingMessage(),
+
+                    ...conversation.messages.reversed.map((message) {
+                      if (message.isUserMessage) {
+                        return controller.buildUserMessage(message.text);
+                      } else {
+                        return controller.buildLLMResponse(message.text);
+                      }
+                    }),
+
                     _LLMFirstMessage(),
                   ],
                 );
@@ -31,7 +49,12 @@ class ChatPage extends GetView<ChatController> {
             ),
             Column(
               children: [
-                Obx(() => controller.showPrompts ? _buildPromptButtons() : SizedBox.shrink()),
+                Obx(
+                  () =>
+                      controller.showPrompts
+                          ? _buildPromptButtons()
+                          : SizedBox.shrink(),
+                ),
                 SizedBox(height: 12),
                 _buildInputField(),
               ],
@@ -53,7 +76,10 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: Container(
               padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,7 +88,9 @@ class ChatPage extends GetView<ChatController> {
                     style: TextStyle(fontSize: 14),
                   ),
                   _buildBulletPoint('Análise e interpretação da bula.'),
-                  _buildBulletPoint('Alertas relacionados ao uso do medicamento.'),
+                  _buildBulletPoint(
+                    'Alertas relacionados ao uso do medicamento.',
+                  ),
                   _buildBulletPoint('Informações de acesso ao medicamento.'),
                   _buildBulletPoint('Dosagem adequada do medicamento.'),
                   _buildBulletPoint('Dentre outros.'),
@@ -81,8 +109,16 @@ class ChatPage extends GetView<ChatController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          Expanded(child: Text(text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
+          Text(
+            '• ',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -93,16 +129,32 @@ class ChatPage extends GetView<ChatController> {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () => controller.sendPrompt('Faça um breve resumo da bula'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed:
+                () => controller.sendPrompt('Faça um breve resumo da bula'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            ),
             child: Text('Faça um breve resumo da bula'),
           ),
         ),
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => controller.sendPrompt('Com que frequência devo tomar'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed:
+                () => controller.sendPrompt('Com que frequência devo tomar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            ),
             child: Text('Com que frequência devo tomar'),
           ),
         ),
@@ -116,7 +168,13 @@ class ChatPage extends GetView<ChatController> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 4, offset: Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -125,13 +183,18 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: TextField(
               controller: controller.textController,
-              decoration: InputDecoration(border: InputBorder.none, hintText: 'Pergunte algo'),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Pergunte algo',
+              ),
               onSubmitted: controller.handleSubmitted,
             ),
           ),
           IconButton(
             icon: Icon(Icons.send, color: Colors.grey),
-            onPressed: () => controller.handleSubmitted(controller.textController.text),
+            onPressed:
+                () =>
+                    controller.handleSubmitted(controller.textController.text),
           ),
         ],
       ),
