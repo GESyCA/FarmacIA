@@ -142,7 +142,10 @@ class MedicinesPage extends GetView<MedicineController> {
                                               onTap: () {
                                                 Get.toNamed(
                                                   Routes.edit,
-                                                  arguments: medicine,
+                                                  arguments: <String, dynamic>{
+                                                    'medicine': medicine,
+                                                    'userId': controller.userId,
+                                                  },
                                                 );
                                               },
                                               contentPadding:

@@ -1,7 +1,9 @@
 import 'package:farmacia/app/data/models/medicine_model.dart';
+import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MedicineController extends GetxController {
   // Define any necessary variables and methods for the medicine functionality here
@@ -25,6 +27,11 @@ class MedicineController extends GetxController {
   final Rx<TextEditingController> _searchController =
       TextEditingController().obs;
   TextEditingController get searchController => _searchController.value;
+
+  final AuthService _authService = AuthService(client: Supabase.instance.client);
+
+  late final String _userId;
+  String get userId => _userId;
 
   Future<List<MedicineModel>> fetchMedicines() async {
     try {
@@ -91,6 +98,10 @@ class MedicineController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     _isLoading.value = true;
+
+    final user = await _authService.getCurrentUser();
+    _userId = user?.id ?? '';
+    
     _medicines.clear();
     final data = await fetchMedicines();
     _medicines.addAll(data);
