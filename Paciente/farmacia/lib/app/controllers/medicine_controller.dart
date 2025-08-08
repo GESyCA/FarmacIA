@@ -30,7 +30,7 @@ class MedicineController extends GetxController {
 
   final AuthService _authService = AuthService(client: Supabase.instance.client);
 
-  late final String _userId;
+  late String _userId;
   String get userId => _userId;
 
   Future<List<MedicineModel>> fetchMedicines() async {
