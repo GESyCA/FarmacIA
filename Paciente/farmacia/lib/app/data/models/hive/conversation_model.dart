@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'conversation_model.g.dart'; // Este arquivo será gerado
 
 @HiveType(typeId: 1)
-class ChatMessage extends HiveObject {
+class ChatMessage {
   @HiveField(0)
   final String text;
 
@@ -32,7 +32,7 @@ class Conversation extends HiveObject {
   final String userId;
 
   @HiveField(3)
-  HiveList<ChatMessage> messages;
+  List<ChatMessage> messages;
 
   Conversation({
     this.conversationId,

@@ -60,7 +60,7 @@ class ConversationAdapter extends TypeAdapter<Conversation> {
       conversationId: fields[0] as String?,
       medicineName: fields[1] as String,
       userId: fields[2] as String,
-      messages: (fields[3] as HiveList).castHiveList(),
+      messages: (fields[3] as List).cast<ChatMessage>(),
     );
   }
 
