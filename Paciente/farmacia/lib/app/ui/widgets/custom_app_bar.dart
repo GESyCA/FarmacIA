@@ -1,11 +1,16 @@
-import 'package:farmacia/app/data/supabase/auth_service.dart';
+import 'package:farmacia/app/ui/modal/exit_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final AuthService _authService = AuthService(client: Supabase.instance.client);
   CustomAppBar({super.key, required this.title});
+
+  void _showExitDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => ExitDialog(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _authService.signOut(),
+            onPressed: () => _showExitDialog(context),
           ),
         ],
       );
