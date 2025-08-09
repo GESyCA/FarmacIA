@@ -130,7 +130,7 @@ class ChatPage extends GetView<ChatController> {
         Expanded(
           child: ElevatedButton(
             onPressed:
-                () => controller.sendPrompt('Faça um breve resumo da bula'),
+                () => controller.sendPrompt('Qual a indicação do medicamento?'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
@@ -139,14 +139,14 @@ class ChatPage extends GetView<ChatController> {
               ),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             ),
-            child: Text('Faça um breve resumo da bula'),
+            child: Text('Qual a indicação do medicamento?'),
           ),
         ),
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
             onPressed:
-                () => controller.sendPrompt('Com que frequência devo tomar'),
+                () => controller.sendPrompt('Com que frequência devo tomar?'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
@@ -155,7 +155,7 @@ class ChatPage extends GetView<ChatController> {
               ),
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             ),
-            child: Text('Com que frequência devo tomar'),
+            child: Text('Com que frequência devo tomar?'),
           ),
         ),
       ],
