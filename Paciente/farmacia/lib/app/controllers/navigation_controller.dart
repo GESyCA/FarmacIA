@@ -21,4 +21,8 @@ class NavigationController extends GetxController{
   }
 
   Widget get currentPage => pages[_currentIndex.value];
+
+  void resetController() {
+    _currentIndex.value = 0; // Volta para a primeira aba (Home)
+  }
 }

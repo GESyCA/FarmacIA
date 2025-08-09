@@ -15,19 +15,14 @@ class InitBindings implements Bindings {
     Get.put(LoginController());
     Get.put(RegisterController());
     Get.put(AuthController(), permanent: true);
-    Get.put(
-      DatabaseService(
-        client: Supabase.instance.client,
-      ),
-      permanent: true,
+    Get.put(DatabaseService(client: Supabase.instance.client), permanent: true);
+    Get.lazyPut<ProfileController>(
+      () => ProfileController(databaseService: Get.find<DatabaseService>()),
+      fenix: true,
     );
-    Get.put(
-      ProfileController(
-        databaseService: Get.find<DatabaseService>(),
-      ),
-    );
-    Get.put(
-      MedicineController(Get.find<DatabaseService>()),
+    Get.lazyPut<MedicineController>(
+      () => MedicineController(Get.find<DatabaseService>()),
+      fenix: true,
     );
   }
 }

@@ -46,10 +46,12 @@ class LoginController extends GetxController {
 
     try {
       final response = await _authService.signIn(email, password);
+      
+      emailController.clear();
+      passwordController.clear();
+
       _isLoading.value = false;
 
-      // You could check response.session as well if needed
-      //Get.offNamed(Routes.navigation);
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar(
