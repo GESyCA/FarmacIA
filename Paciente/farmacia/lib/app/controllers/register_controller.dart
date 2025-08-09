@@ -1,6 +1,5 @@
 import 'package:farmacia/app/data/models/user_model.dart';
 import 'package:farmacia/app/data/supabase/auth_service.dart';
-import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -82,7 +81,6 @@ class RegisterController extends GetxController {
         telefone: phone,
       ));
       _isLoading.value = false;
-      Get.offNamed(Routes.login);
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar(

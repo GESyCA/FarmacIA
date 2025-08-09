@@ -1,6 +1,7 @@
 import 'package:farmacia/app/controllers/register_controller.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class RegisterPage extends GetView<RegisterController> {
@@ -21,13 +22,8 @@ class RegisterPage extends GetView<RegisterController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 60,
-                    ),
-                    Image.asset(
-                      "assets/Label.png",
-                      height: 80,
-                    ),
+                    const SizedBox(height: 60),
+                    Image.asset("assets/Label.png", height: 80),
                   ],
                 ),
               ),
@@ -54,39 +50,35 @@ class RegisterPage extends GetView<RegisterController> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
+                      SizedBox(height: 16),
                       nomeInput("Nome", controller.nameController),
-                      SizedBox(
-                        height: 24,
-                      ),
+                      SizedBox(height: 24),
                       emailInput("Email", controller.emailController),
-                      SizedBox(
-                        height: 24,
-                      ),
+                      SizedBox(height: 24),
                       telefoneInput("Telefone", controller.phoneController),
-                      SizedBox(
-                        height: 24,
+                      SizedBox(height: 24),
+                      Obx(
+                        () =>
+                            senhaInput("Senha", controller.passwordController),
                       ),
-                      Obx(() =>
-                          senhaInput("Senha", controller.passwordController)),
-                      SizedBox(
-                        height: 24,
+                      SizedBox(height: 24),
+                      Obx(
+                        () => confirmaSenhaInput(
+                          "Confirmar senha",
+                          controller.confirmPasswordController,
+                        ),
                       ),
-                      Obx(() => confirmaSenhaInput("Confirmar senha",
-                          controller.confirmPasswordController)),
-                      SizedBox(
-                        height: 24,
-                      ),
+                      SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Obx(
                             () => ElevatedButton(
-                              onPressed: () => controller.isLoading
-                                  ? null
-                                  : controller.register(),
+                              onPressed:
+                                  () =>
+                                      controller.isLoading
+                                          ? null
+                                          : controller.register(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF2656E6),
                                 padding: EdgeInsets.symmetric(
@@ -98,48 +90,46 @@ class RegisterPage extends GetView<RegisterController> {
                                 ),
                                 elevation: 4,
                               ),
-                              child: controller.isLoading
-                                  ? SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
+                              child:
+                                  controller.isLoading
+                                      ? SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : Text(
+                                        "Registrar",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    )
-                                  : Text(
-                                      "Registrar",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      SizedBox(height: 8),
                       Center(
                         child: TextButton(
-                            onPressed: () {
-                              Get.offNamed(
-                                  Routes.login); // Navigate to the login page
-                            },
-                            child: Text(
-                              "Já tem uma conta? Login",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            )),
+                          onPressed: () {
+                            Get.offNamed(
+                              Routes.login,
+                            ); // Navigate to the login page
+                          },
+                          child: Text(
+                            "Já tem uma conta? Login",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -157,8 +147,10 @@ class RegisterPage extends GetView<RegisterController> {
             // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.2), // Shadow color
             blurRadius: 6, // Spread of the shadow
-            offset:
-                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+            offset: Offset(
+              0,
+              3,
+            ), // Position of the shadow (horizontal, vertical)
           ),
         ],
       ),
@@ -193,8 +185,10 @@ class RegisterPage extends GetView<RegisterController> {
             // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.2), // Shadow color
             blurRadius: 6, // Spread of the shadow
-            offset:
-                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+            offset: Offset(
+              0,
+              3,
+            ), // Position of the shadow (horizontal, vertical)
           ),
         ],
       ),
@@ -216,7 +210,9 @@ class RegisterPage extends GetView<RegisterController> {
   }
 
   Container telefoneInput(
-      String placeholder, TextEditingController controller) {
+    String placeholder,
+    TextEditingController controller,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // Background color of the TextField
@@ -226,8 +222,10 @@ class RegisterPage extends GetView<RegisterController> {
             // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.2), // Shadow color
             blurRadius: 6, // Spread of the shadow
-            offset:
-                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+            offset: Offset(
+              0,
+              3,
+            ), // Position of the shadow (horizontal, vertical)
           ),
         ],
       ),
@@ -238,9 +236,18 @@ class RegisterPage extends GetView<RegisterController> {
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
+        keyboardType: TextInputType.phone,
+        inputFormatters: [
+               FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(11), // Limit to 11 digits
+              TelefoneInputFormatter()
+            ],
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Por favor, preencha este campo.';
+          }
+          if (!RegExp(r'^\(\d{2}\) \d{5}-\d{4}$').hasMatch(value)) {
+            return 'Formato do Telefone inválido.';
           }
           return null;
         },
@@ -249,7 +256,9 @@ class RegisterPage extends GetView<RegisterController> {
   }
 
   Container senhaInput(
-      String placeholder, TextEditingController textController) {
+    String placeholder,
+    TextEditingController textController,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -291,7 +300,9 @@ class RegisterPage extends GetView<RegisterController> {
   }
 
   Container confirmaSenhaInput(
-      String placeholder, TextEditingController textController) {
+    String placeholder,
+    TextEditingController textController,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -332,6 +343,39 @@ class RegisterPage extends GetView<RegisterController> {
           return null;
         },
       ),
+    );
+  }
+}
+
+class TelefoneInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digitsOnly.length > 11) {
+      digitsOnly = digitsOnly.substring(0, 11);
+    }
+
+    String formatted = digitsOnly;
+
+    if (digitsOnly.length >= 11) {
+      formatted =
+          '(${digitsOnly.substring(0, 2)}) ${digitsOnly.substring(2, 7)}-${digitsOnly.substring(7)}';
+    } else if (digitsOnly.length >= 7) {
+      formatted =
+          '(${digitsOnly.substring(0, 2)}) ${digitsOnly.substring(2, 6)}-${digitsOnly.substring(6)}';
+    } else if (digitsOnly.length >= 3) {
+      formatted =
+          '(${digitsOnly.substring(0, 2)}) ${digitsOnly.substring(2)}';
+    } else if (digitsOnly.length >= 1) {
+      formatted = '(${digitsOnly.substring(0, digitsOnly.length)}';
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

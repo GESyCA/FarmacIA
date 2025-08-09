@@ -11,8 +11,8 @@ class ProfileController extends GetxController {
   final RxInt _selectedIndex = 0.obs;
   int get selectedIndex => _selectedIndex.value;
 
-  late final String _name;
-  String get name => _name;
+  final RxString _name = 'Carregando...'.obs;
+  String get name => _name.value;
 
   final AuthService _authService =
       AuthService(client: Supabase.instance.client);
@@ -28,9 +28,21 @@ class ProfileController extends GetxController {
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
-    final user = await _authService.getCurrentUser();
-    _name = user?.userMetadata?['nome'] ?? 'Usuário';
-    await fetchMedicineNames();
+    loadUserProfile();
+  }
+
+  Future<void> loadUserProfile() async {
+    try {
+      final user = await _authService.getCurrentUser();
+      // Atualiza o .value da variável reativa
+      _name.value = user?.userMetadata?['nome'] ?? 'Usuário';
+
+      // O mesmo para a lista de medicamentos
+      _medicineNames.value = await databaseService.getMedicineNames();
+    } catch (e) {
+      _name.value = 'Erro ao carregar';
+      print("Erro ao carregar perfil do usuário: $e");
+    }
   }
 
   fetchMedicineNames() async {

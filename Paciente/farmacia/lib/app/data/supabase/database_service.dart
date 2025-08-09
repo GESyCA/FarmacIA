@@ -6,9 +6,6 @@ class DatabaseService {
 
   DatabaseService({required SupabaseClient client}) : _client = client;
 
-  // get the current user
-  final User? currentUser = Supabase.instance.client.auth.currentUser;
-
   final database = Supabase.instance.client.from("medicine");
 
   Future registerMedicine(MedicineModel medicine) async {
@@ -17,9 +14,10 @@ class DatabaseService {
 
   // list all medicines from the current user
   Future<List<MedicineModel>> getMedicines() async {
+    final user = _client.auth.currentUser;
     final response = await database
         .select()
-        .eq("user_id", currentUser!.id)
+        .eq("user_id", user!.id)
         .order("created_at", ascending: false);
 
     return response.map((e) => MedicineModel.fromJson(e)).toList();
@@ -43,9 +41,10 @@ class DatabaseService {
 
   // retrieve the collumn 'nome' content for a especific user
   Future<List<String>> getMedicineNames() async {
+    final user = _client.auth.currentUser;
     final response = await database
         .select("nome")
-        .eq("user_id", currentUser!.id)
+        .eq("user_id", user!.id)
         .order("created_at", ascending: false);
 
     return response.map((e) => e['nome'] as String).toList();
