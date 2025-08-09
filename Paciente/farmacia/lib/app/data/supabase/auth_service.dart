@@ -1,12 +1,12 @@
 import 'package:farmacia/app/data/models/user_model.dart';
+import 'package:farmacia/app/routes/app_routes.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
   final SupabaseClient _client;
 
   AuthService({required SupabaseClient client}) : _client = client;
-
-  
 
   Future<AuthResponse> signIn(String email, String password) async {
     try {
@@ -35,11 +35,11 @@ class AuthService {
     final response = await _client.auth.signUp(
       email: user.email,
       password: user.senha,
-      data: {
-        'nome': user.nome,
-        'telefone': user.telefone,
-      },
+      data: {'nome': user.nome, 'telefone': user.telefone},
     );
+    
+    signOut();
+    Get.offNamed(Routes.initial);
 
     if (response.user == null) {
       throw Exception('Failed to sign up: Invalid email or password.');
