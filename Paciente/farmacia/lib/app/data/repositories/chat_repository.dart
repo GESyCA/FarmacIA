@@ -13,7 +13,7 @@ class ChatRepository {
     try {
       final response = await httpClient
           .post(
-            '/perguntar',
+            'perguntar',
             body: question.toJson(),
           );
           //.timeout(const Duration(seconds: 5));
@@ -22,6 +22,7 @@ class ChatRepository {
       } else if (response.statusCode == 415) {
         return Answer(resposta: 'Desculpe, não entendi a pergunta', conversationId: "");
       } else {
+        print("Erro: ${response.statusCode}");
         return Answer(resposta: 'Erro de conexão', conversationId: "");
       }
     } on TimeoutException {
