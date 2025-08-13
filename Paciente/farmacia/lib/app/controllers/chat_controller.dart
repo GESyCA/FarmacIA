@@ -1,3 +1,4 @@
+import 'package:farmacia/app/data/models/feedback_model.dart';
 import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
@@ -25,6 +26,11 @@ class ChatController extends GetxController {
   late final String medicineName;
   late final String userId;
   late Box<Conversation> _conversationBox;
+
+  final RxBool _isFeedbackSent = false.obs;
+  bool get isFeedbackSent => _isFeedbackSent.value;
+
+  final TextEditingController feedbackController = TextEditingController();
 
   @override
   void onInit() {
@@ -76,7 +82,8 @@ class ChatController extends GetxController {
     );
 
     // Salva o ID da conversa retornado pela API
-    if (currentConversation.value!.conversationId == null && answer.conversationId != "") {
+    if (currentConversation.value!.conversationId == null &&
+        answer.conversationId != "") {
       currentConversation.value!.conversationId = answer.conversationId;
     }
 
@@ -88,7 +95,10 @@ class ChatController extends GetxController {
     currentConversation.value!.messages.add(botMessage);
 
     // Salva a conversa inteira no Hive
-    await _conversationBox.put(currentConversation.value!.boxKey, currentConversation.value!);
+    await _conversationBox.put(
+      currentConversation.value!.boxKey,
+      currentConversation.value!,
+    );
 
     _isLoading.value = false;
     currentConversation.update((val) {}); // Força a atualização da UI
@@ -185,5 +195,31 @@ class ChatController extends GetxController {
         }),
       ),
     );
+  }
+
+  Future<void> sendFeedback(FeedbackModel feedback) async {
+    _isFeedbackSent.value = true;
+    final success = await repository.sendFeedback(feedback);
+    _isFeedbackSent.value = false;
+    Get.back();
+    if (success) {
+      // Feedback enviado com sucesso
+      Get.snackbar(
+        'Feedback Enviado',
+        'Obrigado pelo seu feedback!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green.withOpacity(0.8),
+      );
+    } else {
+      // Falha ao enviar feedback
+      Get.snackbar(
+        'Erro ao Enviar Feedback',
+        'Por favor, tente novamente mais tarde.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+      );
+    }
+
+    feedbackController.clear();
   }
 }
