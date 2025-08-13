@@ -222,4 +222,11 @@ class ChatController extends GetxController {
 
     feedbackController.clear();
   }
+
+  final RxDouble _rating = 0.0.obs;
+  double get rating => _rating.value;
+
+  void setRating(double value) {
+    _rating.value = value;
+  }
 }
