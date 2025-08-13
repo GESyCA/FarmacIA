@@ -20,7 +20,7 @@ class FeedbackDialog extends GetView<ChatController> {
           Text(
             "Qual nota você dá para a resposta?",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 12),
           RatingBar.builder(
@@ -37,18 +37,17 @@ class FeedbackDialog extends GetView<ChatController> {
             },
             itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
           ),
+          SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: TextField(
               controller: controller.feedbackController,
-              maxLines: 3,
               decoration: InputDecoration(
                 labelText: "Deixe um comentário (opcional)",
-                border: OutlineInputBorder(),
               ),
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 32),
           Container(
             width: double.infinity,
             height: 80,
@@ -59,66 +58,62 @@ class FeedbackDialog extends GetView<ChatController> {
                 bottomRight: Radius.circular(20),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton.icon(
-                  onPressed:
-                      controller.isFeedbackSent
-                          ? null
-                          : () {
-                            Get.back();
-                            controller.feedbackController.clear();
-                            controller.setRating(0);
-                          },
-                  label:
-                      controller.isFeedbackSent
-                          ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(),
-                          )
-                          : Text("Cancelar"),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Color(0xFFB9160C),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Color(0xFFB9160C)),
+            child: Obx( () {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton.icon(
+                      onPressed:
+                          controller.isFeedbackSent
+                              ? null
+                              : () {
+                                Get.back();
+                                controller.feedbackController.clear();
+                                controller.setRating(0);
+                              },
+                      label: Text("Cancelar"),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Color(0xFFB9160C),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Color(0xFFB9160C)),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed:
-                      controller.isFeedbackSent
-                          ? null
-                          : () {
-                            controller.sendFeedback(
-                              FeedbackModel(
-                                messageId: messageId,
-                                score: controller.rating.toInt(),
-                                comment: controller.feedbackController.text,
-                              ),
-                            );
-                          },
-                  label:
-                      controller.isFeedbackSent
-                          ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(color: Colors.white),
-                          )
-                          : Text("Enviar"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFB9160C),
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                    ElevatedButton.icon(
+                      onPressed:
+                          controller.isFeedbackSent
+                              ? null
+                              : () {
+                                controller.sendFeedback(
+                                  FeedbackModel(
+                                    messageId: messageId,
+                                    score: controller.rating.toInt(),
+                                    comment: controller.feedbackController.text,
+                                  ),
+                                );
+                              },
+                      label:
+                          controller.isFeedbackSent
+                              ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(color: Colors.white),
+                              )
+                              : Text("Enviar"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFB9160C),
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              }
             ),
           ),
         ],
