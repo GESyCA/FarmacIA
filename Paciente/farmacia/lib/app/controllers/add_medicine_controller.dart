@@ -1,3 +1,4 @@
+import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
@@ -133,6 +134,7 @@ class AddMedicineController extends GetxController{
         print(medicine.toString());
         update();
         Get.back();
+        Get.find<MedicineController>().onInit();
         Get.snackbar('Sucesso', 'Medicamento adicionado com sucesso!', 
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.withOpacity(0.8),
