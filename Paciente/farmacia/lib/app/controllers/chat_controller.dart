@@ -1,6 +1,9 @@
+import 'package:farmacia/app/data/models/feedback_model.dart';
 import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
+import 'package:farmacia/app/ui/modal/feedback_dialog.dart';
+import 'package:farmacia/app/ui/modal/feedback_given_dialog.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +28,11 @@ class ChatController extends GetxController {
   late final String medicineName;
   late final String userId;
   late Box<Conversation> _conversationBox;
+
+  final RxBool _isFeedbackSent = false.obs;
+  bool get isFeedbackSent => _isFeedbackSent.value;
+
+  final TextEditingController feedbackController = TextEditingController();
 
   @override
   void onInit() {
@@ -76,7 +84,8 @@ class ChatController extends GetxController {
     );
 
     // Salva o ID da conversa retornado pela API
-    if (currentConversation.value!.conversationId == null && answer.conversationId != "") {
+    if (currentConversation.value!.conversationId == null &&
+        answer.conversationId != "") {
       currentConversation.value!.conversationId = answer.conversationId;
     }
 
@@ -84,11 +93,15 @@ class ChatController extends GetxController {
       text: answer.resposta,
       isUserMessage: false,
       timestamp: DateTime.now(),
+      messageId: answer.assistantMessageId,
     );
     currentConversation.value!.messages.add(botMessage);
 
     // Salva a conversa inteira no Hive
-    await _conversationBox.put(currentConversation.value!.boxKey, currentConversation.value!);
+    await _conversationBox.put(
+      currentConversation.value!.boxKey,
+      currentConversation.value!,
+    );
 
     _isLoading.value = false;
     currentConversation.update((val) {}); // Força a atualização da UI
@@ -116,7 +129,7 @@ class ChatController extends GetxController {
     );
   }
 
-  Widget buildLLMResponse(String text) {
+  Widget buildLLMResponse(ChatMessage message) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,
@@ -126,13 +139,25 @@ class ChatController extends GetxController {
           RobotAvatar(),
           SizedBox(width: 8.0),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
+            child: GestureDetector(
+              onLongPress: () {
+                if (message.messageId != null) {
+                  print("Message ID: ${message.messageId}");
+                  if(message.feedbackGiven) {
+                    Get.dialog(FeedbackGivenDialog());
+                  } else {
+                    Get.dialog(FeedbackDialog(messageId: message.messageId!));
+                  }
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Text(message.text, style: TextStyle(fontSize: 14.0)),
               ),
-              child: Text(text, style: TextStyle(fontSize: 14.0)),
             ),
           ),
         ],
@@ -185,5 +210,54 @@ class ChatController extends GetxController {
         }),
       ),
     );
+  }
+
+  Future<void> sendFeedback(FeedbackModel feedback) async {
+    _isFeedbackSent.value = true;
+    final success = await repository.sendFeedback(feedback);
+
+    if (success) {
+      // Feedback enviado com sucesso
+      final messageIndex = currentConversation.value!.messages.indexWhere(
+        (msg) => msg.messageId == feedback.messageId,
+      );
+
+      if (messageIndex != -1) {
+        currentConversation.value!.messages[messageIndex].feedbackGiven = true;
+        await currentConversation.value!.save();
+        currentConversation.refresh();
+      }
+
+      _isFeedbackSent.value = false;
+      Get.back();
+      Get.snackbar(
+        'Feedback Enviado',
+        'Obrigado pelo seu feedback!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    } else {
+      // Falha ao enviar feedback
+      _isFeedbackSent.value = false;
+      Get.back();
+      Get.snackbar(
+        'Erro ao Enviar Feedback',
+        'Por favor, tente novamente mais tarde.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
+
+    feedbackController.clear();
+    _rating.value = 0.0;
+  }
+
+  final RxDouble _rating = 0.0.obs;
+  double get rating => _rating.value;
+
+  void setRating(double value) {
+    _rating.value = value;
   }
 }

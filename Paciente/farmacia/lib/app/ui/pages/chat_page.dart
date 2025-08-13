@@ -38,7 +38,7 @@ class ChatPage extends GetView<ChatController> {
                       if (message.isUserMessage) {
                         return controller.buildUserMessage(message.text);
                       } else {
-                        return controller.buildLLMResponse(message.text);
+                        return controller.buildLLMResponse(message);
                       }
                     }),
 
@@ -94,6 +94,10 @@ class ChatPage extends GetView<ChatController> {
                   _buildBulletPoint('Informações de acesso ao medicamento.'),
                   _buildBulletPoint('Dosagem adequada do medicamento.'),
                   _buildBulletPoint('Dentre outros.'),
+                  Text(
+                    'Dica: Toque e segure minhas respostas para avaliá-las.',
+                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
                 ],
               ),
             ),
