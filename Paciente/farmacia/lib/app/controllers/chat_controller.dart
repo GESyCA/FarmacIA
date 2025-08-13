@@ -223,6 +223,7 @@ class ChatController extends GetxController {
         'Obrigado pelo seu feedback!',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green.withOpacity(0.8),
+        colorText: Colors.white,
       );
     } else {
       // Falha ao enviar feedback
@@ -231,10 +232,12 @@ class ChatController extends GetxController {
         'Por favor, tente novamente mais tarde.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
       );
     }
 
     feedbackController.clear();
+    _rating.value = 0.0;
   }
 
   final RxDouble _rating = 0.0.obs;

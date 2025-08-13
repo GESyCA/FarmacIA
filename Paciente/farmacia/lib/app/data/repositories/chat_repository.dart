@@ -39,7 +39,7 @@ class ChatRepository {
         'feedback',
         body: feedback.toJson(),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return true;
       } else {
         print("Erro: ${response.statusCode}");
