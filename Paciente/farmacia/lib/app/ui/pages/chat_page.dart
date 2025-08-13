@@ -38,7 +38,7 @@ class ChatPage extends GetView<ChatController> {
                       if (message.isUserMessage) {
                         return controller.buildUserMessage(message.text);
                       } else {
-                        return controller.buildLLMResponse(message.text, message.messageId);
+                        return controller.buildLLMResponse(message);
                       }
                     }),
 
