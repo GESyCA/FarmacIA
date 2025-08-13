@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/models/answer_model.dart';
+import 'package:farmacia/app/data/models/feedback_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 
 class ChatRepository {
@@ -29,6 +30,24 @@ class ChatRepository {
       return Answer(resposta: 'Desculpe, tempo foi exedido', conversationId: "");
     } catch (e) {
       return Answer(resposta: e.toString(), conversationId: "");
+    }
+  }
+
+  Future<bool> sendFeedback(FeedbackModel feedback) async {
+    try {
+      final response = await httpClient.post(
+        'feedback',
+        body: feedback.toJson(),
+      );
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        print("Erro: ${response.statusCode}");
+        return false;
+      }
+    } catch (e) {
+      print("Erro: $e");
+      return false;
     }
   }
 }
