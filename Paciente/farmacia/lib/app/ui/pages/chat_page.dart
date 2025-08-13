@@ -8,58 +8,60 @@ class ChatPage extends GetView<ChatController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        title: Text('Chat ${controller.medicineName}'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        color: Colors.grey[200],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Obx(() {
-                final conversation = controller.currentConversation.value;
-                if (conversation == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                // Usamos um ListView simples, que é mais fácil de organizar
-                return ListView(
-                  reverse: true, // Mantemos a lista invertida
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  children: [
-                    if (controller.isLoading) controller.buildLoadingMessage(),
-
-                    ...conversation.messages.reversed.map((message) {
-                      if (message.isUserMessage) {
-                        return controller.buildUserMessage(message.text);
-                      } else {
-                        return controller.buildLLMResponse(message);
-                      }
-                    }),
-
-                    _LLMFirstMessage(),
-                  ],
-                );
-              }),
-            ),
-            Column(
-              children: [
-                Obx(
-                  () =>
-                      controller.showPrompts
-                          ? _buildPromptButtons()
-                          : SizedBox.shrink(),
-                ),
-                SizedBox(height: 12),
-                _buildInputField(),
-              ],
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          title: Text('Chat ${controller.medicineName}'),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(16),
+          color: Colors.grey[200],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Obx(() {
+                  final conversation = controller.currentConversation.value;
+                  if (conversation == null) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  // Usamos um ListView simples, que é mais fácil de organizar
+                  return ListView(
+                    reverse: true, // Mantemos a lista invertida
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    children: [
+                      if (controller.isLoading) controller.buildLoadingMessage(),
+      
+                      ...conversation.messages.reversed.map((message) {
+                        if (message.isUserMessage) {
+                          return controller.buildUserMessage(message.text);
+                        } else {
+                          return controller.buildLLMResponse(message);
+                        }
+                      }),
+      
+                      _LLMFirstMessage(),
+                    ],
+                  );
+                }),
+              ),
+              Column(
+                children: [
+                  Obx(
+                    () =>
+                        controller.showPrompts
+                            ? _buildPromptButtons()
+                            : SizedBox.shrink(),
+                  ),
+                  SizedBox(height: 12),
+                  _buildInputField(),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
