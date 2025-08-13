@@ -13,10 +13,14 @@ class ChatMessage {
   @HiveField(2)
   final DateTime timestamp;
 
+  @HiveField(3)
+  final int? messageId;
+
   ChatMessage({
     required this.text,
     required this.isUserMessage,
     required this.timestamp,
+    this.messageId,
   });
 }
 
