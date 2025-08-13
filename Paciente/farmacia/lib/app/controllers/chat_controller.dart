@@ -2,6 +2,7 @@ import 'package:farmacia/app/data/models/feedback_model.dart';
 import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
+import 'package:farmacia/app/ui/modal/feedback_dialog.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,6 +92,7 @@ class ChatController extends GetxController {
       text: answer.resposta,
       isUserMessage: false,
       timestamp: DateTime.now(),
+      messageId: answer.assistantMessageId,
     );
     currentConversation.value!.messages.add(botMessage);
 
@@ -126,7 +128,7 @@ class ChatController extends GetxController {
     );
   }
 
-  Widget buildLLMResponse(String text) {
+  Widget buildLLMResponse(String text, int? messageId) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,
@@ -136,13 +138,25 @@ class ChatController extends GetxController {
           RobotAvatar(),
           SizedBox(width: 8.0),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
+            child: GestureDetector(
+              onLongPress: () {
+                if (messageId != null) {
+                  print("Message ID: $messageId");
+                  Get.dialog(
+                    FeedbackDialog(
+                      messageId: messageId,
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Text(text, style: TextStyle(fontSize: 14.0)),
               ),
-              child: Text(text, style: TextStyle(fontSize: 14.0)),
             ),
           ),
         ],

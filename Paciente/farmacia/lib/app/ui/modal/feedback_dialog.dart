@@ -68,6 +68,8 @@ class FeedbackDialog extends GetView<ChatController> {
                           ? null
                           : () {
                             Get.back();
+                            controller.feedbackController.clear();
+                            controller.setRating(0);
                           },
                   label:
                       controller.isFeedbackSent
@@ -104,7 +106,7 @@ class FeedbackDialog extends GetView<ChatController> {
                           ? SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(color: Colors.white),
                           )
                           : Text("Enviar"),
                   style: ElevatedButton.styleFrom(
