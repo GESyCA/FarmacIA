@@ -3,6 +3,7 @@ import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/question_model.dart';
 import 'package:farmacia/app/data/repositories/chat_repository.dart';
 import 'package:farmacia/app/ui/modal/feedback_dialog.dart';
+import 'package:farmacia/app/ui/modal/feedback_given_dialog.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -128,7 +129,7 @@ class ChatController extends GetxController {
     );
   }
 
-  Widget buildLLMResponse(String text, int? messageId) {
+  Widget buildLLMResponse(ChatMessage message) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.0),
       alignment: Alignment.centerLeft,
@@ -140,13 +141,13 @@ class ChatController extends GetxController {
           Expanded(
             child: GestureDetector(
               onLongPress: () {
-                if (messageId != null) {
-                  print("Message ID: $messageId");
-                  Get.dialog(
-                    FeedbackDialog(
-                      messageId: messageId,
-                    ),
-                  );
+                if (message.messageId != null) {
+                  print("Message ID: ${message.messageId}");
+                  if(message.feedbackGiven) {
+                    Get.dialog(FeedbackGivenDialog());
+                  } else {
+                    Get.dialog(FeedbackDialog(messageId: message.messageId!));
+                  }
                 }
               },
               child: Container(
@@ -155,7 +156,7 @@ class ChatController extends GetxController {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: Text(text, style: TextStyle(fontSize: 14.0)),
+                child: Text(message.text, style: TextStyle(fontSize: 14.0)),
               ),
             ),
           ),
@@ -214,10 +215,21 @@ class ChatController extends GetxController {
   Future<void> sendFeedback(FeedbackModel feedback) async {
     _isFeedbackSent.value = true;
     final success = await repository.sendFeedback(feedback);
-    _isFeedbackSent.value = false;
-    Get.back();
+
     if (success) {
       // Feedback enviado com sucesso
+      final messageIndex = currentConversation.value!.messages.indexWhere(
+        (msg) => msg.messageId == feedback.messageId,
+      );
+
+      if (messageIndex != -1) {
+        currentConversation.value!.messages[messageIndex].feedbackGiven = true;
+        await currentConversation.value!.save();
+        currentConversation.refresh();
+      }
+
+      _isFeedbackSent.value = false;
+      Get.back();
       Get.snackbar(
         'Feedback Enviado',
         'Obrigado pelo seu feedback!',
@@ -227,6 +239,8 @@ class ChatController extends GetxController {
       );
     } else {
       // Falha ao enviar feedback
+      _isFeedbackSent.value = false;
+      Get.back();
       Get.snackbar(
         'Erro ao Enviar Feedback',
         'Por favor, tente novamente mais tarde.',
