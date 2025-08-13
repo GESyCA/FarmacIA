@@ -1,8 +1,10 @@
+import 'package:farmacia/app/data/models/hive/conversation_model.dart';
 import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MedicineController extends GetxController {
@@ -52,6 +54,12 @@ class MedicineController extends GetxController {
     try {
       _isLoadingDelete.value = true;
       await database.deleteMedicine(medicine);
+      
+      // apagar conversas relacionadas a esse medicamento no hive
+      final conversationBox = Hive.box<Conversation>('conversations');
+      final String conversationKey = '${_userId}_${medicine.nome}';
+      conversationBox.delete(conversationKey);
+
       _medicines.remove(medicine);
       _searchedItems.remove(medicine);
       update();
