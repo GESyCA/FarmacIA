@@ -2,6 +2,7 @@ import 'package:farmacia/app/controllers/login_controller.dart';
 import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
@@ -21,24 +22,36 @@ class LoginPage extends GetView<LoginController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 80,
+                    const SizedBox(height: 80),
+                    const Text(
+                      "Bem vindo ao aplicativo",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB9160C),
+                      ),
                     ),
-                    const Text("Bem vindo ao aplicativo",
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFB9160C))),
-                    const SizedBox(
-                      height: 10,
+                    const SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        // Use o estilo padrão para todos, se quiser
+                        style: GoogleFonts.lato(
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: const [
+                          TextSpan(
+                            text: "Farmac",
+                            style: TextStyle(color: Color(0xFFB9160C)),
+                          ),
+                          TextSpan(
+                            text: "IA",
+                            style: TextStyle(color: Colors.redAccent),
+                          ),
+                        ],
+                      ),
                     ),
-                    Image.asset(
-                      "assets/Label.png",
-                      height: 80,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -65,42 +78,31 @@ class LoginPage extends GetView<LoginController> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
+                      SizedBox(height: 16),
                       emailInput(controller.emailController),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      Obx(
-                        () => senhaInput(controller.passwordController),
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
+                      SizedBox(height: 24),
+                      Obx(() => senhaInput(controller.passwordController)),
+                      SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
                             "Esqueceu a senha?",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 24,
-                      ),
+                      SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Obx(
                             () => ElevatedButton(
-                              onPressed: () => controller.isLoading
-                                  ? null
-                                  : controller.login(),
+                              onPressed:
+                                  () =>
+                                      controller.isLoading
+                                          ? null
+                                          : controller.login(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF2656E6),
                                 padding: EdgeInsets.symmetric(
@@ -112,42 +114,36 @@ class LoginPage extends GetView<LoginController> {
                                 ),
                                 elevation: 4,
                               ),
-                              child: controller.isLoading
-                                  ? SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
+                              child:
+                                  controller.isLoading
+                                      ? SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : Text(
+                                        "Entrar",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    )
-                                  : Text(
-                                      "Entrar",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 28,
-                      ),
+                      SizedBox(height: 28),
                       Center(
                         child: Text(
                           "Ou Acesse pelo",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
-                      SizedBox(
-                        height: 24,
-                      ),
+                      SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -155,27 +151,23 @@ class LoginPage extends GetView<LoginController> {
                           _otherOptions("assets/Facebook.png"),
                         ],
                       ),
-                      SizedBox(
-                        height: 12,
-                      ),
+                      SizedBox(height: 12),
                       Center(
                         child: TextButton(
-                            onPressed: () {
-                              Get.offNamed(Routes.register);
-                            },
-                            child: Text(
-                              "Cadastre-se",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            )),
+                          onPressed: () {
+                            Get.offNamed(Routes.register);
+                          },
+                          child: Text(
+                            "Cadastre-se",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -216,8 +208,10 @@ class LoginPage extends GetView<LoginController> {
             // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.2), // Shadow color
             blurRadius: 6, // Spread of the shadow
-            offset:
-                Offset(0, 3), // Position of the shadow (horizontal, vertical)
+            offset: Offset(
+              0,
+              3,
+            ), // Position of the shadow (horizontal, vertical)
           ),
         ],
       ),
