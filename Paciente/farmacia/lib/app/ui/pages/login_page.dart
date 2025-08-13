@@ -155,10 +155,10 @@ class LoginPage extends GetView<LoginController> {
                       Center(
                         child: TextButton(
                           onPressed: () {
-                            Get.offNamed(Routes.register);
+                            //Get.offNamed(Routes.register);
                           },
                           child: Text(
-                            "Cadastre-se",
+                            "",
                             textAlign: TextAlign.center,
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
