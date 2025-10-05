@@ -1,3 +1,4 @@
+import 'package:farmacia/app/data/models/medicine_model.dart';
 import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,8 @@ class ProfileController extends GetxController {
 
   ProfileController({required this.databaseService});
 
-  final RxList<String> _medicineNames = <String>[].obs;
-  List<String> get medicineNames => _medicineNames;
+  final RxList<MedicineModel> _medicineNames = <MedicineModel>[].obs;
+  List<MedicineModel> get medicineNames => _medicineNames;
 
   @override
   void onInit() async {
@@ -38,15 +39,15 @@ class ProfileController extends GetxController {
       _name.value = user?.userMetadata?['nome'] ?? 'Usuário';
 
       // O mesmo para a lista de medicamentos
-      _medicineNames.value = await databaseService.getMedicineNames();
+      await fetchMedicines();
     } catch (e) {
       _name.value = 'Erro ao carregar';
       print("Erro ao carregar perfil do usuário: $e");
     }
   }
 
-  fetchMedicineNames() async {
-    _medicineNames.value = await databaseService.getMedicineNames();
+  fetchMedicines() async {
+    _medicineNames.value = await databaseService.getMedicines();
   }
 
   void onPageChanged(int index) {

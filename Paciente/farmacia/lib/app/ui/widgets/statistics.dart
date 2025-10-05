@@ -1,4 +1,5 @@
 import 'package:farmacia/app/controllers/profile_controller.dart';
+import 'package:farmacia/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,7 @@ class Statistics extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        await controller.fetchMedicineNames();
+        await controller.fetchMedicines();
       },
       backgroundColor: Colors.white,
       color: Color(0xFFB9160C),
@@ -55,7 +56,7 @@ class Statistics extends GetView<ProfileController> {
                                           Icons.medication,
                                           color: Colors.red,
                                         ),
-                                        title: Text(medicine,
+                                        title: Text(medicine.nome,
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -66,7 +67,9 @@ class Statistics extends GetView<ProfileController> {
                                             size: 16,
                                           ),
                                           onPressed: () {
-                                            // TODO: Navigate to medicine details
+                                            // A principio essa pagina seria pra exibir as estatisticas de acordo com a adesão do paciente ao medicamento
+                                            // de acordo com os lembretes mas como essa funcionalidade não foi implementado ainda, iremos redirecionar para a pagina de edição do medicamento
+                                            Get.toNamed(Routes.edit, arguments: medicine);
                                           },
                                         ),
                                       ),
