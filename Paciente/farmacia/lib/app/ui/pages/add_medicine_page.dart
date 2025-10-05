@@ -90,24 +90,24 @@ class AddMedicinePage extends GetView<AddMedicineController> {
                                   controller.recieveNotification,
                                 ),
                               ),
-                              SizedBox(
-                                height: 32,
-                              ),
-                              _title("Horários de lembrete"),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              _reminderCard(
-                                  time: "7:00",
-                                  description: "Tomar 1 comprimido"),
-                              SizedBox(height: 10),
-                              _reminderCard(
-                                  time: "15:00",
-                                  description: "Tomar 1 comprimido"),
-                              SizedBox(height: 10),
-                              _reminderCard(
-                                  time: "23:00",
-                                  description: "Tomar 1 comprimido"),
+                            SizedBox(
+                              height: 32,
+                            ),
+                        //   _title("Horários de lembrete"),
+                        //   SizedBox(
+                        //     height: 8,
+                        //   ),
+                        //   _reminderCard(
+                        //       time: "7:00",
+                        //       description: "Tomar 1 comprimido"),
+                        //   SizedBox(height: 10),
+                        //   _reminderCard(
+                        //       time: "15:00",
+                        //       description: "Tomar 1 comprimido"),
+                        //   SizedBox(height: 10),
+                        //   _reminderCard(
+                        //       time: "23:00",
+                        //       description: "Tomar 1 comprimido"),
                             ],
                           ),
                         ),

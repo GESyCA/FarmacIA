@@ -6,8 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AddMedicineController extends GetxController{
-
+class AddMedicineController extends GetxController {
   // acesso ao banco de dados no supabase
   final DatabaseService databaseService;
 
@@ -35,14 +34,14 @@ class AddMedicineController extends GetxController{
     'Dramin',
     'Rivotril',
     'Tylenol',
-    ];
+  ];
 
   // coleta de medicamentos selecionados
-    final RxString _selectedMedicine = ''.obs;
-    String get selectedMedicine => _selectedMedicine.value;
-    void setSelectedMedicine(String value) {
-      _selectedMedicine.value = value;
-    }
+  final RxString _selectedMedicine = ''.obs;
+  String get selectedMedicine => _selectedMedicine.value;
+  void setSelectedMedicine(String value) {
+    _selectedMedicine.value = value;
+  }
 
   // variaveis para controle de notificacoes
   final _recieveNotification = false.obs;
@@ -71,11 +70,7 @@ class AddMedicineController extends GetxController{
     _selectedFrequency.value = value;
   }
 
-  List<String> formasFarmaceuticas = [
-    'Comprimido',
-    'Gotas',
-    'Pomada',
-  ];
+  List<String> formasFarmaceuticas = ['Comprimido', 'Gotas', 'Pomada'];
 
   final RxString _selectedForma = ''.obs;
   String get selectedForma => _selectedForma.value;
@@ -84,7 +79,7 @@ class AddMedicineController extends GetxController{
   }
 
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
     await _initialMedicineFilter();
 
@@ -105,19 +100,23 @@ class AddMedicineController extends GetxController{
     if (formKey.currentState?.validate() ?? false) {
       isLoading.value = true;
       try {
-
         final nome = _selectedMedicine.value;
         final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
         final receberNotificacao = _recieveNotification.value;
-        final notificacoesPorDia = recieveNotification
-            ? int.parse(_selectedFrequency.value.split(' ')[0])
-            : null;
+        final notificacoesPorDia =
+            recieveNotification
+                ? int.parse(_selectedFrequency.value.split(' ')[0])
+                : null;
         final dose = doseController.text;
         final forma = _selectedForma.value;
-        final inicioTratamento = indeterminate ? DateTime.now() : DateFormat('dd/MM/yyyy').parse(dateController.text);
-        final fimTratamento = indeterminate
-            ? null
-            : DateFormat('dd/MM/yyyy').parse(dateEndController.text);
+        final inicioTratamento =
+            indeterminate
+                ? DateTime.now()
+                : DateFormat('dd/MM/yyyy').parse(dateController.text);
+        final fimTratamento =
+            indeterminate
+                ? null
+                : DateFormat('dd/MM/yyyy').parse(dateEndController.text);
 
         final medicine = MedicineModel(
           id: null,
@@ -135,13 +134,26 @@ class AddMedicineController extends GetxController{
         update();
         Get.back();
         Get.find<MedicineController>().onInit();
-        Get.snackbar('Sucesso', 'Medicamento adicionado com sucesso!', 
+        Get.snackbar(
+          'Sucesso',
+          'Medicamento adicionado com sucesso!',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.withOpacity(0.8),
           colorText: Colors.white,
         );
+      } on FormatException catch (e) {
+        Get.snackbar(
+          'Erro',
+          'Preencha data ou marque tempo indeterminado',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+        print('Erro de formatação: $e');
       } catch (e) {
-        Get.snackbar('Erro', 'Não foi possível adicionar o medicamento: $e', 
+        Get.snackbar(
+          'Erro',
+          'Erro inesperado ao tentar adicionar o medicamento',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red.withOpacity(0.8),
           colorText: Colors.white,
@@ -151,7 +163,9 @@ class AddMedicineController extends GetxController{
         isLoading.value = false;
       }
     } else {
-      Get.snackbar('Erro', 'Por favor, preencha todos os campos corretamente.', 
+      Get.snackbar(
+        'Erro',
+        'Por favor, preencha todos os campos corretamente.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
@@ -164,11 +178,13 @@ class AddMedicineController extends GetxController{
     List<String> registedMedicines = await databaseService.getMedicineNames();
     if (registedMedicines.isNotEmpty) {
       // Atualiza a lista de medicamentos com os não registrados
-      medicineList = medicineList.where((med) => !registedMedicines.contains(med)).toList();
+      medicineList =
+          medicineList
+              .where((med) => !registedMedicines.contains(med))
+              .toList();
     }
 
     _isInitialLoading.value = false;
     update();
   }
-
 }
