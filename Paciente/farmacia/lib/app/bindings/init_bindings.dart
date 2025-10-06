@@ -3,8 +3,12 @@ import 'package:farmacia/app/controllers/login_controller.dart';
 import 'package:farmacia/app/controllers/medicine_controller.dart';
 import 'package:farmacia/app/controllers/navigation_controller.dart';
 import 'package:farmacia/app/controllers/profile_controller.dart';
+import 'package:farmacia/app/controllers/quizz_controller.dart';
 import 'package:farmacia/app/controllers/register_controller.dart';
+import 'package:farmacia/app/core/constants.dart';
+import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/repositories/medicine_repository.dart';
+import 'package:farmacia/app/data/repositories/quizz_repository.dart';
 import 'package:farmacia/app/data/supabase/auth_service.dart';
 import 'package:farmacia/app/data/supabase/database_service.dart';
 import 'package:get/get.dart';
@@ -31,6 +35,12 @@ class InitBindings implements Bindings {
     );
     Get.lazyPut<MedicineController>(
       () => MedicineController(Get.find<DatabaseService>()),
+      fenix: true,
+    );
+    Get.lazyPut<QuizzController>(
+      () => QuizzController(
+        QuizzRepository(httpClient: HttpClient(baseUrl: baseUrl)),
+      ),
       fenix: true,
     );
   }

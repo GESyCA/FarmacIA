@@ -3,7 +3,7 @@ import 'dart:convert';
 
 part 'statistics_model.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 3)
 class StatisticsModel {
     @HiveField(1)
     final double scoreGeralPercentual;
