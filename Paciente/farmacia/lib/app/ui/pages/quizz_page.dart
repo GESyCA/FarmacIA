@@ -1,48 +1,58 @@
+import 'package:farmacia/app/controllers/quizz_controller.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:farmacia/app/ui/widgets/quizz_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 
-class QuizzPage extends StatefulWidget {
-  const QuizzPage({super.key});
+class QuizzPage extends GetView<QuizzController> {
+  QuizzPage({super.key});
 
   @override
-  State<QuizzPage> createState() => _QuizzPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      appBar: CustomAppBar(title: 'Quizz'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Obx(() {
+              int currentIndex = controller.currentQuestionIndex.value;
+              return QuizCard(
+                question: controller.questions[currentIndex]["question"] ?? "",
+                imageAsset: controller.questions[currentIndex]["image"] ?? "",
+                questionNumber: currentIndex + 1,
+                totalQuestions: controller.questions.length,
+                onNext: controller.nextQuestion,
+                onPrevious: controller.previousQuestion,
+                selectedRating:
+                    controller.questions[currentIndex]["alternativa"] ?? 0,
+                onChanged: (val) {
+                  controller.questions[currentIndex]["alternativa"] = val;
+                },
+              );
+            })
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _QuizzPageState extends State<QuizzPage> {
+class QuizzView extends StatefulWidget {
+  final List<Map<String, dynamic>> questions;
+
+  const QuizzView({super.key, required this.questions});
+
+  @override
+  State<QuizzView> createState() => _QuizzViewState();
+}
+
+class _QuizzViewState extends State<QuizzView> {
   int currentIndex = 0;
 
-  final List<Map<String, dynamic>> questions = [
-    {
-      "question":
-          "Evito comportamentos que podem prejudicar a minha saúde (ex. tabaco, álcool)",
-      "image": "assets/no_alcohol.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Não gosto de tomar medicamentos todos os dias",
-      "image": "assets/quiz/calendar.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Durante as férias, ou fins de semana, às vezes esqueço de tomar a medicação",
-      "image": "assets/quiz/vacation.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Sinto-me melhor ao tomar a medicação todos os dias",
-      "image": "assets/quiz/health.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Às vezes não tenho certeza se tomei os meus comprimidos",
-      "image": "assets/quiz/help.png",
-      "alternativa": 0,
-    },
-  ];
-
   void nextQuestion() {
-    if (currentIndex < questions.length - 1) {
+    if (currentIndex < widget.questions.length - 1) {
       setState(() => currentIndex++);
     }
   }
@@ -55,30 +65,25 @@ class _QuizzPageState extends State<QuizzPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: CustomAppBar(title: 'Quizz'),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            QuizCard(
-              question: questions[currentIndex]["question"] ?? "",
-              imageAsset: questions[currentIndex]["image"] ?? "",
-              questionNumber: currentIndex + 1,
-              totalQuestions: questions.length,
-              onNext: nextQuestion,
-              onPrevious: previousQuestion,
-              selectedRating: questions[currentIndex]["alternativa"] ?? 0,
-              onChanged: (val) {
-                setState(() {
-                  questions[currentIndex]["alternativa"] = val;
-                });
-              },
-            )
-          ],
+    final questions = widget.questions;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        QuizCard(
+          question: questions[currentIndex]["question"] ?? "",
+          imageAsset: questions[currentIndex]["image"] ?? "",
+          questionNumber: currentIndex + 1,
+          totalQuestions: questions.length,
+          onNext: nextQuestion,
+          onPrevious: previousQuestion,
+          selectedRating: questions[currentIndex]["alternativa"] ?? 0,
+          onChanged: (val) {
+            setState(() {
+              questions[currentIndex]["alternativa"] = val;
+            });
+          },
         ),
-      ),
+      ],
     );
   }
 }

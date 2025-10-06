@@ -1,5 +1,6 @@
 import 'package:farmacia/app/app_widget.dart';
 import 'package:farmacia/app/data/models/hive/conversation_model.dart';
+import 'package:farmacia/app/data/models/hive/statistics_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -14,9 +15,11 @@ void main() async {
   // Registra os adaptadores gerados
   Hive.registerAdapter(ChatMessageAdapter());
   Hive.registerAdapter(ConversationAdapter());
+  Hive.registerAdapter(StatisticsModelAdapter());
 
   // Abre o box que vai guardar as conversas
   await Hive.openBox<Conversation>('conversations');
+  await Hive.openBox<StatisticsModel>('statistics');
 
   // load env
   await dotenv.load(fileName: ".env");
