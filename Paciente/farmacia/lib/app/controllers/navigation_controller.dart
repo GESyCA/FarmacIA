@@ -9,7 +9,7 @@ class NavigationController extends GetxController{
   final _currentIndex = 0.obs;
   int get currentIndex => _currentIndex.value;
 
-  final List<Widget> pages = const [
+  final List<Widget> pages = [
     HomePage(),
     MedicinesPage(),
     ProfilePage(),

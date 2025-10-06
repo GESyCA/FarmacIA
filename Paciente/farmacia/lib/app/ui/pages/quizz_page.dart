@@ -1,57 +1,12 @@
+import 'package:farmacia/app/controllers/quizz_controller.dart';
+import 'package:farmacia/app/ui/modal/send_quizz_dialog.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:farmacia/app/ui/widgets/quizz_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 
-class QuizzPage extends StatefulWidget {
-  const QuizzPage({super.key});
-
-  @override
-  State<QuizzPage> createState() => _QuizzPageState();
-}
-
-class _QuizzPageState extends State<QuizzPage> {
-  int currentIndex = 0;
-
-  final List<Map<String, dynamic>> questions = [
-    {
-      "question":
-          "Evito comportamentos que podem prejudicar a minha saúde (ex. tabaco, álcool)",
-      "image": "assets/no_alcohol.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Não gosto de tomar medicamentos todos os dias",
-      "image": "assets/quiz/calendar.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Durante as férias, ou fins de semana, às vezes esqueço de tomar a medicação",
-      "image": "assets/quiz/vacation.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Sinto-me melhor ao tomar a medicação todos os dias",
-      "image": "assets/quiz/health.png",
-      "alternativa": 0,
-    },
-    {
-      "question": "Às vezes não tenho certeza se tomei os meus comprimidos",
-      "image": "assets/quiz/help.png",
-      "alternativa": 0,
-    },
-  ];
-
-  void nextQuestion() {
-    if (currentIndex < questions.length - 1) {
-      setState(() => currentIndex++);
-    }
-  }
-
-  void previousQuestion() {
-    if (currentIndex > 0) {
-      setState(() => currentIndex--);
-    }
-  }
+class QuizzPage extends GetView<QuizzController> {
+  QuizzPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +17,41 @@ class _QuizzPageState extends State<QuizzPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            QuizCard(
-              question: questions[currentIndex]["question"] ?? "",
-              imageAsset: questions[currentIndex]["image"] ?? "",
-              questionNumber: currentIndex + 1,
-              totalQuestions: questions.length,
-              onNext: nextQuestion,
-              onPrevious: previousQuestion,
-              selectedRating: questions[currentIndex]["alternativa"] ?? 0,
-              onChanged: (val) {
-                setState(() {
-                  questions[currentIndex]["alternativa"] = val;
+            Obx(() {
+
+              if (controller.isLoadingQuestions) {
+                return CircularProgressIndicator();
+              }
+
+              int currentIndex = controller.currentQuestionIndex.value;
+                if (currentIndex >= controller.questions.length) {
+                Future.microtask(() {
+                  showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => SendQuizzDialog()
+                  );
                 });
-              },
-            )
+                return SizedBox.shrink();
+                }
+              return QuizCard(
+                question: controller.questions[currentIndex].question,
+                imageAsset: "assets/quiz/health.png",
+                questionNumber: currentIndex + 1,
+                totalQuestions: controller.questions.length,
+                onNext: controller.nextQuestion,
+                onPrevious: controller.previousQuestion,
+                selectedRating: controller.scores[currentIndex].score,
+                onChanged: (val) {
+                  controller.scores[currentIndex] =
+                    controller.scores[currentIndex].copyWith(score: val);
+                },
+              );
+            })
           ],
         ),
       ),
     );
   }
 }
+
