@@ -31,7 +31,7 @@ class QuizzRepository {
   Future<StatisticsModel> submitQuizzAnswers(List<QuizzQuestionScoreModel> scores) async {
     try {
       final response = await httpClient.postList(
-        'respostas',
+        'responder',
         body: scores.map((e) => e.toJson()).toList(),
       );
       if (response.statusCode == 200) {

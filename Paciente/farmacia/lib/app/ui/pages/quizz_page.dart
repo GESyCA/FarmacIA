@@ -28,6 +28,7 @@ class QuizzPage extends GetView<QuizzController> {
                 Future.microtask(() {
                   showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (context) => SendQuizzDialog()
                   );
                 });
