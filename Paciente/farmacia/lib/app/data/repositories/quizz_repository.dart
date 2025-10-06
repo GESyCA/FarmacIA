@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:farmacia/app/data/http/http_client.dart';
 import 'package:farmacia/app/data/models/hive/statistics_model.dart';
 import 'package:farmacia/app/data/models/quizz_question_model.dart';
@@ -12,7 +14,7 @@ class QuizzRepository {
     try {
       final response = await httpClient.get('questoes');
       if (response.statusCode == 200) {
-        final List<dynamic> data = response.body as List;
+        final List<dynamic> data = jsonDecode(response.body);
         return data
             .map((item) => QuizzQuestionModel.fromJson(item))
             .toList();
@@ -33,7 +35,7 @@ class QuizzRepository {
         body: scores.toJson(),
       );
       if (response.statusCode == 200) {
-        return StatisticsModel.fromJson(response.body as Map<String, dynamic>);
+        return StatisticsModel.fromRawJson(response.body);
       } else {
         throw Exception('Failed to submit answers: ${response.statusCode}');
       }

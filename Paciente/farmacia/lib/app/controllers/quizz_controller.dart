@@ -1,3 +1,5 @@
+import 'package:farmacia/app/data/models/quizz_question_model.dart';
+import 'package:farmacia/app/data/models/quizz_question_score_model.dart';
 import 'package:farmacia/app/data/repositories/quizz_repository.dart';
 import 'package:get/get.dart';
 
@@ -6,12 +8,17 @@ class QuizzController extends GetxController {
 
   QuizzController(this.repository);
 
-  final RxList questions = [].obs;
+  final RxList<QuizzQuestionModel> _questions = <QuizzQuestionModel>[].obs;
+
+  List<QuizzQuestionModel> get questions => _questions;
+
+  final RxList<QuizzQuestionScoreModel> _scores = <QuizzQuestionScoreModel>[].obs;
+  List<QuizzQuestionScoreModel> get scores => _scores;
 
   final RxInt currentQuestionIndex = 0.obs;
 
   void nextQuestion() {
-    if (currentQuestionIndex.value < questions.length - 1) {
+    if (currentQuestionIndex.value < _questions.length - 1) {
       currentQuestionIndex.value++;
     }
   }
@@ -23,40 +30,19 @@ class QuizzController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    loadQuestions();
+    await loadQuestions();
   }
 
-  void loadQuestions() async {
-    questions.value = [
-      {
-        "question":
-            "Evito comportamentos que podem prejudicar a minha saúde (ex. tabaco, álcool)",
-        "image": "assets/no_alcohol.png",
-        "alternativa": 0,
-      },
-      {
-        "question": "Não gosto de tomar medicamentos todos os dias",
-        "image": "assets/quiz/calendar.png",
-        "alternativa": 0,
-      },
-      {
-        "question":
-            "Durante as férias, ou fins de semana, às vezes esqueço de tomar a medicação",
-        "image": "assets/quiz/vacation.png",
-        "alternativa": 0,
-      },
-      {
-        "question": "Sinto-me melhor ao tomar a medicação todos os dias",
-        "image": "assets/quiz/health.png",
-        "alternativa": 0,
-      },
-      {
-        "question": "Às vezes não tenho certeza se tomei os meus comprimidos",
-        "image": "assets/quiz/help.png",
-        "alternativa": 0,
-      },
-    ];
+  Future<void> loadQuestions() async {
+    _questions.value = await repository.fetchQuestions();
+    _scores.value = List.generate(
+      _questions.length,
+      (index) => QuizzQuestionScoreModel(
+        questionId: _questions[index].id,
+        score: 0,
+      ),
+    );
   }
 }

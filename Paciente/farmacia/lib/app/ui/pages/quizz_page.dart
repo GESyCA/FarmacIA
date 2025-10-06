@@ -19,16 +19,16 @@ class QuizzPage extends GetView<QuizzController> {
             Obx(() {
               int currentIndex = controller.currentQuestionIndex.value;
               return QuizCard(
-                question: controller.questions[currentIndex]["question"] ?? "",
-                imageAsset: controller.questions[currentIndex]["image"] ?? "",
+                question: controller.questions[currentIndex].question,
+                imageAsset: "assets/quiz/health.png",
                 questionNumber: currentIndex + 1,
                 totalQuestions: controller.questions.length,
                 onNext: controller.nextQuestion,
                 onPrevious: controller.previousQuestion,
-                selectedRating:
-                    controller.questions[currentIndex]["alternativa"] ?? 0,
+                selectedRating: controller.scores[currentIndex].score,
                 onChanged: (val) {
-                  controller.questions[currentIndex]["alternativa"] = val;
+                  controller.scores[currentIndex] =
+                    controller.scores[currentIndex].copyWith(score: val);
                 },
               );
             })
