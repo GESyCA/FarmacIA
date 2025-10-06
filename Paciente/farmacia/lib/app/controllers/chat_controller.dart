@@ -6,6 +6,7 @@ import 'package:farmacia/app/ui/modal/feedback_dialog.dart';
 import 'package:farmacia/app/ui/modal/feedback_given_dialog.dart';
 import 'package:farmacia/app/ui/widgets/robot_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -143,7 +144,7 @@ class ChatController extends GetxController {
               onLongPress: () {
                 if (message.messageId != null) {
                   print("Message ID: ${message.messageId}");
-                  if(message.feedbackGiven) {
+                  if (message.feedbackGiven) {
                     Get.dialog(FeedbackGivenDialog());
                   } else {
                     Get.dialog(FeedbackDialog(messageId: message.messageId!));
@@ -156,7 +157,7 @@ class ChatController extends GetxController {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: Text(message.text, style: TextStyle(fontSize: 14.0)),
+                child: MarkdownBody(data: message.text, selectable: true),
               ),
             ),
           ),

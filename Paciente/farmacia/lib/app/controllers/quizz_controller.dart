@@ -88,7 +88,7 @@ class QuizzController extends GetxController {
       print('Erro ao enviar respostas: $e');
       Get.snackbar(
         'Erro',
-        'Falha ao enviar respostas. Tente novamente mais tarde.',
+        'Falha ao enviar respostas. Verifique se respondeu todas as perguntas.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
