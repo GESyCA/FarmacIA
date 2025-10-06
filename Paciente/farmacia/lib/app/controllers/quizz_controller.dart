@@ -74,6 +74,8 @@ class QuizzController extends GetxController {
       // Aqui você pode fazer algo com as estatísticas retornadas, como armazená-las ou exibi-las
       await _statisticsBox.put('latest_statistics', statistics);
       print('Pontuação geral: ${statistics.scoreGeralPercentual}');
+      Get.back();
+      update();
       Get.snackbar(
         'Sucesso',
         'Respostas enviadas com sucesso! Sua pontuação: ${statistics.scoreGeralPercentual}%',
