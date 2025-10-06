@@ -1,4 +1,5 @@
 import 'package:farmacia/app/controllers/quizz_controller.dart';
+import 'package:farmacia/app/ui/modal/send_quizz_dialog.dart';
 import 'package:farmacia/app/ui/widgets/custom_app_bar.dart';
 import 'package:farmacia/app/ui/widgets/quizz_card.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,21 @@ class QuizzPage extends GetView<QuizzController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Obx(() {
+
+              if (controller.isLoadingQuestions) {
+                return CircularProgressIndicator();
+              }
+
               int currentIndex = controller.currentQuestionIndex.value;
+                if (currentIndex >= controller.questions.length) {
+                Future.microtask(() {
+                  showDialog(
+                  context: context,
+                  builder: (context) => SendQuizzDialog()
+                  );
+                });
+                return SizedBox.shrink();
+                }
               return QuizCard(
                 question: controller.questions[currentIndex].question,
                 imageAsset: "assets/quiz/health.png",
@@ -39,51 +54,3 @@ class QuizzPage extends GetView<QuizzController> {
   }
 }
 
-class QuizzView extends StatefulWidget {
-  final List<Map<String, dynamic>> questions;
-
-  const QuizzView({super.key, required this.questions});
-
-  @override
-  State<QuizzView> createState() => _QuizzViewState();
-}
-
-class _QuizzViewState extends State<QuizzView> {
-  int currentIndex = 0;
-
-  void nextQuestion() {
-    if (currentIndex < widget.questions.length - 1) {
-      setState(() => currentIndex++);
-    }
-  }
-
-  void previousQuestion() {
-    if (currentIndex > 0) {
-      setState(() => currentIndex--);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final questions = widget.questions;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        QuizCard(
-          question: questions[currentIndex]["question"] ?? "",
-          imageAsset: questions[currentIndex]["image"] ?? "",
-          questionNumber: currentIndex + 1,
-          totalQuestions: questions.length,
-          onNext: nextQuestion,
-          onPrevious: previousQuestion,
-          selectedRating: questions[currentIndex]["alternativa"] ?? 0,
-          onChanged: (val) {
-            setState(() {
-              questions[currentIndex]["alternativa"] = val;
-            });
-          },
-        ),
-      ],
-    );
-  }
-}
