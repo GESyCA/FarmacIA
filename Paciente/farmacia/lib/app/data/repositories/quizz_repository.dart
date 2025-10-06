@@ -28,11 +28,11 @@ class QuizzRepository {
     }
   }
 
-  Future<StatisticsModel> submitQuizzAnswers(QuizzQuestionScoreModel scores) async {
+  Future<StatisticsModel> submitQuizzAnswers(List<QuizzQuestionScoreModel> scores) async {
     try {
-      final response = await httpClient.post(
+      final response = await httpClient.postList(
         'respostas',
-        body: scores.toJson(),
+        body: scores.map((e) => e.toJson()).toList(),
       );
       if (response.statusCode == 200) {
         return StatisticsModel.fromRawJson(response.body);
