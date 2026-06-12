@@ -1,0 +1,34 @@
+experiment_name: "compare_04_fusion"
+pipeline_type: "fusion_rag"
+
+run_flags:
+  generate_vector_db: false
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: false
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  generation_llm: "ollama:gemma4:e4b"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  - "dataset/perguntas_respostas_dificeis.csv"
+
+fusion_retrieval:
+  top_k_retrieval: 20
+  top_k_rerank: 5
+  rrf_k: 60
+  reranker_model: "BAAI/bge-reranker-base"
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+  corpus_coverage: true
+  deepeval: false

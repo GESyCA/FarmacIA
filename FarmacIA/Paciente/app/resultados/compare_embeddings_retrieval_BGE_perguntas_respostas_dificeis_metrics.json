@@ -1,0 +1,12 @@
+{
+    "section_precision": 0.5277777777777778,
+    "section_recall": 0.7222222222222222,
+    "section_f1": 0.5755555555555555,
+    "section_hit": 0.9333333333333333,
+    "exact_section_match": 0.13333333333333333,
+    "all_required_sections_retrieved": 0.5333333333333333,
+    "required_section_coverage": 0.7222222222222222,
+    "corpus_coverage": 0.0047,
+    "unique_chunks_retrieved": 1,
+    "total_chunks_in_corpus": 214
+}

@@ -1,0 +1,32 @@
+experiment_name: "compare_03_hybrid_agent"
+pipeline_type: "hybrid_agentic_rag"
+
+run_flags:
+  generate_vector_db: false
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: false
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  generation_llm: "ollama:gemma4:e4b"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  - "dataset/perguntas_respostas_dificeis.csv"
+
+hybrid_retrieval:
+  context_size_limit: 12000
+  fallback_k: 15
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+  corpus_coverage: true
+  deepeval: false

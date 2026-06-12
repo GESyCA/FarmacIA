@@ -1,0 +1,29 @@
+experiment_name: "naive_rag_evaluation"
+pipeline_type: "naive_rag"
+
+run_flags:
+  generate_vector_db: false
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: false
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  generation_llm: "ollama:gemma4:e4b"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  #- "dataset/perguntas_respostas_dificeis.csv"
+  - "dataset/perguntas_respostas_faceis.csv"
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+  corpus_coverage: true
+  deepeval: false

@@ -1,0 +1,3 @@
+{"id": "leaf_bd65c83cc44b", "medication_name": "AMOXIL", "active_ingredients": ["amoxicilina"], "leaflet_type": "patient_leaflet", "source": "bula_amoxil.pdf", "version": "1.0", "metadata": {}}
+{"id": "leaf_e01aa1c9e93a", "medication_name": "RIVOTRIL", "active_ingredients": ["clonazepam"], "leaflet_type": "patient_leaflet", "source": "bula_rivotril.pdf", "version": "1.0", "metadata": {}}
+{"id": "leaf_7bdd03992523", "medication_name": "TYLENOL", "active_ingredients": ["paracetamol"], "leaflet_type": "patient_leaflet", "source": "bula_tylenol.pdf", "version": "1.0", "metadata": {}}
