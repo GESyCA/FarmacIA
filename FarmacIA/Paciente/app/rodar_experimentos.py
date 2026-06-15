@@ -13,6 +13,9 @@ import re
 from pathlib import Path
 from dotenv import load_dotenv
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 def limpar_saida_generica(texto):
     if not isinstance(texto, str):
         return texto
@@ -61,7 +64,18 @@ def load_models(config):
         from langchain_ollama import ChatOllama
         ollama_model_name = gen_llm_name.replace("ollama:", "")
         print(f"[Ollama] Carregando modelo local: {ollama_model_name}")
-        llm = ChatOllama(model=ollama_model_name, temperature=0)
+        llm = ChatOllama(model=ollama_model_name, temperature=0, num_ctx=16384)
+    elif gen_llm_name.startswith("llama_cpp:"):
+        from langchain_openai import ChatOpenAI
+        llama_cpp_model_name = gen_llm_name.replace("llama_cpp:", "")
+        print(f"[Llama.cpp] Carregando modelo local (OpenAI compatible): {llama_cpp_model_name}")
+        # A porta padrão do server llama.cpp é 8080
+        llm = ChatOpenAI(
+            base_url="http://localhost:8080/v1",
+            api_key="sk-no-key-required",
+            model=llama_cpp_model_name,
+            temperature=0
+        )
     elif "gemini" in gen_llm_name.lower() or "gemma" in gen_llm_name.lower():
         llm = ChatGoogleGenerativeAI(model=gen_llm_name, temperature=0)
     else:
@@ -212,11 +226,37 @@ def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None)
             # Salva o progresso parcial incrementalmente a cada iteração para evitar perdas
             os.makedirs("resultados", exist_ok=True)
             dataset_basename = Path(actual_dataset_file).stem
-            output_file = f"resultados/{config['experiment_name']}_{dataset_basename}_output.csv"
             
+            # Remove prefixo "compare_" do nome do experimento
+            exp_name = config['experiment_name'].replace("compare_", "")
+            # Limpa o nome do modelo para usar no nome do arquivo
+            model_name_raw = config['models']['generation_llm']
+            model_name_clean = model_name_raw.replace("ollama:", "").replace("llama_cpp:", "")
+            model_name_clean = re.sub(r'[^a-zA-Z0-9_]', '_', model_name_clean).lower()
+            model_name_clean = re.sub(r'_+', '_', model_name_clean).strip('_')
+            # Remove "perguntas_respostas_" do dataset_basename
+            ds_name = dataset_basename.replace("perguntas_respostas_", "")
+            
+            output_file = f"resultados/{exp_name}_{model_name_clean}_{ds_name}_output.csv"
             # Copia o dataframe original até a linha atual
             partial_df = df.iloc[:len(respostas_geradas)].copy()
+            
+            # Adiciona colunas extras
+            partial_df['pipeline'] = pipeline_type
             partial_df['modelo'] = config['models']['generation_llm']
+            
+            # Tenta inferir a dificuldade pelo nome do arquivo caso não exista
+            if 'dificuldade' not in partial_df.columns:
+                basename_lower = dataset_basename.lower()
+                if 'faceis' in basename_lower or 'facil' in basename_lower:
+                    partial_df['dificuldade'] = 'facil'
+                elif 'medias' in basename_lower or 'medio' in basename_lower:
+                    partial_df['dificuldade'] = 'medio'
+                elif 'dificeis' in basename_lower or 'dificil' in basename_lower:
+                    partial_df['dificuldade'] = 'dificil'
+                else:
+                    partial_df['dificuldade'] = 'desconhecido'
+                    
             partial_df['resposta_gerada'] = respostas_geradas
             partial_df['resposta_crua'] = respostas_cruas
             partial_df['secoes_recuperadas'] = secoes_recuperadas_list
@@ -224,6 +264,25 @@ def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None)
             partial_df['textos_recuperados'] = textos_recuperados_list
             partial_df['tempo_recuperacao_segundos'] = tempos_recuperacao
             partial_df['tempo_inferencia_segundos'] = tempos_inferencia
+            
+            # Reordena colunas para colocar pipeline e modelo e dificuldade no começo se possível
+            cols = partial_df.columns.tolist()
+            # Mover pipeline e modelo para o início
+            for col in ['modelo', 'pipeline']:
+                if col in cols:
+                    cols.remove(col)
+                    cols.insert(0, col)
+            
+            # Move dificuldade logo depois da pergunta se a pergunta existir
+            if 'dificuldade' in cols:
+                cols.remove('dificuldade')
+                if 'pergunta' in cols:
+                    pergunta_idx = cols.index('pergunta')
+                    cols.insert(pergunta_idx + 1, 'dificuldade')
+                else:
+                    cols.insert(2, 'dificuldade')
+                    
+            partial_df = partial_df[cols]
             partial_df.to_csv(output_file, index=False, encoding='utf-8')
 
             # Rate limiting para evitar 429 na conta gratuita (limite de 15 RPM)

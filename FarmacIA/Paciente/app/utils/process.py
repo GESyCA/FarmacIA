@@ -78,19 +78,15 @@ def processar_bula(
         indice_chunk       – índice do chunk dentro da sua seção (0-based)
         fonte              – nome do arquivo PDF de origem
     """
-    loader = PyPDFLoader(pdf_path)
-    documents = loader.load()
-
+    import pymupdf4llm
+    from langchain_text_splitters import MarkdownTextSplitter
+    
+    # Extrai o texto completo já formatado como Markdown
+    full_text = pymupdf4llm.to_markdown(pdf_path)
+    
     section_titles = list(TIPO_SECAO_MAP.keys())
 
-    # Limpeza do texto bruto
-    cleaned_documents = []
-    for doc in documents:
-        cleaned_content = re.sub(r'\n{2,}', '\n', doc.page_content)
-        cleaned_content = re.sub(r'\s{2,}', ' ', cleaned_content)
-        cleaned_documents.append(Document(page_content=cleaned_content))
-
-    full_text = "\n".join([doc.page_content for doc in cleaned_documents])
+    # Aplica as limpezas de texto no texto Markdown
     full_text = remover_referencias_entre_parenteses(full_text)
     full_text = cortar_no_historico(full_text)
     full_text = cortar_apos_primeira_bula(full_text)
@@ -98,7 +94,9 @@ def processar_bula(
     # Detecta posições de cada seção no texto
     section_matches = []
     for title in section_titles:
-        pattern = re.compile(rf"(?:\d+\.\s*)?{re.escape(title)}", flags=re.IGNORECASE)
+        words = title.split()
+        pattern_str = r"(?:\d+\.\s*)?" + r"\s+".join(re.escape(w) for w in words)
+        pattern = re.compile(pattern_str, flags=re.IGNORECASE)
         match = pattern.search(full_text)
         if match:
             section_matches.append((match.start(), title))
@@ -114,8 +112,9 @@ def processar_bula(
     # -----------------------------------------------------------------------
     # Chunking por seção (garante que nenhum chunk misture seções diferentes)
     # Alvo: ~400-500 tokens ≈ 1600 chars | overlap: ~75 tokens ≈ 300 chars
+    # Usa MarkdownTextSplitter para evitar quebrar tabelas ou listas do Markdown
     # -----------------------------------------------------------------------
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1600, chunk_overlap=300)
+    splitter = MarkdownTextSplitter(chunk_size=1600, chunk_overlap=300)
 
     fonte = os.path.basename(pdf_path)
     all_texts = []

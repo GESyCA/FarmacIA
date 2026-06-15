@@ -18,9 +18,9 @@ chroma_collection: "bulas_bge_m3"
 chroma_path: "./chroma_bulas"
 
 datasets:
-  - "dataset/perguntas_respostas_dificeis.csv"
-  - "dataset/perguntas_respostas_medias.csv"
-  - "dataset/perguntas_respostas_faceis.csv"
+  - "dataset/dificeis_revisadas.csv"
+  - "dataset/medias_revisadas.csv"
+  - "dataset/faceis_revisadas.csv"
 
 metrics:
   section_retrieval:

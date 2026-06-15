@@ -154,10 +154,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
         
         RAG_TEMPLATE = """
         Passo a passo para responder a pergunta:
@@ -179,7 +176,7 @@ Regras fundamentais:
         Pergunta:
         {pergunta}
 
-        Resposta (em formato JSON):
+        Resposta:
         """
 
         rag_prompt = ChatPromptTemplate.from_messages([
@@ -275,10 +272,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
         
         RAG_TEMPLATE = """
         Passo a passo para responder a pergunta:
@@ -300,7 +294,7 @@ Regras fundamentais:
         Pergunta:
         {pergunta}
 
-        Resposta (em formato JSON):
+        Resposta:
         """
 
         rag_prompt = ChatPromptTemplate.from_messages([
@@ -379,15 +373,20 @@ class AgenticRAGPipeline(BasePipeline):
         })
         t1_plan = time.time()
         
+        # print(f"    [Agentic] Planejamento bruto:\n{planejamento_bruto}")
+        
         # Parsing das seções escolhidas pelo Agente
         try:
             # Limpa possíveis blocos de código markdown do JSON
             json_str = planejamento_bruto.replace("```json", "").replace("```", "").strip()
             dados = json.loads(json_str)
             secoes_escolhidas = [s.upper() for s in dados.get("secoes", []) if s.upper() in SECOES_DISPONIVEIS]
-        except Exception:
+        except Exception as e:
+            print(f"    [Agentic] Falha no parsing do JSON: {e}")
             # Fallback caso o JSON falhe
             secoes_escolhidas = ["O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"]
+            
+        print(f"    [Agentic] Seções escolhidas: {secoes_escolhidas}")
 
         # Se o agente não escolheu nada, coloca uma de fallback
         if not secoes_escolhidas:
@@ -431,10 +430,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
         
         RAG_TEMPLATE = """
         Responda à pergunta de forma clara e objetiva com base no contexto fornecido.
@@ -448,7 +444,7 @@ Regras fundamentais:
         Pergunta:
         {pergunta}
 
-        Resposta (em formato JSON):
+        Resposta:
         """
 
         rag_prompt = ChatPromptTemplate.from_messages([
@@ -641,10 +637,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
 
         RAG_TEMPLATE = """
         Passo a passo para responder a pergunta:
@@ -663,7 +656,7 @@ Regras fundamentais:
         Pergunta:
         {pergunta}
 
-        Resposta (em formato JSON):
+        Resposta:
         """
 
         rag_prompt = ChatPromptTemplate.from_messages([
@@ -945,10 +938,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
 
         RAG_TEMPLATE = """
         Passo a passo para responder a pergunta:
@@ -968,7 +958,7 @@ Regras fundamentais:
         Pergunta:
         {pergunta}
 
-        Resposta (em formato JSON):
+        Resposta:
         """
 
         rag_prompt = ChatPromptTemplate.from_messages([
@@ -1123,10 +1113,7 @@ Regras fundamentais:
 3. Sua resposta final DEVE iniciar obrigatoriamente seguindo este padrão exato:
    "De acordo com a bula do medicamento {medicamento}, {header_prefix}, consta a seguinte informação: "
 4. Não faça diagnósticos ou prescrições. Mantenha um tom profissional, clínico e objetivo.
-5. Você deve responder obrigatoriamente no seguinte formato JSON, sem preâmbulos ou explicações fora do JSON:
-   {{
-     "answer": "<sua resposta final aqui>"
-   }}"""
+5. Escreva a sua resposta diretamente em formato de texto simples, sem utilizar formatos estruturados como JSON ou XML."""
 
         RAG_TEMPLATE = """Responda à pergunta do usuário baseando-se estritamente no contexto fornecido.
 
@@ -1139,7 +1126,7 @@ Contexto (Evidências da Bula):
 Pergunta do Usuário:
 {pergunta}
 
-Resposta (em formato JSON):"""
+Resposta:"""
 
         rag_prompt = ChatPromptTemplate.from_messages([
             ("system", SYSTEM_PROMPT),

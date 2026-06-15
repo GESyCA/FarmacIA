@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import os
+import transformers
+transformers.logging.set_verbosity_error()
 from evaluate import load
 from bert_score import score as bert_score
 from nltk.translate.bleu_score import sentence_bleu
@@ -19,22 +21,39 @@ def evaluate_section_retrieval(df, k=None):
     hits = []
     exact_matches = []
     all_required = []
-    
     for _, row in df.iterrows():
-        # Suporta delimitadores por vírgula e novas linhas (\n ou \n\n)
-        esperadas_raw = str(row.get('secoes_esperadas', '')).replace('\n', ',')
-        recuperadas_raw = str(row.get('secoes_recuperadas', '')).replace('\n', ',')
+        # Previne que a vírgula de "ONDE, COMO..." seja tratada como separador de seções
+        storage_placeholder = "ONDE_COMO_E_POR_QUANTO_TEMPO_POSSO_GUARDAR_ESTE_MEDICAMENTO"
+        
+        esperadas_raw = str(row.get('secoes_esperadas', '')).replace('\n', ',').replace('/', ',')
+        esperadas_raw = esperadas_raw.replace("ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO", storage_placeholder)
+        
+        recuperadas_raw = str(row.get('secoes_recuperadas', '')).replace('\n', ',').replace('/', ',')
+        recuperadas_raw = recuperadas_raw.replace("ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO", storage_placeholder)
         
         esperadas_list = esperadas_raw.split(',')
         recuperadas_list = recuperadas_raw.split(',')
         
-        # Limpar strings e manter ordem para o @K nas recuperadas
-        esperadas = set([s.strip().upper() for s in esperadas_list if s.strip()])
+        # Limpar strings, normalizar subseções e reverter placeholders
+        esperadas_limpas = []
+        for s in esperadas_list:
+            s_clean = s.strip().upper()
+            if s_clean in [storage_placeholder, "ONDE", "COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO", "COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"]:
+                s_clean = "ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"
+            elif s_clean in ["APRESENTAÇÕES", "COMPOSIÇÃO", "APRESENTACÕES", "APRESENTACAO", "APRESENTACOES", "COMPOSICAO"]:
+                s_clean = "IDENTIFICAÇÃO DO MEDICAMENTO"
+            if s_clean:
+                esperadas_limpas.append(s_clean)
+        esperadas = set(esperadas_limpas)
         
         # Manter a ordem original para permitir o corte K
         rec_limpas = []
         for s in recuperadas_list:
             s_clean = s.strip().upper()
+            if s_clean in [storage_placeholder, "ONDE", "COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO", "COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"]:
+                s_clean = "ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"
+            elif s_clean in ["APRESENTAÇÕES", "COMPOSIÇÃO", "APRESENTACÕES", "APRESENTACAO", "APRESENTACOES", "COMPOSICAO"]:
+                s_clean = "IDENTIFICAÇÃO DO MEDICAMENTO"
             if s_clean and s_clean not in rec_limpas:
                 rec_limpas.append(s_clean)
                 
@@ -177,14 +196,14 @@ def run_evaluation(csv_path, yaml_config):
     
     final_metrics = {}
     
-    if 'section_retrieval' in metrics_config:
+    if metrics_config.get('section_retrieval'):
         print("Avaliando Section Retrieval...")
         final_metrics.update(evaluate_section_retrieval(df))
         
-    if 'generation' in metrics_config:
+    if metrics_config.get('generation'):
         final_metrics.update(evaluate_generation(df, metrics_config['generation']))
 
-    if 'corpus_coverage' in metrics_config:
+    if metrics_config.get('corpus_coverage', False):
         print("Calculando Corpus Coverage...")
         import chromadb
         chroma_path = yaml_config.get('chroma_path', './chroma_bulas')
@@ -198,7 +217,7 @@ def run_evaluation(csv_path, yaml_config):
             corpus_size = 0
         final_metrics.update(evaluate_corpus_coverage(df, corpus_size))
 
-    if 'deepeval' in metrics_config:
+    if metrics_config.get('deepeval', False):
         print("Avaliando com DeepEval (LLM-as-a-judge)...")
         from eval_deepeval.run_deepeval import run_evaluation as run_deepeval_eval
         

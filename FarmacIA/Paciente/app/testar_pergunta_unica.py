@@ -13,14 +13,15 @@ logging.getLogger("litellm").setLevel(logging.ERROR)
 logging.getLogger("chromadb").setLevel(logging.ERROR)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
-
 import sys
 import argparse
 import re
 import json
 import pandas as pd
 from dotenv import load_dotenv
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 def limpar_saida_generica(texto):
     if not isinstance(texto, str):
@@ -45,7 +46,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from utils.config_loader import load_config
 from services.pipelines import PipelineFactory, extract_answer
 from rodar_experimentos import load_models
-from eval_deepeval.run_deepeval import run_evaluation as run_deepeval_eval
+# from eval_deepeval.run_deepeval import run_evaluation as run_deepeval_eval
 
 def main():
     parser = argparse.ArgumentParser(description="Testar uma única pergunta nos pipelines")
@@ -54,15 +55,12 @@ def main():
     parser.add_argument("--resposta_esperada", type=str, default="O ácido acetilsalicílico (Aspirina) é contraindicado em caso de hipersensibilidade a salicilatos, asma, úlceras gastrointestinais, diátese hemorrágica, insuficiência renal, hepática ou cardíaca graves, e no último trimestre de gravidez.", help="Resposta esperada (gabarito) para avaliação")
     parser.add_argument("--generation_llm", type=str, default=None, help="Modelo de geração (se omitido, usa o do YAML)")
     parser.add_argument("--judge_llm", type=str, default=None, help="Modelo juiz para LLM as a Judge (se omitido, usa o do YAML)")
+    parser.add_argument("--difficulty", type=str, default="easy", help="Nível de dificuldade da pergunta (ex: easy, medium, hard)")
     args = parser.parse_args()
 
     configs = [
         ("Standard RAG", "configs/exp_compare_01_standard.yaml"),
         ("Agentic RAG", "configs/exp_compare_02_agentic.yaml"),
-        ("Hybrid Agentic RAG", "configs/exp_compare_03_hybrid_agent.yaml"),
-        ("Fusion RAG", "configs/exp_compare_04_fusion.yaml"),
-        ("Graph RAG", "configs/exp_compare_05_graph.yaml"),
-        ("Naive RAG", "configs/exp_compare_06_naive.yaml"),
     ]
 
     print("="*80)
@@ -162,6 +160,7 @@ def main():
                 "modelo": args.generation_llm,
                 "nome_remedio": args.medicamento,
                 "pergunta": args.pergunta,
+                "dificuldade": args.difficulty,
                 "resposta_esperada": args.resposta_esperada,
                 "resposta_gerada": resposta_limpa,
                 "resposta_crua": resposta_crua_limpa,
@@ -176,7 +175,7 @@ def main():
             test_cases_data.append({
                 "question_id": f"pergunta_unica_{pipeline_type}",
                 "pipeline_name": name,
-                "difficulty": "easy",
+                "difficulty": args.difficulty,
                 "drug_name": args.medicamento,
                 "input": args.pergunta,
                 "actual_output": resposta_limpa,

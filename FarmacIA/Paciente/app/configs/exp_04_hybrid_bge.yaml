@@ -17,7 +17,7 @@ models:
   judge_llm: "gemini-3.1-flash-lite"
 
 datasets:
-  - "dataset/perguntas_respostas_dificeis.csv"
+  - "dataset/dificeis_revisadas.csv"
 
 hybrid_retrieval:
   context_size_limit: 12000

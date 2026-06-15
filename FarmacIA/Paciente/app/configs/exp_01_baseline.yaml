@@ -13,9 +13,9 @@ models:
   judge_llm: "gemini-3.1-flash-lite" # LLM as a judge (para Ragas / validacao)
 
 datasets:
-  - "dataset/perguntas_respostas_dificeis.csv"
-  # - "dataset/perguntas_respostas_medias.csv"
-  # - "dataset/perguntas_respostas_faceis.csv"
+  - "dataset/dificeis_revisadas.csv"
+  # - "dataset/medias_revisadas.csv"
+  # - "dataset/faceis_revisadas.csv"
 
 metrics:
   section_retrieval:

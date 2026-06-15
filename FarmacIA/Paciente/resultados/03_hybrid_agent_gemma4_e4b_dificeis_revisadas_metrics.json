@@ -1,0 +1,20 @@
+{
+    "section_precision": 0.0,
+    "section_recall": 0.0,
+    "section_f1": 0.0,
+    "section_hit": 0.0,
+    "exact_section_match": 0.0,
+    "all_required_sections_retrieved": 0.0,
+    "required_section_coverage": 0.0,
+    "rouge": {
+        "rouge1": 0.0,
+        "rouge2": 0.0,
+        "rougeL": 0.0,
+        "rougeLsum": 0.0
+    },
+    "bertscore_f1": 0.5400377511978149,
+    "bleu": 0.0,
+    "corpus_coverage": 0.0028,
+    "unique_chunks_retrieved": 1,
+    "total_chunks_in_corpus": 354
+}

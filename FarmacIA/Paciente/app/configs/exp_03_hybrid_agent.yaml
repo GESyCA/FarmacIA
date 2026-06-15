@@ -13,7 +13,7 @@ models:
   judge_llm: "gemini-3.1-flash-lite"
 
 datasets:
-  - "dataset/perguntas_respostas_dificeis.csv"
+  - "dataset/dificeis_revisadas.csv"
 
 # Limite de caracteres da seção para usar texto completo vs. busca semântica de fallback.
 # ~12.000 chars ≈ 3.000 tokens (4 chars/token) — seguro para modelos com janela de 8k tokens.
