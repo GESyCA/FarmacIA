@@ -84,7 +84,7 @@ def load_models(config):
         
     return embeddings, vectorstore, llm
 
-def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None):
+def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None, output_dir="resultados"):
     config = load_config(config_path)
     
     if gen_llm_override:
@@ -224,7 +224,7 @@ def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None)
                 textos_recuperados_list.append("[]")
  
             # Salva o progresso parcial incrementalmente a cada iteração para evitar perdas
-            os.makedirs("resultados", exist_ok=True)
+            os.makedirs(output_dir, exist_ok=True)
             dataset_basename = Path(actual_dataset_file).stem
             
             # Remove prefixo "compare_" do nome do experimento
@@ -237,7 +237,7 @@ def run_experiments(config_path, gen_llm_override=None, judge_llm_override=None)
             # Remove "perguntas_respostas_" do dataset_basename
             ds_name = dataset_basename.replace("perguntas_respostas_", "")
             
-            output_file = f"resultados/{exp_name}_{model_name_clean}_{ds_name}_output.csv"
+            output_file = os.path.join(output_dir, f"{exp_name}_{model_name_clean}_{ds_name}_output.csv")
             # Copia o dataframe original até a linha atual
             partial_df = df.iloc[:len(respostas_geradas)].copy()
             
@@ -303,6 +303,7 @@ if __name__ == "__main__":
     parser.add_argument("--config", type=str, required=True, help="Caminho para o arquivo YAML de configuração")
     parser.add_argument("--generation_llm", type=str, default=None, help="Sobrescrever o modelo de inferência/geração")
     parser.add_argument("--judge_llm", type=str, default=None, help="Sobrescrever o modelo juiz")
+    parser.add_argument("--output_dir", type=str, default="resultados", help="Diretório onde os arquivos de saída serão salvos")
     args = parser.parse_args()
     
-    run_experiments(args.config, gen_llm_override=args.generation_llm, judge_llm_override=args.judge_llm)
+    run_experiments(args.config, gen_llm_override=args.generation_llm, judge_llm_override=args.judge_llm, output_dir=args.output_dir)

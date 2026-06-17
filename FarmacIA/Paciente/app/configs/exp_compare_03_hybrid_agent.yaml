@@ -13,9 +13,9 @@ models:
   judge_llm: "gemini-3.1-flash-lite"
 
 datasets:
-  - "dataset/faceis_revisadas.csv"
+  # - "dataset/faceis_revisadas.csv"
   - "dataset/medias_revisadas.csv"
-  - "dataset/dificeis_revisadas.csv"
+  # - "dataset/dificeis_revisadas.csv"
 
 hybrid_retrieval:
   context_size_limit: 12000

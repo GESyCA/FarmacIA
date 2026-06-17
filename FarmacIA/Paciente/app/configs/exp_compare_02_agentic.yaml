@@ -9,13 +9,14 @@ run_flags:
 
 models:
   embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  ##generation_llm: "ollama:medgemma:4b"
   generation_llm: "ollama:gemma4:e4b"
   judge_llm: "gemini-3.1-flash-lite"
 
 datasets:
-  # - "dataset/faceis_revisadas.csv"
-  # - "dataset/medias_revisadas.csv"
-  - "dataset/dificeis_revisadas.csv"
+  #- "dataset/faceis_revisadas.csv"
+  - "dataset/medias_revisadas.csv"
+  #- "dataset/dificeis_revisadas.csv"
 
 metrics:
   section_retrieval:
