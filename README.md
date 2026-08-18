@@ -35,6 +35,15 @@ FarmacIA/
 │   ├── reconstruir_grafo.py       # Script para reconstruir o grafo
 │   └── README.md                  # Documentação detalhada dos pipelines RAG
 │
+├── frontend/                      # Aplicação móvel e visualização
+│   ├── farmacia/                  # Aplicativo mobile em Flutter (paciente)
+│   │   ├── lib/                   # Código-fonte Dart (páginas, rotas, widgets, serviços)
+│   │   └── pubspec.yaml           # Dependências Flutter
+│   ├── view/                      # Interface em React / TypeScript
+│   ├── utils/                     # Utilitários complementares
+│   ├── Dockerfile                 # Containerização do frontend
+│   └── requirements.txt           # Dependências auxiliares
+│
 ├── avaliacao/                     # Resultados e artefatos de avaliação
 │   └── resultados/                # CSVs, JSONs e métricas por modelo/pipeline
 │       ├── gemma_4_4b/
@@ -66,13 +75,15 @@ FarmacIA/
 
 ### 1. Pré-requisitos
 - **Python 3.10+** (recomendado Python 3.11 ou 3.12)
+- **Flutter SDK 3.x+** (para o aplicativo móvel `frontend/farmacia`)
+- **Node.js 18+** (para `frontend/view`, se aplicável)
 - **Ollama** (para execução de modelos LLM locais)
 
 ### 2. Clonar e Configurar Ambiente Virtual
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/SilvioRFernandes/FarmacIA.git
+# Clonar o repositório da organização GESyCA
+git clone https://github.com/GESyCA/FarmacIA.git
 cd FarmacIA
 
 # Criar e ativar o ambiente virtual
@@ -87,6 +98,7 @@ source .venv/bin/activate
 # Instalar as dependências do backend
 cd backend
 pip install -r requirements.txt
+cd ..
 ```
 
 ### 3. Configurar Variáveis de Ambiente
@@ -223,6 +235,34 @@ A API estará disponível em `http://localhost:5000` com os seguintes endpoints:
 | `POST` | `/feedback` | Registra avaliação do usuário sobre a resposta (score 1-5 e comentário) |
 | `GET` | `/questoes` | Retorna as questões do questionário MAUQ (usabilidade móvel) |
 | `POST` | `/responder` | Processa e calcula os scores de usabilidade MAUQ |
+
+---
+
+## 📱 Executar o Front-End (Flutter & React)
+
+### Aplicativo Mobile Flutter (`frontend/farmacia`)
+O aplicativo móvel do paciente é desenvolvido em Flutter e se conecta à API REST do backend.
+
+```bash
+cd frontend/farmacia
+
+# Baixar as dependências do Flutter
+flutter pub get
+
+# Executar em emulador ou dispositivo conectado
+flutter run
+```
+
+### Visualização / Interface Web (`frontend/view`)
+```bash
+cd frontend/view
+
+# Instalar dependências
+npm install
+
+# Iniciar servidor de desenvolvimento
+npm start
+```
 
 ---
 
