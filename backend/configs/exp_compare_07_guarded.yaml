@@ -1,0 +1,74 @@
+experiment_name: "compare_07_guarded"
+pipeline_type: "guarded_hybrid_agentic_fusion_rag"
+
+run_flags:
+  generate_vector_db: false
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: true
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  #generation_llm: "ollama:medgemma:4b"
+  #generation_llm: "ollama:gemma4:e4b"
+  # generation_llm: "ollama:phi4-mini"
+  generation_llm: "ollama:mediphi-instruct"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  # - "dataset/faceis_revisadas.csv"
+  - "dataset/medias_revisadas.csv"
+  - "dataset/dificeis_revisadas.csv"
+
+guarded_retrieval:
+  # Busca vetorial e BM25 por grupo de prioridade
+  primary_vector_top_k: 6
+  primary_bm25_top_k: 6
+  secondary_vector_top_k: 4
+  secondary_bm25_top_k: 4
+  safety_vector_top_k: 4
+  safety_bm25_top_k: 4
+  expanded_vector_top_k: 3
+  expanded_bm25_top_k: 3
+
+  # Busca global obrigatória (airbag)
+  global_vector_top_k: 3
+  global_bm25_top_k: 3
+
+  # Fallback expandido (acionado com confiança baixa)
+  fallback_global_vector_top_k: 8
+  fallback_global_bm25_top_k: 8
+  fallback_safety_top_k: 6
+
+  # RRF e reranker
+  rrf_k: 60
+  reranker_model: "BAAI/bge-reranker-base"
+  reranker_top_n: 8
+  fallback_reranker_top_n: 10
+
+  # Estratégia híbrida (seção inteira vs chunks)
+  context_size_limit: 12000
+  max_full_primary_sections: 2
+  max_full_secondary_sections: 1
+
+  # Feature flags
+  enable_fallback: true
+  enable_section_expansion: true
+  enable_full_section_inclusion: true
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+  corpus_coverage: true
+  chunks_retrieval:
+    - "Recall@K"
+    - "Evidence Set Recall"
+    - "MRR@K"
+    - "nDCG@K"
+  deepeval: false

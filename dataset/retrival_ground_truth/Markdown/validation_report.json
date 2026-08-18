@@ -1,0 +1,56 @@
+{
+  "validations": [
+    {
+      "name": "chunks_jsonl_valid",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "dataset_read",
+      "passed": true,
+      "detail": "45 perguntas"
+    },
+    {
+      "name": "all_gold_chunk_ids_exist",
+      "passed": true,
+      "detail": "185 ids verificados"
+    },
+    {
+      "name": "no_new_questions",
+      "passed": true,
+      "detail": "45 vs 45"
+    },
+    {
+      "name": "required_fields_present",
+      "passed": true,
+      "detail": "campos obrigatórios por pergunta"
+    }
+  ],
+  "review_question_ids": [
+    "q010",
+    "q021",
+    "q022",
+    "q024",
+    "q025",
+    "q026",
+    "q036",
+    "q037",
+    "q038",
+    "q039",
+    "q040",
+    "q043"
+  ],
+  "status_counts": {
+    "matched": 33,
+    "partial_match": 12
+  },
+  "evidence_type_counts": {
+    "essential": 98,
+    "supporting": 87
+  },
+  "confidence_counts": {
+    "high": 173,
+    "medium": 9,
+    "low": 3
+  }
+}

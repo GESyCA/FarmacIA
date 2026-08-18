@@ -1,0 +1,38 @@
+experiment_name: "compare_05_graph"
+pipeline_type: "graph_rag"
+
+run_flags:
+  generate_vector_db: false
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: true
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  #generation_llm: "ollama:medgemma:4b"
+  #generation_llm: "ollama:gemma4:e4b"
+  generation_llm: "ollama:phi4-mini"
+  # generation_llm: "ollama:mediphi-instruct"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  - "dataset/faceis_revisadas.csv"
+  - "dataset/medias_revisadas.csv"
+  - "dataset/dificeis_revisadas.csv"
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+  corpus_coverage: true
+  chunks_retrieval:
+    - "Recall@K"
+    - "Evidence Set Recall"
+    - "MRR@K"
+    - "nDCG@K"
+  deepeval: false

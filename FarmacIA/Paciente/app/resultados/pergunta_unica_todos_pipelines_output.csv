@@ -1,9 +1,0 @@
-pipeline,modelo,nome_remedio,pergunta,dificuldade,resposta_esperada,resposta_gerada,resposta_crua,secoes_recuperadas,chunk_ids_recuperados,textos_recuperados,tempo_recuperacao_segundos,tempo_inferencia_segundos
-Standard RAG,,Aspirina,Quais as contraindicações?,easy,"O ácido acetilsalicílico (Aspirina) é contraindicado em caso de hipersensibilidade a salicilatos, asma, úlceras gastrointestinais, diátese hemorrágica, insuficiência renal, hepática ou cardíaca graves, e no último trimestre de gravidez.","De acordo com a bula do medicamento Aspirina, consta a seguinte informação: Na bula consultada de Aspirina, não constam informações sobre essa pergunta.
-
----
-*Esta resposta se baseia apenas nos trechos da bula recuperados e não substitui orientação médica ou farmacêutica. É recomendável consultar um profissional de saúde para orientação individualizada.*","De acordo com a bula do medicamento Aspirina, consta a seguinte informação: Na bula consultada de Aspirina, não constam informações sobre essa pergunta.","O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?, QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?",,[],14.881,2.015
-Agentic RAG,,Aspirina,Quais as contraindicações?,easy,"O ácido acetilsalicílico (Aspirina) é contraindicado em caso de hipersensibilidade a salicilatos, asma, úlceras gastrointestinais, diátese hemorrágica, insuficiência renal, hepática ou cardíaca graves, e no último trimestre de gravidez.","De acordo com a bula do medicamento Aspirina, consta a seguinte informação: Não constam informações sobre essa pergunta.
-
----
-*Esta resposta se baseia apenas nos trechos da bula recuperados e não substitui orientação médica ou farmacêutica. É recomendável consultar um profissional de saúde para orientação individualizada.*","De acordo com a bula do medicamento Aspirina, consta a seguinte informação: Não constam informações sobre essa pergunta.",QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?,,[],18.206,1.592

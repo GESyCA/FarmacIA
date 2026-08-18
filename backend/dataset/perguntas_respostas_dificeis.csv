@@ -1,0 +1,44 @@
+nome_remedio,pergunta,resposta_esperada,secoes_esperadas
+AMOXIL,"Em um paciente em uso de varfarina, como Amoxil pode afetar o tratamento anticoagulante e qual monitoramento adicional deve ser realizado?","Amoxil pode intensificar o efeito da varfarina ao alterar a flora intestinal responsável pela síntese de vitamina K, aumentando o risco de sangramentos; por isso, recomenda-se monitorar o tempo de protrombina (TP/INR) com maior frequência durante o uso concomitante.",O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?
+AMOXIL,"Considerando que Amoxil elimina-se principalmente pelos rins, como deve ser ajustada a dose em pacientes em diálise peritoneal versus hemodiálise e por que há essa diferença farmacocinética?","Na diálise peritoneal, a amoxicilina não é removida adequadamente, mantendo-se a posologia da insuficiência renal grave (máximo 500 mg ao dia); já na hemodiálise, o fármaco é significativamente depurado, exigindo dose adicional de 500 mg durante e ao final de cada sessão para repor a fração removida.",COMO DEVO USAR ESTE MEDICAMENTO?
+AMOXIL,Por que a formulação em suspensão oral de Amoxil contém aspartamo e quais cuidados especiais devem ser observados em pacientes com fenilcetonúria?,"A suspensão oral utiliza aspartamo como edulcorante, o qual libera fenilalanina; pacientes com fenilcetonúria devem, portanto, usar esta forma farmacêutica com cautela para não acumular níveis tóxicos de fenilalanina.","COMPOSIÇÃO
+
+O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"
+AMOXIL,"Em terapias prolongadas, quais reações adversas graves envolvendo fígado e pele devem ser monitoradas e em quais seções da bula isso está descrito?","Deve-se vigiar sinais de hepatotoxicidade (náuseas, vômitos, amarelamento da pele/olhos e elevação de enzimas hepáticas) e reações cutâneas graves (síndrome de Stevens-Johnson, necrólise epidérmica tóxica), conforme descrito em “Reações adversas” e “Advertências e Precauções”.",QUAIS OS MALES QUE ESTE MEDICAMENTO PODE ME CAUSAR?
+AMOXIL,Qual a justificativa farmacológica para dividir doses altas de até 6 g/dia em 3 g duas vezes ao dia em infecções purulentas graves?,"Dividir a dose de 6 g/dia em 3 g de 12 em 12 horas mantém as concentrações plasmáticas de amoxicilina acima da concentração mínima inibitória por períodos prolongados, otimizando a ação bactericida contra germes purulentos e reduzindo o risco de resistência.","COMO DEVO USAR ESTE MEDICAMENTO?
+
+COMO ESTE MEDICAMENTO FUNCIONA?"
+RIVOTRIL,"Em idosos com comprometimento hepático leve a moderado, como o metabolismo de clonazepam e sua farmacocinética influenciam o ajuste da dose inicial?","Clonazepam é extensivamente metabolizado no fígado e apresenta meia-vida prolongada em pacientes idosos, de modo que concentrações plasmáticas semelhantes às de adultos jovens podem resultar em efeitos mais intensos. Em casos de função hepática reduzida, recomenda-se iniciar com a menor dose possível e escalonar lentamente conforme a resposta clínica, evitando acúmulo e sedação excessiva.","COMO ESTE MEDICAMENTO FUNCIONA?
+
+QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?"
+RIVOTRIL,Qual o mecanismo farmacológico que fundamenta a necessidade de descontinuação gradual para prevenir estado de mal epiléptico e sintomas de abstinência?,"Como modulador positivo dos receptores GABA_A, o uso crônico de clonazepam leva à regulação negativa desses receptores. A retirada abrupta reduz bruscamente a inibição GABAérgica, precipitando crises convulsivas (estado de mal epiléptico) e sintomas de abstinência (tremor, agitação, convulsões), daí a recomendação de tapering gradual.","COMO ESTE MEDICAMENTO FUNCIONA?
+
+O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"
+RIVOTRIL,"Por que o uso de Rivotril é contraindicado em pacientes com histórico de apneia do sono no tratamento do transtorno do pânico, considerando suas propriedades farmacológicas?","Clonazepam exerce potente efeito sedativo e depressor respiratório, podendo agravar a apneia do sono e causar depressão respiratória grave em indivíduos suscetíveis. Por isso, seu emprego no transtorno do pânico está contraindicado em pacientes com esse histórico.","QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?
+
+O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"
+RIVOTRIL,Em que medida o suco de toranja pode afetar o perfil de concentração plasmática de clonazepam e qual recomendação clínica a bula sugere?,"O suco de toranja inibe o CYP3A4 hepático, o principal via metabólica do clonazepam, elevando suas concentrações plasmáticas e prolongando os efeitos sedativos e anticonvulsivantes. A bula recomenda evitar o consumo concomitante ou, se necessário, monitorar cuidadosamente o paciente.","O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?
+
+COMO ESTE MEDICAMENTO FUNCIONA?"
+RIVOTRIL,Quais precauções devem ser adotadas em pacientes com histórico de depressão ou ideação suicida antes de iniciar tratamento com Rivotril e qual a fundamentação clínica para essa recomendação?,"A bula orienta comunicar ao médico qualquer sinal de depressão ou tentativa de suicídio antes de iniciar o clonazepam, pois benzodiazepínicos podem causar reações paradoxais (como agitação e piora de humor) e amnésia anterógrada, exigindo monitoramento psiquiátrico rigoroso e ajuste de dose.",O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?
+TYLENOL,"Como a duração de ação farmacológica de TYLENOL se relaciona com o esquema posológico fracionado recomendado, considerando seu mecanismo de ação e o risco hepatotóxico descritos na bula?","O paracetamol inicia seu efeito em 15–30 minutos e mantém atividade analgésica e antipirética por 4–6 horas. Por isso, a bula recomenda doses fracionadas em intervalos de 4–6 horas, garantindo alívio contínuo sem sobretatuar o fígado. Exceder esse intervalo aumenta o risco de acúmulo e de hepatotoxicidade em caso de superdose.","COMO ESTE MEDICAMENTO FUNCIONA?
+
+COMO DEVO USAR ESTE MEDICAMENTO?
+
+O QUE FAZER SE ALGUÉM USAR UMA QUANTIDADE MAIOR DO QUE A
+INDICADA DESTE MEDICAMENTO?"
+TYLENOL,"Em um paciente idoso com consumo crônico de álcool, quais orientações específicas a bula fornece sobre o uso de TYLENOL e qual o fundamento clínico para essas recomendações?","A bula orienta que consumidores abusivos de álcool e pacientes com problemas no fígado consultem um médico antes de usar TYLENOL, pois o metabolismo hepático do paracetamol pode estar comprometido e o risco de hepatotoxicidade por superdose é maior.","O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?
+
+O QUE FAZER SE ALGUÉM USAR UMA QUANTIDADE MAIOR DO QUE A
+INDICADA DESTE MEDICAMENTO?"
+TYLENOL,"Qual a justificativa para a contraindicação de TYLENOL em menores de 12 anos e, simultaneamente, a ausência de necessidade de ajuste de dose em idosos?","A bula contraindica o uso em menores de 12 anos devido à falta de dados de segurança nessa faixa etária. Já em idosos, não há necessidade de ajuste posológico porque não foram identificadas alterações farmacocinéticas relevantes nesse grupo.","QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?
+
+O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"
+TYLENOL,"Como a ausência de irritação gástrica do paracetamol, mencionada na bula, é comparada à sua indicação de alívio de dores associadas a artrites, reforçando sua vantagem terapêutica?","A bula afirma que, em doses terapêuticas, o paracetamol não causa irritação gástrica, o que o torna vantajoso para pacientes com artrite que necessitam de analgesia prolongada sem agravar lesões ou úlceras gastrointestinais.","PARAQUE ESTE MEDICAMENTO É INDICADO?
+
+O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?"
+TYLENOL,"De acordo com a bula, quais orientações são fornecidas para o uso concomitante de TYLENOL com flucloxacilina e varfarina, e qual é a justificativa implícita baseada nos eventos adversos descritos?","A bula recomenda consultar um médico antes de usar TYLENOL em pacientes que fazem uso de flucloxacilina ou varfarina, pois essas drogas podem influenciar o metabolismo hepático do paracetamol e aumentar o risco de elevação de transaminases e hepatotoxicidade.","O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?
+
+QUAIS OS MALES QUE ESTE MEDICAMENTO PODE ME CAUSAR?
+
+"

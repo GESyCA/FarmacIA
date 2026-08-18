@@ -1,15 +1,73 @@
-# Python-generated files
+# ============================================================================
+# FarmacIA Back-End .gitignore
+# ============================================================================
+
+# ── Credenciais e variáveis de ambiente ──────────────────────────────────────
+.env
+*.env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────────────────────────────────────
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+*.egg
 
-# Virtual environments
-.venv
+# ── Virtual environments ────────────────────────────────────────────────────
+.venv/
 venv/
-FarmacIA/Paciente/venv/
-__pycache__/
-*.pyc
-.env
+ENV/
+
+# ── Bancos de dados ─────────────────────────────────────────────────────────
+*.db
+*.sqlite3
+instance/
+
+# ── ChromaDB (banco vetorial) ───────────────────────────────────────────────
+chroma_bulas/
+*.bin
+
+# ── Modelos de ML / pesos ───────────────────────────────────────────────────
+*.safetensors
+*.gguf
+*.ggml
+*.pt
+*.pth
+*.h5
+
+# ── Pasta legado (não sincronizada com GitHub) ──────────────────────────────
+legado/
+
+# ── Scratch / temporários ───────────────────────────────────────────────────
+scratch/
+
+# ── DeepEval ────────────────────────────────────────────────────────────────
+.deepeval/
+
+# ── Node.js ─────────────────────────────────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ── IDE / Editor ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Pytest ──────────────────────────────────────────────────────────────────
+.pytest_cache/
+
+# ── Logs ────────────────────────────────────────────────────────────────────
+*.log
