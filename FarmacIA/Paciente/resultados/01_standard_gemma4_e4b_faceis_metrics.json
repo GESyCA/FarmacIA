@@ -1,0 +1,20 @@
+{
+    "section_precision": 0.4666666666666667,
+    "section_recall": 0.9333333333333333,
+    "section_f1": 0.6222222222222221,
+    "section_hit": 0.9333333333333333,
+    "exact_section_match": 0.0,
+    "all_required_sections_retrieved": 0.9333333333333333,
+    "required_section_coverage": 0.9333333333333333,
+    "rouge": {
+        "rouge1": 0.3453042442859877,
+        "rouge2": 0.2776864180231242,
+        "rougeL": 0.32235724783954894,
+        "rougeLsum": 0.3190605610974211
+    },
+    "bertscore_f1": 0.7407501339912415,
+    "bleu": 0.13026880023868356,
+    "corpus_coverage": 0.0028,
+    "unique_chunks_retrieved": 1,
+    "total_chunks_in_corpus": 354
+}

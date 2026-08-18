@@ -1,0 +1,187 @@
+import os
+import json
+import glob
+import pandas as pd
+
+# Path to results
+results_dir = r"c:\Users\silvi\OneDrive\Documentos\Projetos\FarmacIA-back-end\FarmacIA\Paciente\resultados\medgemma_4b"
+
+# Find files
+metrics_files = glob.glob(os.path.join(results_dir, "*_metrics.json"))
+csv_files = glob.glob(os.path.join(results_dir, "*_output.csv"))
+
+# Data structure to hold results
+results = {}
+
+pipelines_mapping = {
+    "01_standard": "Standard RAG",
+    "02_agentic": "Agentic RAG",
+    "03_hybrid_agent": "Hybrid Agent RAG",
+    "04_fusion": "Fusion RAG",
+    "05_graph": "Graph RAG",
+    "06_naive": "Naive RAG"
+}
+
+difficulty_mapping = {
+    "faceis": "Fáceis",
+    "medias": "Médias",
+    "dificeis": "Difíceis"
+}
+
+def parse_filename(filename):
+    basename = os.path.basename(filename)
+    pipeline = None
+    for p_key in pipelines_mapping:
+        if basename.startswith(p_key):
+            pipeline = p_key
+            break
+            
+    difficulty = None
+    for d_key in difficulty_mapping:
+        if f"_{d_key}_" in basename:
+            difficulty = d_key
+            break
+            
+    return pipeline, difficulty
+
+# Process metrics.json
+for f in metrics_files:
+    pipeline, difficulty = parse_filename(f)
+    if not pipeline or not difficulty:
+        continue
+        
+    key = (pipeline, difficulty)
+    if key not in results:
+        results[key] = {}
+        
+    try:
+        with open(f, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            results[key]['section_precision'] = data.get('section_precision', 0.0)
+            results[key]['section_recall'] = data.get('section_recall', 0.0)
+            results[key]['section_f1'] = data.get('section_f1', 0.0)
+            results[key]['all_required_sections_retrieved'] = data.get('all_required_sections_retrieved', 0.0)
+            results[key]['rouge1'] = data.get('rouge', {}).get('rouge1', 0.0)
+            results[key]['rougeL'] = data.get('rouge', {}).get('rougeL', 0.0)
+            results[key]['bertscore_f1'] = data.get('bertscore_f1', 0.0)
+            results[key]['bleu'] = data.get('bleu', 0.0)
+            results[key]['unique_chunks_retrieved'] = data.get('unique_chunks_retrieved', 0)
+    except Exception as e:
+        print(f"Error parsing metrics file {f}: {e}")
+
+# Process consolidated JSONL files
+jsonl_files = [
+    os.path.join(results_dir, "avaliacoes_consolidadas_graph_medgemma_4b.jsonl"),
+    os.path.join(results_dir, "avaliacoes_consolidadas_medgemma_4b.jsonl"),
+    os.path.join(results_dir, "avaliacoes_rag_medgemma_4b_todos.jsonl")
+]
+
+pipeline_name_to_key = {
+    "naive_rag": "06_naive",
+    "standard_rag": "01_standard",
+    "agentic_rag": "02_agentic",
+    "hybrid_agentic_rag": "03_hybrid_agent",
+    "fusion_rag": "04_fusion",
+    "graph_rag": "05_graph"
+}
+
+difficulty_to_key = {
+    "easy": "faceis",
+    "medium": "medias",
+    "hard": "dificeis"
+}
+
+# Group JSONL evaluations by (pipeline, difficulty)
+evals_by_key = {}
+
+for f in jsonl_files:
+    if not os.path.exists(f):
+        print(f"Warning: file {f} not found.")
+        continue
+    with open(f, 'r', encoding='utf-8') as file:
+        for line in file:
+            if not line.strip():
+                continue
+            try:
+                obj = json.loads(line)
+                p_name = obj.get("pipeline_name")
+                diff_name = obj.get("difficulty")
+                
+                p_key = pipeline_name_to_key.get(p_name)
+                d_key = difficulty_to_key.get(diff_name)
+                
+                if not p_key or not d_key:
+                    print(f"Unknown pipeline/diff: {p_name} / {diff_name} in file {f}")
+                    continue
+                    
+                key = (p_key, d_key)
+                if key not in evals_by_key:
+                    evals_by_key[key] = []
+                evals_by_key[key].append(obj)
+            except Exception as e:
+                print(f"Error parsing line in {f}: {e}")
+
+# Compute averages for all criteria
+for key, scores in evals_by_key.items():
+    if key not in results:
+        results[key] = {}
+        
+    df = pd.DataFrame(scores)
+    
+    def get_mean_subscore(col):
+        if col in df.columns:
+            return df[col].apply(lambda x: x.get('normalized_score', 0.0) if isinstance(x, dict) else 0.0).mean()
+        return 0.0
+
+    results[key]['contextual_recall'] = get_mean_subscore('contextual_recall')
+    results[key]['contextual_precision'] = get_mean_subscore('contextual_precision')
+    results[key]['evidence_sufficiency'] = get_mean_subscore('evidence_sufficiency')
+    results[key]['faithfulness'] = get_mean_subscore('faithfulness')
+    results[key]['answer_relevancy'] = get_mean_subscore('answer_relevancy')
+    results[key]['response_completeness'] = get_mean_subscore('response_completeness')
+    results[key]['unsupported_claims'] = get_mean_subscore('unsupported_claims')
+    results[key]['clinical_safety'] = get_mean_subscore('clinical_safety')
+    results[key]['warning_preservation'] = get_mean_subscore('warning_preservation')
+    results[key]['patient_comprehensibility'] = get_mean_subscore('patient_comprehensibility')
+    results[key]['inference_control'] = get_mean_subscore('inference_control')
+    
+    if 'final_score' in df.columns:
+        results[key]['final_score'] = df['final_score'].mean()
+    else:
+        results[key]['final_score'] = 0.0
+        
+    if 'overall_critical_failure' in df.columns:
+        results[key]['critical_failure_rate'] = df['overall_critical_failure'].mean()
+    else:
+        results[key]['critical_failure_rate'] = 0.0
+
+# Process csv files for times
+for f in csv_files:
+    pipeline, difficulty = parse_filename(f)
+    if not pipeline or not difficulty:
+        continue
+    key = (pipeline, difficulty)
+    if key not in results:
+        results[key] = {}
+    try:
+        df = pd.read_csv(f)
+        if 'tempo_recuperacao_segundos' in df.columns:
+            results[key]['avg_retrieval_time'] = float(df['tempo_recuperacao_segundos'].mean())
+        else:
+            results[key]['avg_retrieval_time'] = 0.0
+            
+        if 'tempo_inferencia_segundos' in df.columns:
+            results[key]['avg_inference_time'] = float(df['tempo_inferencia_segundos'].mean())
+        else:
+            results[key]['avg_inference_time'] = 0.0
+    except Exception as e:
+        print(f"Error parsing CSV file {f}: {e}")
+
+# Flatten and save JSON
+output_json_path = os.path.join(results_dir, "medgemma_compiled_results.json")
+with open(output_json_path, 'w', encoding='utf-8') as out_f:
+    # Convert keys to string for JSON serialization
+    serializable = {f"{k[0]}|{k[1]}": v for k, v in results.items()}
+    json.dump(serializable, out_f, indent=4, ensure_ascii=False)
+
+print("Compilation successful! MedGemma summary saved to JSON.")

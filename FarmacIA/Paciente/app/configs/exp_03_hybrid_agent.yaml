@@ -1,0 +1,33 @@
+experiment_name: "gemini_hybrid_agent"
+pipeline_type: "hybrid_agentic_rag"
+
+run_flags:
+  generate_vector_db: false  # Banco já re-indexado via utils/reset_chroma.py
+  run_retrieval: true
+  run_generation: true
+  run_evaluation: true
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  generation_llm: "gemma-4-26b-a4b-it"
+  judge_llm: "gemini-3.1-flash-lite"
+
+datasets:
+  - "dataset/dificeis_revisadas.csv"
+
+# Limite de caracteres da seção para usar texto completo vs. busca semântica de fallback.
+# ~12.000 chars ≈ 3.000 tokens (4 chars/token) — seguro para modelos com janela de 8k tokens.
+# Para Gemini (1M tokens), poderia ser muito maior, mas mantemos conservador para portabilidade.
+hybrid_retrieval:
+  context_size_limit: 12000
+  fallback_k: 15
+
+metrics:
+  section_retrieval:
+    - "precision"
+    - "recall"
+    - "f1_score"
+  generation:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
